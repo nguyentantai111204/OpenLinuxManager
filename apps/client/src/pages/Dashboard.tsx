@@ -7,6 +7,7 @@ import { PageHeader } from '../components/common/PageHeader';
 import { SPACING, COLORS } from '../constants/design';
 import { StatCard } from '../components/dashboard/StatCard';
 import { DeveloperBoard, Memory, Storage, Timer } from '@mui/icons-material';
+import { StackColAlignCenterJusCenter } from '../components/stack';
 
 interface CpuDataPoint {
     time: string;
@@ -68,9 +69,9 @@ export function Dashboard() {
     if (!systemStats) {
         return (
             <Container maxWidth="xl" sx={{ mt: SPACING.xl / 8 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+                <StackColAlignCenterJusCenter sx={{ minHeight: '50vh' }}>
                     <CircularProgress size={60} thickness={4} />
-                </Box>
+                </StackColAlignCenterJusCenter>
             </Container>
         );
     }

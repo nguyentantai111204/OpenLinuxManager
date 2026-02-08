@@ -8,6 +8,7 @@ import {
     Settings as SettingsIcon,
 } from '@mui/icons-material';
 import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../../constants/design';
+import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../stack';
 
 interface MenuItem {
     id: string;
@@ -62,41 +63,37 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
     };
 
     const sidebarContent = (
-        <Box
+        <StackCol
             sx={{
                 width: LAYOUT.sidebar.width,
                 height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
                 backgroundColor: COLORS.sidebar.background,
                 color: COLORS.sidebar.text,
             }}
+            spacing={0}
         >
             {/* Logo Section */}
-            <Box
+            <StackRow
                 sx={{
                     p: SPACING.lg / 8,
-                    display: 'flex',
-                    alignItems: 'center',
                     gap: SPACING.sm / 8,
                     borderBottom: `1px solid ${COLORS.sidebar.hover}`,
                 }}
+                spacing={SPACING.sm / 8}
             >
-                <Box
+                <StackColAlignCenterJusCenter
                     sx={{
                         width: 40,
                         height: 40,
                         borderRadius: BORDER_RADIUS.md,
                         background: `linear-gradient(135deg, ${COLORS.primary.main} 0%, ${COLORS.primary.dark} 100%)`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
                         fontSize: TYPOGRAPHY.fontSize.xl,
                         fontWeight: TYPOGRAPHY.fontWeight.bold,
                     }}
+                    spacing={0}
                 >
                     🐧
-                </Box>
+                </StackColAlignCenterJusCenter>
                 <Typography
                     variant="h6"
                     sx={{
@@ -106,7 +103,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                 >
                     UbuntuMonitor
                 </Typography>
-            </Box>
+            </StackRow>
 
             {/* Navigation Menu */}
             <List sx={{ flex: 1, py: SPACING.md / 8 }}>
@@ -157,14 +154,12 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
             </List>
 
             {/* User Profile Section */}
-            <Box
+            <StackRow
                 sx={{
                     p: SPACING.md / 8,
                     borderTop: `1px solid ${COLORS.sidebar.hover}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: SPACING.sm / 8,
                 }}
+                spacing={SPACING.sm / 8}
             >
                 <Avatar
                     sx={{
@@ -197,8 +192,8 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                         Ubuntu 22.04 LTS
                     </Typography>
                 </Box>
-            </Box>
-        </Box>
+            </StackRow>
+        </StackCol>
     );
 
     // Mobile: Temporary drawer

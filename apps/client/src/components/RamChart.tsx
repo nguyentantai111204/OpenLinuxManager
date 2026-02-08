@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../constants/design';
+import { StackCol, StackRow } from './stack';
 
 interface RamChartProps {
     ramTotal: number;
@@ -78,7 +79,7 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                     </ResponsiveContainer>
 
                     {/* Center text */}
-                    <Box
+                    <StackCol
                         sx={{
                             position: 'absolute',
                             top: '50%',
@@ -86,6 +87,7 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                             transform: 'translate(-50%, -50%)',
                             textAlign: 'center',
                         }}
+                        spacing={0}
                     >
                         <Typography
                             variant="h2"
@@ -108,19 +110,17 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         >
                             GB Used
                         </Typography>
-                    </Box>
+                    </StackCol>
                 </Box>
 
                 {/* Legend */}
-                <Box sx={{ display: 'flex', justifyContent: 'center', gap: SPACING.xl / 8, mt: SPACING.md / 8 }}>
-                    <Box sx={{ textAlign: 'center' }}>
+                <StackRow sx={{ justifyContent: 'center', gap: SPACING.xl / 8, mt: SPACING.md / 8 }}>
+                    <StackCol sx={{ textAlign: 'center' }} spacing={SPACING.xs / 8}>
                         <Typography
                             variant="caption"
                             sx={{
                                 color: 'text.secondary',
                                 fontSize: TYPOGRAPHY.fontSize.xs,
-                                display: 'block',
-                                mb: SPACING.xs / 8,
                             }}
                         >
                             Free
@@ -135,15 +135,13 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         >
                             {(ramFree / 1024).toFixed(1)} GB
                         </Typography>
-                    </Box>
-                    <Box sx={{ textAlign: 'center' }}>
+                    </StackCol>
+                    <StackCol sx={{ textAlign: 'center' }} spacing={SPACING.xs / 8}>
                         <Typography
                             variant="caption"
                             sx={{
                                 color: 'text.secondary',
                                 fontSize: TYPOGRAPHY.fontSize.xs,
-                                display: 'block',
-                                mb: SPACING.xs / 8,
                             }}
                         >
                             Used
@@ -158,8 +156,8 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         >
                             {(ramUsed / 1024).toFixed(1)} GB
                         </Typography>
-                    </Box>
-                </Box>
+                    </StackCol>
+                </StackRow>
             </CardContent>
         </Card>
     );

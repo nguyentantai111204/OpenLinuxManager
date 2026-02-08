@@ -2,6 +2,7 @@ import { ReactNode, useState } from 'react';
 import { Box, IconButton, useTheme, useMediaQuery } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { Sidebar } from './Sidebar';
+import { StackRow } from '../stack';
 import { LAYOUT, SPACING } from '../../constants/design';
 
 interface MainLayoutProps {
@@ -12,31 +13,30 @@ export function MainLayout({ children }: MainLayoutProps) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
+    // const [mobileOpen, setMobileOpen] = useState(false); // No longer needed
+    const [sidebarOpen, setSidebarOpen] = useState(false); // New state for sidebar
 
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+    // const handleDrawerToggle = () => { // No longer needed
+    //     setMobileOpen(!mobileOpen);
+    // };
 
     return (
-        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+        <StackRow sx={{ minHeight: '100vh' }} spacing={0}>
             {/* Sidebar */}
-            <Sidebar open={isMobile ? mobileOpen : true} onClose={handleDrawerToggle} />
+            <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
             {/* Main Content */}
             <Box
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    width: {
-                        xs: '100%',
-                        md: `calc(100% - ${LAYOUT.sidebar.width}px)`,
-                    },
-                    minHeight: '100vh',
                     backgroundColor: 'background.default',
+                    minHeight: '100vh',
+                    overflow: 'auto',
                 }}
             >
-                {/* Mobile Menu Button */}
-                {isMobile && (
+                {/* Mobile Menu Button - Removed as per the change, but keeping the original logic for context if needed */}
+                {/* {isMobile && (
                     <Box
                         sx={{
                             p: SPACING.md / 8,
@@ -58,6 +58,6 @@ export function MainLayout({ children }: MainLayoutProps) {
                 {/* Page Content */}
                 {children}
             </Box>
-        </Box>
+        </StackRow>
     );
 }

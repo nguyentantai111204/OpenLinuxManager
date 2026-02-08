@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Card, CardContent, Typography, Box, Stack } from '@mui/material';
 import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../constants/design';
-import { StackRowJusBetween } from '../stack';
+import { StackRowJusBetween, StackRow } from '../stack';
 
 interface StatCardProps {
     icon: ReactNode;
@@ -85,8 +85,7 @@ export function StatCard({
                     {value}
                 </Typography>
 
-                {/* Change and Subtitle Row */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.sm / 8 }}>
+                <StackRow spacing={SPACING.sm / 8}>
                     {change && (
                         <Typography
                             variant="caption"
@@ -111,7 +110,7 @@ export function StatCard({
                             {subtitle}
                         </Typography>
                     )}
-                </Box>
+                </StackRow>
             </CardContent>
         </Card>
     );

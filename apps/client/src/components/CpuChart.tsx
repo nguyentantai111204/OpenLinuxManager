@@ -12,6 +12,7 @@ import {
     AreaChart,
 } from 'recharts';
 import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../constants/design';
+import { StackRow } from './stack';
 
 interface CpuChartProps {
     data: Array<{ time: string; cpu: number }>;
@@ -36,7 +37,6 @@ export function CpuChart({ data }: CpuChartProps) {
             }}
         >
             <CardContent sx={{ p: SPACING.lg / 8 }}>
-                {/* Header */}
                 <Box sx={{ mb: SPACING.lg / 8 }}>
                     <Typography
                         variant="h6"
@@ -49,23 +49,22 @@ export function CpuChart({ data }: CpuChartProps) {
                     >
                         Hiệu năng thời gian thực
                     </Typography>
-                    <Box sx={{ display: 'flex', gap: SPACING.md / 8, alignItems: 'center' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.xs / 8 }}>
+                    <StackRow spacing={SPACING.md / 8}>
+                        <StackRow spacing={SPACING.xs / 8}>
                             <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: COLORS.chart.cpu }} />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: TYPOGRAPHY.fontSize.xs }}>
                                 CPU
                             </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.xs / 8 }}>
+                        </StackRow>
+                        <StackRow spacing={SPACING.xs / 8}>
                             <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: COLORS.chart.ram }} />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: TYPOGRAPHY.fontSize.xs }}>
                                 RAM
                             </Typography>
-                        </Box>
-                    </Box>
+                        </StackRow>
+                    </StackRow>
                 </Box>
 
-                {/* Chart */}
                 <ResponsiveContainer width="100%" height={280}>
                     <AreaChart data={data}>
                         <defs>

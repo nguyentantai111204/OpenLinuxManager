@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Box, Typography, Chip } from '@mui/material';
 import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@mui/icons-material';
 import { SPACING, TYPOGRAPHY } from '../../constants/design';
+import { StackRow, StackRowAlignStartJusBetween } from '../stack';
 
 interface PageHeaderProps {
     title: string;
@@ -13,7 +14,7 @@ interface PageHeaderProps {
 export function PageHeader({ title, subtitle, isConnected, actions }: PageHeaderProps) {
     return (
         <Box sx={{ mb: SPACING.lg / 8 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: SPACING.sm / 8 }}>
+            <StackRowAlignStartJusBetween sx={{ mb: SPACING.sm / 8 }}>
                 <Box>
                     <Typography
                         variant="h4"
@@ -39,10 +40,10 @@ export function PageHeader({ title, subtitle, isConnected, actions }: PageHeader
                     )}
                 </Box>
                 {actions && <Box>{actions}</Box>}
-            </Box>
+            </StackRowAlignStartJusBetween>
 
             {isConnected !== undefined && (
-                <Box sx={{ display: 'flex', gap: SPACING.sm / 8, alignItems: 'center' }}>
+                <StackRow spacing={SPACING.sm / 8}>
                     <Chip
                         icon={isConnected ? <CheckCircleIcon /> : <ErrorIcon />}
                         label={isConnected ? 'Connected' : 'Disconnected'}
@@ -50,7 +51,7 @@ export function PageHeader({ title, subtitle, isConnected, actions }: PageHeader
                         size="small"
                         sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}
                     />
-                </Box>
+                </StackRow>
             )}
         </Box>
     );
