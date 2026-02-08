@@ -45,4 +45,10 @@ vite.config.*.timestamp*
 
 # Local environment files
 .env
-.env.example
+
+# Build artifacts
+static/
+graph.html
+
+# Logs
+*.log
