@@ -10,6 +10,7 @@ import {
     ResponsiveContainer,
 } from 'recharts';
 import { TrendingUp as TrendingUpIcon } from '@mui/icons-material';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS } from '../constants/design';
 
 interface CpuChartProps {
     data: Array<{ time: string; cpu: number }>;
@@ -23,19 +24,42 @@ export function CpuChart({ data }: CpuChartProps) {
     }, [data]);
 
     return (
-        <Card elevation={2}>
+        <Card
+            elevation={2}
+            sx={{
+                borderRadius: BORDER_RADIUS.lg / 8,
+                boxShadow: SHADOWS.md,
+            }}
+        >
             <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <TrendingUpIcon sx={{ mr: 1, color: 'primary.main' }} />
-                    <Typography variant="h6" fontWeight={600}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: SPACING.md / 8 }}>
+                    <TrendingUpIcon sx={{ mr: SPACING.sm / 8, color: 'primary.main' }} />
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                        }}
+                    >
                         CPU Usage
                     </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 3 }}>
-                    <Typography variant="h2" component="span" color="primary" fontWeight={700}>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', mb: SPACING.lg / 8 }}>
+                    <Typography
+                        variant="h2"
+                        component="span"
+                        color="primary"
+                        sx={{
+                            fontWeight: TYPOGRAPHY.fontWeight.bold,
+                        }}
+                    >
                         {currentCpu.toFixed(1)}
                     </Typography>
-                    <Typography variant="h4" component="span" color="text.secondary" sx={{ ml: 1 }}>
+                    <Typography
+                        variant="h4"
+                        component="span"
+                        color="text.secondary"
+                        sx={{ ml: SPACING.sm / 8 }}
+                    >
                         %
                     </Typography>
                 </Box>
@@ -43,8 +67,8 @@ export function CpuChart({ data }: CpuChartProps) {
                     <LineChart data={data}>
                         <defs>
                             <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.3} />
-                                <stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0} />
+                                <stop offset="5%" stopColor={COLORS.chart.cpu} stopOpacity={0.3} />
+                                <stop offset="95%" stopColor={COLORS.chart.cpu} stopOpacity={0} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid
@@ -55,28 +79,28 @@ export function CpuChart({ data }: CpuChartProps) {
                         <XAxis
                             dataKey="time"
                             stroke={theme.palette.text.secondary}
-                            tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                            tick={{ fill: theme.palette.text.secondary, fontSize: TYPOGRAPHY.fontSize.xs }}
                             tickLine={false}
                         />
                         <YAxis
                             domain={[0, 100]}
                             stroke={theme.palette.text.secondary}
-                            tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                            tick={{ fill: theme.palette.text.secondary, fontSize: TYPOGRAPHY.fontSize.xs }}
                             tickLine={false}
                         />
                         <Tooltip
                             contentStyle={{
                                 backgroundColor: theme.palette.background.paper,
                                 border: `1px solid ${theme.palette.divider}`,
-                                borderRadius: theme.shape.borderRadius,
-                                boxShadow: theme.shadows[4],
+                                borderRadius: BORDER_RADIUS.md,
+                                boxShadow: SHADOWS.md,
                             }}
                             labelStyle={{ color: theme.palette.text.primary }}
                         />
                         <Line
                             type="monotone"
                             dataKey="cpu"
-                            stroke={theme.palette.primary.main}
+                            stroke={COLORS.chart.cpu}
                             strokeWidth={3}
                             dot={false}
                             fill="url(#cpuGradient)"

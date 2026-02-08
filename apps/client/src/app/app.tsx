@@ -1,19 +1,22 @@
-import { Box } from '@mui/material';
 import { Route, Routes } from 'react-router-dom';
 import { Dashboard } from '../pages/Dashboard';
-import { AppHeader } from '../components/AppHeader';
+import { Processes } from '../pages/Processes';
+import { Storage } from '../pages/Storage';
+import { Settings } from '../pages/Settings';
+import { MainLayout } from '../components/layout/MainLayout';
 
 export function App() {
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <AppHeader />
-      <Box component="main" sx={{ flexGrow: 1 }}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-        </Routes>
-      </Box>
-    </Box>
+    <MainLayout>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/processes" element={<Processes />} />
+        <Route path="/storage" element={<Storage />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </MainLayout>
   );
 }
 
 export default App;
+

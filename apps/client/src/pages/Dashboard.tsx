@@ -1,26 +1,12 @@
 import { useState, useEffect } from 'react';
-import {
-    Container,
-    Grid,
-    Card,
-    CardContent,
-    Typography,
-    Box,
-    Chip,
-    CircularProgress,
-    Alert,
-    Fade,
-    Grow,
-} from '@mui/material';
-import {
-    Computer as ComputerIcon,
-    AccessTime as AccessTimeIcon,
-    CheckCircle as CheckCircleIcon,
-    Error as ErrorIcon,
-} from '@mui/icons-material';
+import { Container, Box, Fade, Grow, CircularProgress, Alert, Grid } from '@mui/material';
 import { useSocket } from '../hooks/useSocket';
 import { CpuChart } from '../components/CpuChart';
 import { RamChart } from '../components/RamChart';
+import { PageHeader } from '../components/common/PageHeader';
+import { SPACING } from '../constants/design';
+import { StatCard } from '../components/dashboard/StatCard';
+import { AccessTime, Computer } from '@mui/icons-material';
 
 interface CpuDataPoint {
     time: string;
@@ -70,12 +56,12 @@ export function Dashboard() {
 
     if (!isConnected) {
         return (
-            <Container maxWidth="lg" sx={{ mt: 4 }}>
+            <Container maxWidth="lg" sx={{ mt: SPACING.xl / 8 }}>
                 <Fade in timeout={500}>
                     <Alert
                         severity="warning"
                         icon={<CircularProgress size={20} />}
-                        sx={{ borderRadius: 2 }}
+                        sx={{ borderRadius: SPACING.md / 8 }}
                     >
                         Connecting to server...
                     </Alert>
@@ -86,7 +72,7 @@ export function Dashboard() {
 
     if (!systemStats) {
         return (
-            <Container maxWidth="lg" sx={{ mt: 4 }}>
+            <Container maxWidth="lg" sx={{ mt: SPACING.xl / 8 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
                     <CircularProgress size={60} thickness={4} />
                 </Box>
@@ -95,39 +81,20 @@ export function Dashboard() {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Container maxWidth="xl" sx={{ py: SPACING.lg / 8 }}>
             {/* Header */}
             <Fade in timeout={300}>
-                <Box sx={{ mb: 4 }}>
-                    <Typography variant="h4" component="h1" gutterBottom fontWeight={700}>
-                        System Dashboard
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                        Real-time monitoring and system statistics
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        <Chip
-                            icon={isConnected ? <CheckCircleIcon /> : <ErrorIcon />}
-                            label={isConnected ? 'Connected' : 'Disconnected'}
-                            color={isConnected ? 'success' : 'error'}
-                            size="small"
-                            sx={{ fontWeight: 600 }}
-                        />
-                        {systemStats.error && (
-                            <Chip
-                                icon={<ErrorIcon />}
-                                label="Error"
-                                color="error"
-                                size="small"
-                                sx={{ fontWeight: 600 }}
-                            />
-                        )}
-                    </Box>
-                </Box>
+                <div>
+                    <PageHeader
+                        title="System Dashboard"
+                        subtitle="Real-time monitoring and system statistics"
+                        isConnected={isConnected}
+                    />
+                </div>
             </Fade>
 
             {/* Main Grid */}
-            <Grid container spacing={3}>
+            <Grid container spacing={SPACING.lg / 8}>
                 {/* CPU Chart */}
                 <Grid sx={{ xs: 12, md: 6 }}>
                     <Grow in timeout={400}>
@@ -153,58 +120,29 @@ export function Dashboard() {
                 {/* System Uptime */}
                 <Grid sx={{ xs: 12, md: 6 }}>
                     <Grow in timeout={600}>
-                        <Card elevation={2}>
-                            <CardContent>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                    <AccessTimeIcon sx={{ mr: 1, color: 'primary.main' }} />
-                                    <Typography variant="h6" fontWeight={600}>
-                                        System Uptime
-                                    </Typography>
-                                </Box>
-                                <Typography variant="h2" color="primary" fontWeight={700} gutterBottom>
-                                    {formatUptime(systemStats.uptime)}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" fontWeight={500}>
-                                    Running continuously without interruption
-                                </Typography>
-                            </CardContent>
-                        </Card>
+                        <div>
+                            <StatCard
+                                icon={<AccessTime />}
+                                title="System Uptime"
+                                value={formatUptime(systemStats.uptime)}
+                                subtitle="Running continuously without interruption"
+                            />
+                        </div>
                     </Grow>
                 </Grid>
 
                 {/* OS Information */}
                 <Grid sx={{ xs: 12, md: 6 }}>
                     <Grow in timeout={700}>
-                        <Card elevation={2}>
-                            <CardContent>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                    <ComputerIcon sx={{ mr: 1, color: 'primary.main' }} />
-                                    <Typography variant="h6" fontWeight={600}>
-                                        Operating System
-                                    </Typography>
-                                </Box>
-                                <Typography variant="h4" fontWeight={700} gutterBottom>
-                                    {systemStats.os_name}
-                                </Typography>
-                                <Typography variant="body1" color="text.secondary" fontWeight={500} gutterBottom>
-                                    Version {systemStats.os_version}
-                                </Typography>
-                                <Box
-                                    sx={{
-                                        mt: 2,
-                                        p: 1.5,
-                                        bgcolor: 'action.hover',
-                                        borderRadius: 1,
-                                        border: 1,
-                                        borderColor: 'divider',
-                                    }}
-                                >
-                                    <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                                        {systemStats.os_pretty_name}
-                                    </Typography>
-                                </Box>
-                            </CardContent>
-                        </Card>
+                        <div>
+                            <StatCard
+                                icon={<Computer />}
+                                title="Operating System"
+                                value={systemStats.os_name}
+                                subtitle={`Version ${systemStats.os_version}`}
+                                footer={systemStats.os_pretty_name}
+                            />
+                        </div>
                     </Grow>
                 </Grid>
             </Grid>
@@ -212,8 +150,8 @@ export function Dashboard() {
             {/* Error Display */}
             {systemStats.error && (
                 <Fade in timeout={500}>
-                    <Box sx={{ mt: 3 }}>
-                        <Alert severity="error" sx={{ borderRadius: 2 }}>
+                    <Box sx={{ mt: SPACING.lg / 8 }}>
+                        <Alert severity="error" sx={{ borderRadius: SPACING.md / 8 }}>
                             {systemStats.error}
                         </Alert>
                     </Box>

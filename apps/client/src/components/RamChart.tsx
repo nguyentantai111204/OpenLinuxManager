@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Memory as MemoryIcon } from '@mui/icons-material';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS } from '../constants/design';
 
 interface RamChartProps {
     ramTotal: number;
@@ -12,7 +13,7 @@ interface RamChartProps {
 export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
     const theme = useTheme();
 
-    const COLORS = [theme.palette.error.main, theme.palette.success.main];
+    const CHART_COLORS = [COLORS.chart.ram, COLORS.status.running];
 
     const data = useMemo(() => {
         return [
@@ -27,23 +28,53 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
     }, [ramTotal, ramUsed]);
 
     return (
-        <Card elevation={2}>
+        <Card
+            elevation={2}
+            sx={{
+                borderRadius: BORDER_RADIUS.lg / 8,
+                boxShadow: SHADOWS.md,
+            }}
+        >
             <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <MemoryIcon sx={{ mr: 1, color: 'primary.main' }} />
-                    <Typography variant="h6" fontWeight={600}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: SPACING.md / 8 }}>
+                    <MemoryIcon sx={{ mr: SPACING.sm / 8, color: 'primary.main' }} />
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                        }}
+                    >
                         RAM Usage
                     </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 1 }}>
-                    <Typography variant="h2" component="span" color="primary" fontWeight={700}>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', mb: SPACING.sm / 8 }}>
+                    <Typography
+                        variant="h2"
+                        component="span"
+                        color="primary"
+                        sx={{
+                            fontWeight: TYPOGRAPHY.fontWeight.bold,
+                        }}
+                    >
                         {usagePercent}
                     </Typography>
-                    <Typography variant="h4" component="span" color="text.secondary" sx={{ ml: 1 }}>
+                    <Typography
+                        variant="h4"
+                        component="span"
+                        color="text.secondary"
+                        sx={{ ml: SPACING.sm / 8 }}
+                    >
                         %
                     </Typography>
                 </Box>
-                <Typography variant="body2" color="text.secondary" gutterBottom fontWeight={500}>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    gutterBottom
+                    sx={{
+                        fontWeight: TYPOGRAPHY.fontWeight.medium,
+                    }}
+                >
                     {ramUsed.toFixed(0)} MB / {ramTotal.toFixed(0)} MB
                 </Typography>
                 <ResponsiveContainer width="100%" height={220}>
@@ -60,7 +91,7 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                             {data.map((entry, index) => (
                                 <Cell
                                     key={`cell-${index}`}
-                                    fill={COLORS[index % COLORS.length]}
+                                    fill={CHART_COLORS[index % CHART_COLORS.length]}
                                     stroke={theme.palette.background.paper}
                                     strokeWidth={2}
                                 />
@@ -70,8 +101,8 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                             contentStyle={{
                                 backgroundColor: theme.palette.background.paper,
                                 border: `1px solid ${theme.palette.divider}`,
-                                borderRadius: theme.shape.borderRadius,
-                                boxShadow: theme.shadows[4],
+                                borderRadius: BORDER_RADIUS.md,
+                                boxShadow: SHADOWS.md,
                             }}
                             formatter={(value: number | string | Array<number | string> | undefined) => {
                                 const numValue = typeof value === 'number' ? value : 0;
@@ -80,8 +111,8 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         />
                         <Legend
                             wrapperStyle={{
-                                fontSize: '14px',
-                                fontWeight: 600,
+                                fontSize: TYPOGRAPHY.fontSize.sm,
+                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
                             }}
                         />
                     </PieChart>
