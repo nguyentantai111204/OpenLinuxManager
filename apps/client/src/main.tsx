@@ -1,10 +1,8 @@
 import { StrictMode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import * as ReactDOM from 'react-dom/client';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import App from './app/app';
-import { theme } from './app/theme';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -12,8 +10,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <ThemeProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
