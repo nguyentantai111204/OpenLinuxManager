@@ -42,3 +42,7 @@ Thumbs.db
 .nx/workspace-data
 
 vite.config.*.timestamp*
+
+# Local environment files
+.env
+.env.example
