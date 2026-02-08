@@ -11,7 +11,7 @@ import {
     Area,
     AreaChart,
 } from 'recharts';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../constants/design';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../constants/design';
 
 interface CpuChartProps {
     data: Array<{ time: string; cpu: number }>;
@@ -51,13 +51,13 @@ export function CpuChart({ data }: CpuChartProps) {
                     </Typography>
                     <Box sx={{ display: 'flex', gap: SPACING.md / 8, alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.xs / 8 }}>
-                            <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#3b82f6' }} />
+                            <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: COLORS.chart.cpu }} />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: TYPOGRAPHY.fontSize.xs }}>
                                 CPU
                             </Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.xs / 8 }}>
-                            <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#f97316' }} />
+                            <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: COLORS.chart.ram }} />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: TYPOGRAPHY.fontSize.xs }}>
                                 RAM
                             </Typography>
@@ -70,12 +70,12 @@ export function CpuChart({ data }: CpuChartProps) {
                     <AreaChart data={data}>
                         <defs>
                             <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
-                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} />
+                                <stop offset="5%" stopColor={COLORS.chart.cpu} stopOpacity={0.2} />
+                                <stop offset="95%" stopColor={COLORS.chart.cpu} stopOpacity={0.05} />
                             </linearGradient>
                             <linearGradient id="ramGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#f97316" stopOpacity={0.2} />
-                                <stop offset="95%" stopColor="#f97316" stopOpacity={0.05} />
+                                <stop offset="5%" stopColor={COLORS.chart.ram} stopOpacity={0.2} />
+                                <stop offset="95%" stopColor={COLORS.chart.ram} stopOpacity={0.05} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid
@@ -111,7 +111,7 @@ export function CpuChart({ data }: CpuChartProps) {
                         <Area
                             type="monotone"
                             dataKey="cpu"
-                            stroke="#3b82f6"
+                            stroke={COLORS.chart.cpu}
                             strokeWidth={2}
                             fill="url(#cpuGradient)"
                             animationDuration={300}

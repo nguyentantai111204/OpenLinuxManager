@@ -4,7 +4,7 @@ import { useSocket } from '../hooks/useSocket';
 import { CpuChart } from '../components/CpuChart';
 import { RamChart } from '../components/RamChart';
 import { PageHeader } from '../components/common/PageHeader';
-import { SPACING } from '../constants/design';
+import { SPACING, COLORS } from '../constants/design';
 import { StatCard } from '../components/dashboard/StatCard';
 import { DeveloperBoard, Memory, Storage, Timer } from '@mui/icons-material';
 
@@ -104,8 +104,8 @@ export function Dashboard() {
                                 change="+2.4%"
                                 changeType="positive"
                                 subtitle="12 Cores Active"
-                                iconColor="#3b82f6"
-                                iconBgColor="#eff6ff"
+                                iconColor={COLORS.chart.cpu}
+                                iconBgColor={COLORS.background.elevated}
                             />
                         </Stack>
                     </Grow>
@@ -120,8 +120,8 @@ export function Dashboard() {
                                 change="-0.5%"
                                 changeType="negative"
                                 subtitle={`of ${ramTotalGB} GB Total`}
-                                iconColor="#f97316"
-                                iconBgColor="#fff7ed"
+                                iconColor={COLORS.chart.ram}
+                                iconBgColor={COLORS.background.elevated}
                             />
                         </Stack>
                     </Grow>
@@ -136,8 +136,8 @@ export function Dashboard() {
                                 change="+0.1%"
                                 changeType="positive"
                                 subtitle="120GB Free"
-                                iconColor="#8b5cf6"
-                                iconBgColor="#f5f3ff"
+                                iconColor={COLORS.chart.disk}
+                                iconBgColor={COLORS.background.elevated}
                             />
                         </Stack>
                     </Grow>
@@ -152,8 +152,8 @@ export function Dashboard() {
                                 change="0%"
                                 changeType="neutral"
                                 subtitle="Since last boot"
-                                iconColor="#10b981"
-                                iconBgColor="#f0fdf4"
+                                iconColor={COLORS.status.running}
+                                iconBgColor={COLORS.background.elevated}
                             />
                         </Stack>
                     </Grow>

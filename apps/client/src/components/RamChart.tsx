@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../constants/design';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../constants/design';
 
 interface RamChartProps {
     ramTotal: number;
@@ -12,7 +12,7 @@ interface RamChartProps {
 export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
     const theme = useTheme();
 
-    const CHART_COLORS = ['#9ca3af', '#f97316']; // Gray for free, Orange for used
+    const CHART_COLORS = [COLORS.text.secondary, COLORS.chart.ram]; // Gray for free, Orange for used
 
     const data = useMemo(() => {
         return [
@@ -153,7 +153,7 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                             sx={{
                                 fontWeight: TYPOGRAPHY.fontWeight.semibold,
                                 fontSize: TYPOGRAPHY.fontSize.sm,
-                                color: '#f97316',
+                                color: COLORS.chart.ram,
                             }}
                         >
                             {(ramUsed / 1024).toFixed(1)} GB
