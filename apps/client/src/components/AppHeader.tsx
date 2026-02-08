@@ -3,7 +3,6 @@ import {
     Toolbar,
     Typography,
     IconButton,
-    Box,
     Tooltip,
 } from '@mui/material';
 import {

@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { Memory as MemoryIcon } from '@mui/icons-material';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS } from '../constants/design';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../constants/design';
 
 interface RamChartProps {
     ramTotal: number;
@@ -13,12 +12,12 @@ interface RamChartProps {
 export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
     const theme = useTheme();
 
-    const CHART_COLORS = [COLORS.chart.ram, COLORS.status.running];
+    const CHART_COLORS = ['#9ca3af', '#f97316']; // Gray for free, Orange for used
 
     const data = useMemo(() => {
         return [
-            { name: 'Used', value: ramUsed },
             { name: 'Free', value: ramFree },
+            { name: 'Used', value: ramUsed },
         ];
     }, [ramUsed, ramFree]);
 
@@ -29,94 +28,138 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
 
     return (
         <Card
-            elevation={2}
+            elevation={0}
             sx={{
                 borderRadius: BORDER_RADIUS.lg / 8,
-                boxShadow: SHADOWS.md,
+                background: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                height: '100%',
             }}
         >
-            <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: SPACING.md / 8 }}>
-                    <MemoryIcon sx={{ mr: SPACING.sm / 8, color: 'primary.main' }} />
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            fontWeight: TYPOGRAPHY.fontWeight.semibold,
-                        }}
-                    >
-                        RAM Usage
-                    </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'baseline', mb: SPACING.sm / 8 }}>
-                    <Typography
-                        variant="h2"
-                        component="span"
-                        color="primary"
-                        sx={{
-                            fontWeight: TYPOGRAPHY.fontWeight.bold,
-                        }}
-                    >
-                        {usagePercent}
-                    </Typography>
-                    <Typography
-                        variant="h4"
-                        component="span"
-                        color="text.secondary"
-                        sx={{ ml: SPACING.sm / 8 }}
-                    >
-                        %
-                    </Typography>
-                </Box>
+            <CardContent sx={{ p: SPACING.lg / 8 }}>
+                {/* Header */}
                 <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    gutterBottom
+                    variant="h6"
                     sx={{
-                        fontWeight: TYPOGRAPHY.fontWeight.medium,
+                        fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                        fontSize: TYPOGRAPHY.fontSize.lg,
+                        color: 'text.primary',
+                        mb: SPACING.lg / 8,
                     }}
                 >
-                    {ramUsed.toFixed(0)} MB / {ramTotal.toFixed(0)} MB
+                    Phân bổ RAM
                 </Typography>
-                <ResponsiveContainer width="100%" height={220}>
-                    <PieChart>
-                        <Pie
-                            data={data}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={90}
-                            paddingAngle={5}
-                            dataKey="value"
+
+                {/* Chart with center text */}
+                <Box sx={{ position: 'relative', height: 280 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={data}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={70}
+                                outerRadius={100}
+                                paddingAngle={0}
+                                dataKey="value"
+                                startAngle={90}
+                                endAngle={-270}
+                            >
+                                {data.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={CHART_COLORS[index % CHART_COLORS.length]}
+                                        stroke="none"
+                                    />
+                                ))}
+                            </Pie>
+                        </PieChart>
+                    </ResponsiveContainer>
+
+                    {/* Center text */}
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            textAlign: 'center',
+                        }}
+                    >
+                        <Typography
+                            variant="h2"
+                            sx={{
+                                fontWeight: TYPOGRAPHY.fontWeight.bold,
+                                fontSize: TYPOGRAPHY.fontSize['4xl'],
+                                color: 'text.primary',
+                                lineHeight: 1,
+                            }}
                         >
-                            {data.map((entry, index) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={CHART_COLORS[index % CHART_COLORS.length]}
-                                    stroke={theme.palette.background.paper}
-                                    strokeWidth={2}
-                                />
-                            ))}
-                        </Pie>
-                        <Tooltip
-                            contentStyle={{
-                                backgroundColor: theme.palette.background.paper,
-                                border: `1px solid ${theme.palette.divider}`,
-                                borderRadius: BORDER_RADIUS.md,
-                                boxShadow: SHADOWS.md,
-                            }}
-                            formatter={(value: number | string | Array<number | string> | undefined) => {
-                                const numValue = typeof value === 'number' ? value : 0;
-                                return `${numValue.toFixed(0)} MB`;
-                            }}
-                        />
-                        <Legend
-                            wrapperStyle={{
+                            {(ramUsed / 1024).toFixed(1)}
+                        </Typography>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: 'text.secondary',
                                 fontSize: TYPOGRAPHY.fontSize.sm,
-                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                                fontWeight: TYPOGRAPHY.fontWeight.medium,
                             }}
-                        />
-                    </PieChart>
-                </ResponsiveContainer>
+                        >
+                            GB Used
+                        </Typography>
+                    </Box>
+                </Box>
+
+                {/* Legend */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: SPACING.xl / 8, mt: SPACING.md / 8 }}>
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: 'text.secondary',
+                                fontSize: TYPOGRAPHY.fontSize.xs,
+                                display: 'block',
+                                mb: SPACING.xs / 8,
+                            }}
+                        >
+                            Free
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                                fontSize: TYPOGRAPHY.fontSize.sm,
+                                color: 'text.primary',
+                            }}
+                        >
+                            {(ramFree / 1024).toFixed(1)} GB
+                        </Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: 'text.secondary',
+                                fontSize: TYPOGRAPHY.fontSize.xs,
+                                display: 'block',
+                                mb: SPACING.xs / 8,
+                            }}
+                        >
+                            Used
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                                fontSize: TYPOGRAPHY.fontSize.sm,
+                                color: '#f97316',
+                            }}
+                        >
+                            {(ramUsed / 1024).toFixed(1)} GB
+                        </Typography>
+                    </Box>
+                </Box>
             </CardContent>
         </Card>
     );

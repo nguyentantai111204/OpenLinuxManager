@@ -8,9 +8,10 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
+    Area,
+    AreaChart,
 } from 'recharts';
-import { TrendingUp as TrendingUpIcon } from '@mui/icons-material';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS } from '../constants/design';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../constants/design';
 
 interface CpuChartProps {
     data: Array<{ time: string; cpu: number }>;
@@ -25,88 +26,97 @@ export function CpuChart({ data }: CpuChartProps) {
 
     return (
         <Card
-            elevation={2}
+            elevation={0}
             sx={{
                 borderRadius: BORDER_RADIUS.lg / 8,
-                boxShadow: SHADOWS.md,
+                background: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                height: '100%',
             }}
         >
-            <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: SPACING.md / 8 }}>
-                    <TrendingUpIcon sx={{ mr: SPACING.sm / 8, color: 'primary.main' }} />
+            <CardContent sx={{ p: SPACING.lg / 8 }}>
+                {/* Header */}
+                <Box sx={{ mb: SPACING.lg / 8 }}>
                     <Typography
                         variant="h6"
                         sx={{
                             fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                            fontSize: TYPOGRAPHY.fontSize.lg,
+                            color: 'text.primary',
+                            mb: SPACING.xs / 8,
                         }}
                     >
-                        CPU Usage
+                        Hiệu năng thời gian thực
                     </Typography>
+                    <Box sx={{ display: 'flex', gap: SPACING.md / 8, alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.xs / 8 }}>
+                            <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#3b82f6' }} />
+                            <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: TYPOGRAPHY.fontSize.xs }}>
+                                CPU
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.xs / 8 }}>
+                            <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#f97316' }} />
+                            <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: TYPOGRAPHY.fontSize.xs }}>
+                                RAM
+                            </Typography>
+                        </Box>
+                    </Box>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'baseline', mb: SPACING.lg / 8 }}>
-                    <Typography
-                        variant="h2"
-                        component="span"
-                        color="primary"
-                        sx={{
-                            fontWeight: TYPOGRAPHY.fontWeight.bold,
-                        }}
-                    >
-                        {currentCpu.toFixed(1)}
-                    </Typography>
-                    <Typography
-                        variant="h4"
-                        component="span"
-                        color="text.secondary"
-                        sx={{ ml: SPACING.sm / 8 }}
-                    >
-                        %
-                    </Typography>
-                </Box>
-                <ResponsiveContainer width="100%" height={220}>
-                    <LineChart data={data}>
+
+                {/* Chart */}
+                <ResponsiveContainer width="100%" height={280}>
+                    <AreaChart data={data}>
                         <defs>
                             <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor={COLORS.chart.cpu} stopOpacity={0.3} />
-                                <stop offset="95%" stopColor={COLORS.chart.cpu} stopOpacity={0} />
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
+                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} />
+                            </linearGradient>
+                            <linearGradient id="ramGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#f97316" stopOpacity={0.2} />
+                                <stop offset="95%" stopColor="#f97316" stopOpacity={0.05} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid
                             strokeDasharray="3 3"
                             stroke={theme.palette.divider}
-                            opacity={0.5}
+                            opacity={0.2}
+                            vertical={false}
                         />
                         <XAxis
                             dataKey="time"
                             stroke={theme.palette.text.secondary}
-                            tick={{ fill: theme.palette.text.secondary, fontSize: TYPOGRAPHY.fontSize.xs }}
+                            tick={{ fill: theme.palette.text.secondary, fontSize: 11 }}
                             tickLine={false}
+                            axisLine={false}
+                            hide
                         />
                         <YAxis
                             domain={[0, 100]}
                             stroke={theme.palette.text.secondary}
-                            tick={{ fill: theme.palette.text.secondary, fontSize: TYPOGRAPHY.fontSize.xs }}
+                            tick={{ fill: theme.palette.text.secondary, fontSize: 11 }}
                             tickLine={false}
+                            axisLine={false}
+                            hide
                         />
                         <Tooltip
                             contentStyle={{
                                 backgroundColor: theme.palette.background.paper,
                                 border: `1px solid ${theme.palette.divider}`,
-                                borderRadius: BORDER_RADIUS.md,
-                                boxShadow: SHADOWS.md,
+                                borderRadius: 8,
+                                fontSize: 12,
                             }}
-                            labelStyle={{ color: theme.palette.text.primary }}
                         />
-                        <Line
+                        <Area
                             type="monotone"
                             dataKey="cpu"
-                            stroke={COLORS.chart.cpu}
-                            strokeWidth={3}
-                            dot={false}
+                            stroke="#3b82f6"
+                            strokeWidth={2}
                             fill="url(#cpuGradient)"
                             animationDuration={300}
                         />
-                    </LineChart>
+                    </AreaChart>
                 </ResponsiveContainer>
             </CardContent>
         </Card>

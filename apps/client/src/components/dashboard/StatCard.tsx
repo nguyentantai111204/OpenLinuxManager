@@ -1,81 +1,118 @@
 import { ReactNode } from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS } from '../../constants/design';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../../constants/design';
 
 interface StatCardProps {
     icon: ReactNode;
     title: string;
     value: string | number;
     subtitle?: string;
-    footer?: string;
+    change?: string;
+    changeType?: 'positive' | 'negative' | 'neutral';
+    iconColor?: string;
+    iconBgColor?: string;
 }
 
-export function StatCard({ icon, title, value, subtitle, footer }: StatCardProps) {
+export function StatCard({
+    icon,
+    title,
+    value,
+    subtitle,
+    change,
+    changeType = 'neutral',
+    iconColor = '#3b82f6',
+    iconBgColor = '#eff6ff'
+}: StatCardProps) {
+    const changeColors = {
+        positive: '#10b981',
+        negative: '#ef4444',
+        neutral: '#6b7280'
+    };
+
     return (
         <Card
-            elevation={2}
+            elevation={0}
             sx={{
                 borderRadius: BORDER_RADIUS.lg / 8,
-                boxShadow: SHADOWS.md,
+                background: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                height: '100%',
+                p: SPACING.lg / 8,
             }}
         >
-            <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: SPACING.md / 8 }}>
-                    <Box sx={{ mr: SPACING.sm / 8, color: 'primary.main' }}>
-                        {icon}
-                    </Box>
+            <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+                {/* Title and Icon Row */}
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: SPACING.md / 8 }}>
                     <Typography
-                        variant="h6"
+                        variant="caption"
                         sx={{
-                            fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                            color: 'text.secondary',
+                            fontWeight: TYPOGRAPHY.fontWeight.medium,
+                            fontSize: TYPOGRAPHY.fontSize.xs,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
                         }}
                     >
                         {title}
                     </Typography>
+                    <Box
+                        sx={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: BORDER_RADIUS.md / 8,
+                            backgroundColor: iconBgColor,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: iconColor,
+                        }}
+                    >
+                        {icon}
+                    </Box>
                 </Box>
+
+                {/* Value */}
                 <Typography
-                    variant="h2"
-                    color="primary"
+                    variant="h3"
                     sx={{
                         fontWeight: TYPOGRAPHY.fontWeight.bold,
-                        mb: subtitle ? SPACING.sm / 8 : 0,
+                        fontSize: TYPOGRAPHY.fontSize['3xl'],
+                        color: 'text.primary',
+                        mb: SPACING.xs / 8,
+                        lineHeight: 1.2,
                     }}
                 >
                     {value}
                 </Typography>
-                {subtitle && (
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                            fontWeight: TYPOGRAPHY.fontWeight.medium,
-                        }}
-                    >
-                        {subtitle}
-                    </Typography>
-                )}
-                {footer && (
-                    <Box
-                        sx={{
-                            mt: SPACING.md / 8,
-                            p: SPACING.md / 8,
-                            bgcolor: 'action.hover',
-                            borderRadius: SPACING.sm / 8,
-                            border: 1,
-                            borderColor: 'divider',
-                        }}
-                    >
+
+                {/* Change and Subtitle Row */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.sm / 8 }}>
+                    {change && (
                         <Typography
                             variant="caption"
-                            color="text.secondary"
                             sx={{
-                                fontWeight: TYPOGRAPHY.fontWeight.medium,
+                                color: changeColors[changeType],
+                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                                fontSize: TYPOGRAPHY.fontSize.xs,
                             }}
                         >
-                            {footer}
+                            {change}
                         </Typography>
-                    </Box>
-                )}
+                    )}
+                    {subtitle && (
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: 'text.secondary',
+                                fontWeight: TYPOGRAPHY.fontWeight.regular,
+                                fontSize: TYPOGRAPHY.fontSize.xs,
+                            }}
+                        >
+                            {subtitle}
+                        </Typography>
+                    )}
+                </Box>
             </CardContent>
         </Card>
     );
