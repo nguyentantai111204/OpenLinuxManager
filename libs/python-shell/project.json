@@ -1,0 +1,9 @@
+{
+  "name": "python-shell",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/python-shell/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project python-shell --web",
+  "targets": {}
+}

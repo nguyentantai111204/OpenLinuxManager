@@ -10,11 +10,33 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@open-linux-manager/config": [
+        "libs/config/src/index.ts"
+      ],
+      "@open-linux-manager/api": [
+        "libs/api/src/index.ts"
+      ],
+      "@open-linux-manager/utils": [
+        "libs/utils/src/index.ts"
+      ],
+      "@open-linux-manager/auth": [
+        "libs/auth/src/index.ts"
+      ],
+      "@open-linux-manager/python-shell": [
+        "libs/python-shell/src/index.ts"
+      ]
+    }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
