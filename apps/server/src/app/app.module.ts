@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SystemMonitorService } from './system-monitor/system-monitor.service';
 import { SystemGateway } from './system-monitor/system.gateway';
+import { UserManagementService } from './user-management/user-management.service';
+import { SystemMonitorController } from './system-monitor/system-monitor.controller';
+import { UserManagementController } from './user-management/user-management.controller';
 
 @Module({
   imports: [
@@ -29,7 +32,7 @@ import { SystemGateway } from './system-monitor/system.gateway';
     //   }),
     // }),
   ],
-  controllers: [AppController],
-  providers: [AppService, SystemMonitorService, SystemGateway],
+  controllers: [AppController, SystemMonitorController, UserManagementController],
+  providers: [AppService, SystemMonitorService, SystemGateway, UserManagementService],
 })
 export class AppModule { }

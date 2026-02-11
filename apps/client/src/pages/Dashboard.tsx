@@ -158,7 +158,6 @@ export function Dashboard() {
                     </Box>
                 </StackRow>
 
-                {/* Charts Row */}
                 <StackRow spacing={SPACING.lg / 8} sx={{ flex: 1 }}>
                     <Box sx={{ flex: 2 }}>
                         <Grow in timeout={700}>

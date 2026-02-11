@@ -1,6 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as si from 'systeminformation';
+import * as fs from 'fs';
+import * as child_process from 'child_process';
+import * as util from 'util';
 import { SystemStats, SystemProcess, StorageData } from './system-stats.interface';
+import { LinuxParser } from '../utils/linux-parser';
+
+const exec = util.promisify(child_process.exec);
 
 @Injectable()
 export class SystemMonitorService {
@@ -13,22 +18,48 @@ export class SystemMonitorService {
      */
     async getSystemStats(): Promise<SystemStats> {
         try {
-            const [cpu, mem, osInfo, time] = await Promise.all([
-                si.currentLoad(),
-                si.mem(),
-                si.osInfo(),
-                si.time(),
-            ]);
+            const memInfo = fs.readFileSync('/proc/meminfo', 'utf-8');
+            const ramStats = LinuxParser.parseMemInfo(memInfo);
+
+            const cpuStat1 = fs.readFileSync('/proc/stat', 'utf-8');
+            const startCpu = LinuxParser.parseCpuStats(cpuStat1);
+
+            await new Promise(r => setTimeout(r, 500));
+
+            const cpuStat2 = fs.readFileSync('/proc/stat', 'utf-8');
+            const endCpu = LinuxParser.parseCpuStats(cpuStat2);
+
+            const idleDiff = endCpu.idle - startCpu.idle;
+            const totalDiff = endCpu.total - startCpu.total;
+            const cpuPercent = totalDiff === 0 ? 0 : 100 * (1 - idleDiff / totalDiff);
+
+            const uptime = parseFloat(fs.readFileSync('/proc/uptime', 'utf-8').split(' ')[0]);
+
+            // Simple OS identification
+            let osName = 'Linux';
+            let osVersion = 'Unknown';
+            let osDistro = 'Unknown';
+            try {
+                const osRelease = fs.readFileSync('/etc/os-release', 'utf-8');
+                const lines = osRelease.split('\n');
+                lines.forEach(line => {
+                    if (line.startsWith('NAME=')) osDistro = line.split('=')[1].replace(/"/g, '');
+                    if (line.startsWith('VERSION=')) osVersion = line.split('=')[1].replace(/"/g, '');
+                    if (line.startsWith('ID=')) osName = line.split('=')[1].replace(/"/g, '');
+                });
+            } catch (e) {
+                // Ignore if /etc/os-release doesn't exist
+            }
 
             return {
-                cpu: cpu.currentLoad,
-                ram_total: mem.total,
-                ram_used: mem.active,
-                ram_free: mem.available,
-                uptime: time.uptime,
-                os_name: osInfo.platform,
-                os_version: osInfo.release,
-                os_pretty_name: osInfo.distro,
+                cpu: parseFloat(cpuPercent.toFixed(2)),
+                ram_total: ramStats.total,
+                ram_used: ramStats.used,
+                ram_free: ramStats.free,
+                uptime: uptime,
+                os_name: osName,
+                os_version: osVersion,
+                os_pretty_name: osDistro,
                 timestamp: Date.now(),
             };
         } catch (error) {
@@ -53,19 +84,8 @@ export class SystemMonitorService {
      */
     async getSystemProcesses(): Promise<SystemProcess[]> {
         try {
-            const data = await si.processes();
-            // Sort by CPU usage descending by default
-            return data.list
-                .sort((a, b) => b.cpu - a.cpu)
-                .slice(0, 50) // Limit to top 50 to avoid sending too much data
-                .map((proc) => ({
-                    pid: proc.pid,
-                    name: proc.name,
-                    user: proc.user,
-                    status: proc.state,
-                    cpu: proc.cpu,
-                    memory: proc.memRss / 1024 / 1024, // Convert bytes to MB
-                }));
+            const { stdout } = await exec('ps aux --sort=-%cpu | head -n 51');
+            return LinuxParser.parsePsOutput(stdout);
         } catch (error) {
             this.logger.error('Error getting processes', error);
             return [];
@@ -77,40 +97,11 @@ export class SystemMonitorService {
      */
     async getStorageData(): Promise<StorageData> {
         try {
-            const fsSize = await si.fsSize();
-
-            // Calculate totals (approximate, summing all mounted filesystems might double count if binds exist, 
-            // but for simple display usually sufficient or filter by type)
-            // Filter out loop devices, tmpfs, etc. if needed.
-            // For now, let's filter to physical-ish drives: logical, ext4, ntfs, apfs, xfs, btrfs
-            // Common types: 'ext4', 'xfs', 'btrfs', 'apfs', 'hfs', 'ntfs', 'fat32', 'exfat'
-            // And avoid mounts like /var/lib/docker...
-
-            // Just take all returned by si.fsSize() as it usually filters reasonable ones or provides type.
-
-            let totalBytes = 0;
-            let usedBytes = 0;
-
-            const partitions = fsSize.map((fs) => {
-                totalBytes += fs.size;
-                usedBytes += fs.used;
-                return {
-                    name: fs.fs,
-                    mountPoint: fs.mount,
-                    type: fs.type,
-                    size: (fs.size / 1024 / 1024 / 1024).toFixed(1) + ' GB',
-                    used: (fs.used / 1024 / 1024 / 1024).toFixed(1) + ' GB',
-                    avail: (fs.available / 1024 / 1024 / 1024).toFixed(1) + ' GB',
-                    usePercent: Math.round(fs.use),
-                };
-            });
-
-            return {
-                total: parseFloat((totalBytes / 1024 / 1024 / 1024).toFixed(1)),
-                used: parseFloat((usedBytes / 1024 / 1024 / 1024).toFixed(1)),
-                free: parseFloat(((totalBytes - usedBytes) / 1024 / 1024 / 1024).toFixed(1)),
-                partitions,
-            };
+            // -B1 for bytes
+            // output custom columns
+            // exclude tmpfs and devtmpfs
+            const { stdout } = await exec('df -B1 --output=source,size,used,avail,pcent,target -x tmpfs -x devtmpfs');
+            return LinuxParser.parseDfOutput(stdout);
         } catch (error) {
             this.logger.error('Error getting storage data', error);
             return {
@@ -119,6 +110,23 @@ export class SystemMonitorService {
                 free: 0,
                 partitions: [],
             };
+        }
+    }
+
+    /**
+     * Kill a process by PID
+     */
+    async killProcess(pid: number): Promise<{ success: boolean; message: string }> {
+        if (!pid || isNaN(pid)) {
+            return { success: false, message: 'Invalid PID' };
+        }
+
+        try {
+            await exec(`kill -9 ${pid}`);
+            return { success: true, message: `Process ${pid} killed successfully` };
+        } catch (error) {
+            this.logger.error(`Error killing process ${pid}`, error);
+            return { success: false, message: `Failed to kill process ${pid}: ${(error as Error).message}` };
         }
     }
 }
