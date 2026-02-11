@@ -20,7 +20,9 @@ export class SystemGateway
     server: Server;
 
     private readonly logger = new Logger(SystemGateway.name);
-    private monitoringInterval: NodeJS.Timeout | null = null;
+    private statsInterval: NodeJS.Timeout | null = null;
+    private processesInterval: NodeJS.Timeout | null = null;
+    private storageInterval: NodeJS.Timeout | null = null;
     private connectedClients = 0;
 
     constructor(private readonly systemMonitorService: SystemMonitorService) { }
@@ -36,6 +38,11 @@ export class SystemGateway
         // Start monitoring when first client connects
         if (this.connectedClients === 1) {
             this.startMonitoring();
+        } else {
+            // For subsequent clients, emit immediate data so they don't wait for interval
+            this.emitSystemStats();
+            this.emitProcesses();
+            this.emitStorage();
         }
     }
 
@@ -50,45 +57,79 @@ export class SystemGateway
     }
 
     /**
-     * Start emitting system stats every 2 seconds
+     * Start all monitoring intervals
      */
     private startMonitoring() {
         this.logger.log('Starting system monitoring...');
 
-        // Emit immediately
+        // 1. System Stats (CPU, RAM) - Fast (2s)
         this.emitSystemStats();
+        this.statsInterval = setInterval(() => this.emitSystemStats(), 2000);
 
-        // Then emit every 2 seconds
-        this.monitoringInterval = setInterval(() => {
-            this.emitSystemStats();
-        }, 2000);
+        // 2. Processes - Medium (5s)
+        this.emitProcesses();
+        this.processesInterval = setInterval(() => this.emitProcesses(), 5000);
+
+        // 3. Storage - Slow (60s)
+        this.emitStorage();
+        this.storageInterval = setInterval(() => this.emitStorage(), 60000);
     }
 
     /**
-     * Stop monitoring interval
+     * Stop all monitoring intervals
      */
     private stopMonitoring() {
-        if (this.monitoringInterval) {
-            this.logger.log('Stopping system monitoring...');
-            clearInterval(this.monitoringInterval);
-            this.monitoringInterval = null;
+        this.logger.log('Stopping system monitoring...');
+
+        if (this.statsInterval) {
+            clearInterval(this.statsInterval);
+            this.statsInterval = null;
+        }
+
+        if (this.processesInterval) {
+            clearInterval(this.processesInterval);
+            this.processesInterval = null;
+        }
+
+        if (this.storageInterval) {
+            clearInterval(this.storageInterval);
+            this.storageInterval = null;
         }
     }
 
     /**
-     * Fetch and emit system stats to all connected clients
+     * Fetch and emit system stats
      */
     private async emitSystemStats() {
         try {
             const stats = await this.systemMonitorService.getSystemStats();
             this.server.emit('systemStats', stats);
-
-            // Log only errors or every 30 seconds to avoid spam
-            if (stats.error) {
-                this.logger.warn('System stats error:', stats.error);
-            }
         } catch (error) {
             this.logger.error('Failed to emit system stats', error);
+        }
+    }
+
+    /**
+     * Fetch and emit processes
+     */
+    private async emitProcesses() {
+        try {
+            const processes = await this.systemMonitorService.getSystemProcesses();
+            this.server.emit('systemProcesses', processes);
+        } catch (error) {
+            this.logger.error('Failed to emit processes', error);
+        }
+    }
+
+    /**
+     * Fetch and emit storage data
+     */
+    private async emitStorage() {
+        try {
+            const storage = await this.systemMonitorService.getStorageData();
+            this.server.emit('systemStorage', storage);
+        } catch (error) {
+            this.logger.error('Failed to emit storage data', error);
         }
     }
 

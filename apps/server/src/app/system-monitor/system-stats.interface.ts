@@ -10,3 +10,27 @@ export interface SystemStats {
     timestamp: number;
     error?: string;
 }
+
+export interface SystemProcess {
+    pid: number;
+    name: string;
+    user: string;
+    status: string;
+    cpu: number;
+    memory: number; // in MB
+}
+
+export interface StorageData {
+    total: number; // in GB
+    used: number; // in GB
+    free: number; // in GB
+    partitions: {
+        name: string;
+        mountPoint: string;
+        type: string;
+        size: string;
+        used: string;
+        avail: string;
+        usePercent: number;
+    }[];
+}

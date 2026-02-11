@@ -74,8 +74,8 @@ export function Dashboard() {
     }
 
     const currentCpu = cpuHistory.length > 0 ? cpuHistory[cpuHistory.length - 1].cpu : systemStats.cpu;
-    const ramUsageGB = (systemStats.ram_used / 1024).toFixed(1);
-    const ramTotalGB = (systemStats.ram_total / 1024).toFixed(1);
+    const ramUsageGB = (systemStats.ram_used / 1024 / 1024 / 1024).toFixed(1);
+    const ramTotalGB = (systemStats.ram_total / 1024 / 1024 / 1024).toFixed(1);
 
     return (
         <Box sx={{ p: SPACING.lg / 8, height: '100%', overflow: 'hidden' }}>

@@ -95,7 +95,7 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                                 lineHeight: 1,
                             }}
                         >
-                            {(ramUsed / 1024).toFixed(1)}
+                            {(ramUsed / 1024 / 1024 / 1024).toFixed(1)}
                         </Typography>
                         <Typography
                             variant="caption"
@@ -129,7 +129,7 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                                 color: 'text.primary',
                             }}
                         >
-                            {(ramFree / 1024).toFixed(1)} GB
+                            {(ramFree / 1024 / 1024 / 1024).toFixed(1)} GB
                         </Typography>
                     </StackCol>
                     <StackCol sx={{ textAlign: 'center' }} spacing={SPACING.xs / 8}>
@@ -150,7 +150,7 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                                 color: COLORS.chart.ram,
                             }}
                         >
-                            {(ramUsed / 1024).toFixed(1)} GB
+                            {(ramUsed / 1024 / 1024 / 1024).toFixed(1)} GB
                         </Typography>
                     </StackCol>
                 </StackRow>

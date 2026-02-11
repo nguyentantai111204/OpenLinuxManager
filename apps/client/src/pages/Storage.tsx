@@ -1,26 +1,32 @@
-import { Box, Card, CardContent, Typography, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Box, Card, CardContent, Typography, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
 import { PageHeader } from '../components/common/PageHeader';
 import { SPACING, COLORS, BORDER_RADIUS } from '../constants/design';
-import { StackCol, StackRow } from '../components/stack';
-
-// Mock Data for Storage
-const mockStorage = {
-    total: 512, // GB
-    used: 320,  // GB
-    free: 192,  // GB
-    partitions: [
-        { name: '/dev/sda1', mountPoint: '/', type: 'ext4', size: '100 GB', used: '60 GB', avail: '40 GB', usePercent: 60 },
-        { name: '/dev/sda2', mountPoint: '/home', type: 'ext4', size: '412 GB', used: '260 GB', avail: '152 GB', usePercent: 63 },
-    ]
-};
+import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../components/stack';
+import { useSocket, StorageData } from '../hooks/useSocket';
 
 export function Storage() {
+    const { isConnected, storage } = useSocket();
+
+    if (!storage) {
+        return (
+            <Box sx={{ p: SPACING.lg / 8 }}>
+                <StackColAlignCenterJusCenter sx={{ minHeight: '50vh' }}>
+                    <CircularProgress />
+                    <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
+                        Loading storage info...
+                    </Typography>
+                </StackColAlignCenterJusCenter>
+            </Box>
+        );
+    }
+
     return (
         <Box sx={{ p: SPACING.lg / 8 }}>
             <StackCol spacing={SPACING.lg / 8}>
                 <PageHeader
                     title="Disk Storage"
                     subtitle="Monitor disk usage and manage storage"
+                    isConnected={isConnected}
                 />
 
                 {/* Overall Usage Card */}
@@ -29,13 +35,13 @@ export function Storage() {
                         <StackCol spacing={SPACING.md / 8}>
                             <Typography variant="h6" fontWeight="bold">Total Local Storage</Typography>
                             <StackRow spacing={SPACING.md / 8} sx={{ alignItems: 'baseline' }}>
-                                <Typography variant="h3" color="primary.main">{mockStorage.used} GB</Typography>
-                                <Typography variant="subtitle1" color="text.secondary">used of {mockStorage.total} GB</Typography>
+                                <Typography variant="h3" color="primary.main">{storage.used} GB</Typography>
+                                <Typography variant="subtitle1" color="text.secondary">used of {storage.total} GB</Typography>
                             </StackRow>
                             <Box sx={{ width: '100%', mr: 1 }}>
                                 <LinearProgress
                                     variant="determinate"
-                                    value={(mockStorage.used / mockStorage.total) * 100}
+                                    value={(storage.used / storage.total) * 100}
                                     sx={{
                                         height: 10,
                                         borderRadius: 5,
@@ -47,7 +53,7 @@ export function Storage() {
                                 />
                             </Box>
                             <Typography variant="caption" color="text.secondary">
-                                {mockStorage.free} GB free
+                                {storage.free} GB free
                             </Typography>
                         </StackCol>
                     </CardContent>
@@ -71,9 +77,9 @@ export function Storage() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {mockStorage.partitions.map((row) => (
+                                    {storage.partitions.map((row, index) => (
                                         <TableRow
-                                            key={row.name}
+                                            key={`${row.name}-${index}`}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell component="th" scope="row">
@@ -96,6 +102,13 @@ export function Storage() {
                                             </TableCell>
                                         </TableRow>
                                     ))}
+                                    {storage.partitions.length === 0 && (
+                                        <TableRow>
+                                            <TableCell colSpan={7} align="center">
+                                                No partitions found
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
                         </TableContainer>
