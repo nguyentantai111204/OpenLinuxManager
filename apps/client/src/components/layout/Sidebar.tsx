@@ -72,7 +72,6 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
             }}
             spacing={0}
         >
-            {/* Logo Section */}
             <StackRow
                 sx={{
                     p: SPACING.lg / 8,
@@ -105,7 +104,6 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                 </Typography>
             </StackRow>
 
-            {/* Navigation Menu */}
             <List sx={{ flex: 1, py: SPACING.md / 8 }}>
                 {menuItems.map((item) => {
                     const isActive = location.pathname === item.path;
@@ -153,7 +151,6 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                 })}
             </List>
 
-            {/* User Profile Section */}
             <StackRow
                 sx={{
                     p: SPACING.md / 8,

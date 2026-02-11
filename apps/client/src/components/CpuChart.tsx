@@ -20,11 +20,6 @@ interface CpuChartProps {
 
 export function CpuChart({ data }: CpuChartProps) {
     const theme = useTheme();
-    const currentCpu = useMemo(() => {
-        if (data.length === 0) return 0;
-        return data[data.length - 1].cpu;
-    }, [data]);
-
     return (
         <Card
             elevation={0}

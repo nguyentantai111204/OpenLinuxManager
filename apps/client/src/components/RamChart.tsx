@@ -13,7 +13,7 @@ interface RamChartProps {
 export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
     const theme = useTheme();
 
-    const CHART_COLORS = [COLORS.text.secondary, COLORS.chart.ram]; // Gray for free, Orange for used
+    const CHART_COLORS = [COLORS.text.secondary, COLORS.chart.ram];
 
     const data = useMemo(() => {
         return [
@@ -39,7 +39,6 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
             }}
         >
             <CardContent sx={{ p: SPACING.lg / 8 }}>
-                {/* Header */}
                 <Typography
                     variant="h6"
                     sx={{
@@ -52,7 +51,6 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                     Phân bổ RAM
                 </Typography>
 
-                {/* Chart with center text */}
                 <Box sx={{ position: 'relative', height: 400 }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
@@ -78,7 +76,6 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         </PieChart>
                     </ResponsiveContainer>
 
-                    {/* Center text */}
                     <StackCol
                         sx={{
                             position: 'absolute',
@@ -113,7 +110,6 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                     </StackCol>
                 </Box>
 
-                {/* Legend */}
                 <StackRow sx={{ justifyContent: 'center', gap: SPACING.xl / 8, mt: SPACING.md / 8 }}>
                     <StackCol sx={{ textAlign: 'center' }} spacing={SPACING.xs / 8}>
                         <Typography

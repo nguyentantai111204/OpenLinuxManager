@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Container, Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { Block as BlockIcon, Pause as PauseIcon } from '@mui/icons-material';
 import { PageHeader } from '../components/common/PageHeader';
 import { SearchBar } from '../components/common/SearchBar';

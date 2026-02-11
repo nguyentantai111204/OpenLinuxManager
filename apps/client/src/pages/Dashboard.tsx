@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Box, Fade, Grow, CircularProgress, Alert, Stack } from '@mui/material';
+import { Box, Fade, Grow, CircularProgress, Alert } from '@mui/material';
+import { DeveloperBoard, Memory, Storage, Timer } from '@mui/icons-material';
 import { useSocket } from '../hooks/useSocket';
 import { CpuChart } from '../components/CpuChart';
 import { RamChart } from '../components/RamChart';
 import { PageHeader } from '../components/common/PageHeader';
 import { SPACING, COLORS } from '../constants/design';
 import { StatCard } from '../components/dashboard/StatCard';
-import { DeveloperBoard, Memory, Storage, Timer } from '@mui/icons-material';
-import { StackColAlignCenterJusCenter } from '../components/stack';
+import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../components/stack';
 
 interface CpuDataPoint {
     time: string;
@@ -18,7 +18,6 @@ export function Dashboard() {
     const { systemStats, isConnected } = useSocket();
     const [cpuHistory, setCpuHistory] = useState<CpuDataPoint[]>([]);
 
-    // Update CPU history when new stats arrive
     useEffect(() => {
         if (systemStats) {
             const now = new Date();
@@ -35,13 +34,11 @@ export function Dashboard() {
                         cpu: systemStats.cpu,
                     },
                 ];
-                // Keep only last 30 data points
                 return newHistory.slice(-30);
             });
         }
     }, [systemStats]);
 
-    // Format uptime to human-readable
     const formatUptime = (seconds: number): string => {
         const days = Math.floor(seconds / 86400);
         const hours = Math.floor((seconds % 86400) / 3600);
@@ -77,13 +74,12 @@ export function Dashboard() {
     }
 
     const currentCpu = cpuHistory.length > 0 ? cpuHistory[cpuHistory.length - 1].cpu : systemStats.cpu;
-    const ramUsagePercent = ((systemStats.ram_used / systemStats.ram_total) * 100).toFixed(1);
     const ramUsageGB = (systemStats.ram_used / 1024).toFixed(1);
     const ramTotalGB = (systemStats.ram_total / 1024).toFixed(1);
 
     return (
         <Box sx={{ p: SPACING.lg / 8, height: '100%', overflow: 'hidden' }}>
-            <Stack spacing={SPACING.xl / 8} sx={{ height: '100%' }}>
+            <StackCol spacing={SPACING.xl / 8} sx={{ height: '100%' }}>
                 <Fade in timeout={300}>
                     <Box>
                         <PageHeader
@@ -95,7 +91,7 @@ export function Dashboard() {
                 </Fade>
 
                 {/* Stats Overview Row */}
-                <Stack direction="row" spacing={SPACING.md / 8}>
+                <StackRow spacing={SPACING.md / 8}>
                     <Box sx={{ flex: 1 }}>
                         <Grow in timeout={300}>
                             <Box>
@@ -160,10 +156,10 @@ export function Dashboard() {
                             </Box>
                         </Grow>
                     </Box>
-                </Stack>
+                </StackRow>
 
                 {/* Charts Row */}
-                <Stack direction="row" spacing={SPACING.lg / 8} sx={{ flex: 1 }}>
+                <StackRow spacing={SPACING.lg / 8} sx={{ flex: 1 }}>
                     <Box sx={{ flex: 2 }}>
                         <Grow in timeout={700}>
                             <Box sx={{ height: '100%' }}>
@@ -183,7 +179,7 @@ export function Dashboard() {
                             </Box>
                         </Grow>
                     </Box>
-                </Stack>
+                </StackRow>
 
                 {systemStats.error && (
                     <Fade in timeout={500}>
@@ -194,7 +190,7 @@ export function Dashboard() {
                         </Box>
                     </Fade>
                 )}
-            </Stack>
+            </StackCol>
         </Box>
     );
 }
