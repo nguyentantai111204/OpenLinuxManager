@@ -47,7 +47,7 @@ export function Processes() {
     };
 
     return (
-        <Container maxWidth="xl" sx={{ py: SPACING.lg / 8 }}>
+        <Box sx={{ p: SPACING.lg / 8 }}>
             <PageHeader
                 title="Task Manager"
                 isConnected={isConnected}
@@ -91,6 +91,6 @@ export function Processes() {
                     Sorted by: CPU Usage (Desc)
                 </Typography>
             </StackRowJusBetween>
-        </Container>
+        </Box>
     );
 }

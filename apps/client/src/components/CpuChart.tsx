@@ -65,7 +65,7 @@ export function CpuChart({ data }: CpuChartProps) {
                     </StackRow>
                 </Box>
 
-                <ResponsiveContainer width="100%" height={280}>
+                <ResponsiveContainer width="100%" height={400}>
                     <AreaChart data={data}>
                         <defs>
                             <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">

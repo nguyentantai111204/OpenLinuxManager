@@ -53,15 +53,15 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                 </Typography>
 
                 {/* Chart with center text */}
-                <Box sx={{ position: 'relative', height: 280 }}>
+                <Box sx={{ position: 'relative', height: 400 }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
                                 data={data}
                                 cx="50%"
                                 cy="50%"
-                                innerRadius={70}
-                                outerRadius={100}
+                                innerRadius={85}
+                                outerRadius={120}
                                 paddingAngle={0}
                                 dataKey="value"
                                 startAngle={90}

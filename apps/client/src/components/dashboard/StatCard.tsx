@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Card, CardContent, Typography, Box, Stack } from '@mui/material';
+import { Card, CardContent, Typography, Box, Stack, SxProps, Theme } from '@mui/material';
 import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../constants/design';
 import { StackRowJusBetween, StackRow } from '../stack';
 
@@ -12,6 +12,7 @@ interface StatCardProps {
     changeType?: 'positive' | 'negative' | 'neutral';
     iconColor?: string;
     iconBgColor?: string;
+    sx?: SxProps<Theme>;
 }
 
 export function StatCard({
@@ -22,7 +23,8 @@ export function StatCard({
     change,
     changeType = 'neutral',
     iconColor = '#3b82f6',
-    iconBgColor = '#eff6ff'
+    iconBgColor = '#eff6ff',
+    sx
 }: StatCardProps) {
     const changeColors = {
         positive: COLORS.status.running,
@@ -39,10 +41,16 @@ export function StatCard({
                 border: '1px solid',
                 borderColor: 'divider',
                 height: '100%',
-                p: SPACING.lg / 8,
+                p: SPACING.md / 8,
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                    transform: 'translateY(-2px)',
+                },
+                ...sx
             }}
         >
-            <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+            <CardContent sx={{ p: 0 }}>
                 <StackRowJusBetween sx={{ mb: SPACING.md / 8 }}>
                     <Typography
                         variant="caption"
