@@ -10,9 +10,6 @@ export class UserManagementController {
 
     @Get()
     async getUsers(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<SystemUser> | SystemUser[]> {
-        // For now, since we read from file, we get all users. 
-        // We can implement in-memory pagination here or in service.
-        // Let's implement simple in-memory pagination.
         const allUsers = await this.userManagementService.getUsers();
 
         if (!paginationDto.page || !paginationDto.limit) {
