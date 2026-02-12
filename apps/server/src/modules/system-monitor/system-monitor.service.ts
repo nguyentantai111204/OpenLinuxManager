@@ -4,6 +4,7 @@ import { SystemStats, SystemProcess, StorageData } from './system-stats.interfac
 import { LinuxParser } from './utils/linux-parser';
 import { CommandRunnerService } from '../../system/services/command-runner.service';
 import { PythonRunnerService } from '../../system/services/python-runner.service';
+import { AuditLogService } from '../audit-log/audit-log.service';
 
 @Injectable()
 export class SystemMonitorService {
@@ -11,7 +12,8 @@ export class SystemMonitorService {
 
     constructor(
         private readonly commandRunner: CommandRunnerService,
-        private readonly pythonRunner: PythonRunnerService
+        private readonly pythonRunner: PythonRunnerService,
+        private readonly auditLogService: AuditLogService
     ) { }
 
 
@@ -76,6 +78,7 @@ export class SystemMonitorService {
 
         try {
             await this.commandRunner.run('kill', ['-9', pid.toString()]);
+            await this.auditLogService.createLog('KILL_PROCESS', pid.toString(), 'Process killed');
             return { message: `Process ${pid} killed successfully` };
         } catch (error) {
             this.logger.error(`Error killing process ${pid}`, error);

@@ -1,4 +1,4 @@
-import { ButtonComponent as MuiButton, ButtonProps as MuiButtonProps, styled } from '@mui/material';
+import { Button as MuiButton, ButtonProps as MuiButtonProps, styled } from '@mui/material';
 import { COLORS, BORDER_RADIUS, TYPOGRAPHY, TRANSITIONS } from '../../constants/design';
 
 export type ButtonProps = MuiButtonProps & {
@@ -43,6 +43,6 @@ const StyledButton = styled(MuiButton, {
     }),
 }));
 
-export function ButtonComponentComponent(props: ButtonProps) {
+export function ButtonComponent(props: ButtonProps) {
     return <StyledButton {...props} />;
 }

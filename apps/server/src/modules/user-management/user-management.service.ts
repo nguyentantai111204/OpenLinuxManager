@@ -1,6 +1,7 @@
 import { Injectable, Logger, HttpException, HttpStatus, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import * as fs from 'fs';
 import { CommandRunnerService } from '../../system/services/command-runner.service';
+import { AuditLogService } from '../audit-log/audit-log.service';
 
 export interface SystemUser {
     username: string;
@@ -15,7 +16,10 @@ export class UserManagementService {
     private readonly logger = new Logger(UserManagementService.name);
     private readonly debugLogFile = '/home/nguyentantai/OpenLinuxManager/debug-users.log';
 
-    constructor(private readonly commandRunner: CommandRunnerService) { }
+    constructor(
+        private readonly commandRunner: CommandRunnerService,
+        private readonly auditLogService: AuditLogService,
+    ) { }
 
     private logToFile(message: string) {
         try {
@@ -70,12 +74,12 @@ export class UserManagementService {
         try {
             this.logToFile(`Attempting to create user: ${username}`);
 
-           
+
             await this.commandRunner.run('sudo', ['-n', 'useradd', '-m', '-s', '/bin/bash', username]);
 
             if (password) {
                 try {
-                    
+
                     const input = `${username}:${password}`;
                     await this.commandRunner.runWithInput('sudo', ['-n', 'chpasswd'], input);
                 } catch (pwdError) {
@@ -91,6 +95,7 @@ export class UserManagementService {
             }
 
             this.logToFile(`User ${username} created successfully`);
+            await this.auditLogService.createLog('CREATE_USER', username, 'User created successfully');
             return { message: `User ${username} created successfully` };
         } catch (error) {
             const errorMessage = (error as Error).message;
@@ -115,6 +120,7 @@ export class UserManagementService {
 
         try {
             await this.commandRunner.run('sudo', ['-n', 'userdel', '-r', username]);
+            await this.auditLogService.createLog('DELETE_USER', username, 'User deleted successfully');
             return { message: `User ${username} deleted successfully` };
         } catch (error) {
             const errorMessage = (error as Error).message;

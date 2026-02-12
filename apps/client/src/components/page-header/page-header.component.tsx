@@ -11,7 +11,7 @@ interface PageHeaderProps {
     actions?: ReactNode;
 }
 
-export function PageHeaderComponentComponent({ title, subtitle, isConnected, actions }: PageHeaderProps) {
+export function PageHeaderComponent({ title, subtitle, isConnected, actions }: PageHeaderProps) {
     return (
         <Box sx={{ mb: SPACING.lg / 8 }}>
             <StackRowAlignStartJusBetweenComponent sx={{ mb: SPACING.sm / 8 }}>

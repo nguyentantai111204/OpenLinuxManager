@@ -1,5 +1,5 @@
 import { InputAdornment, styled, alpha } from '@mui/material';
-import { SearchComponent as SearchIcon } from '@mui/icons-material';
+import { Search as SearchIcon } from '@mui/icons-material';
 import { TextFieldComponent } from '../text-field/text-field.component';
 import { SPACING, COLORS, BORDER_RADIUS, TRANSITIONS } from '../../constants/design';
 import { TextFieldProps } from '@mui/material';
@@ -13,7 +13,7 @@ const StyledSearch = styled(TextFieldComponent)(({ theme }) => ({
     },
 }));
 
-export function SearchComponentComponent(props: TextFieldProps) {
+export function SearchComponent(props: TextFieldProps) {
     return (
         <StyledSearch
             fullWidth

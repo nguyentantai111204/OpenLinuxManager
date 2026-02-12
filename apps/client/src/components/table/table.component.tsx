@@ -1,19 +1,18 @@
 import {
-    TableComponent as MuiTable,
-    TableBodyComponent as MuiTableBody,
-    TableCellComponent as MuiTableCell,
-    TableContainerComponent as MuiTableContainer,
-    TableHeadComponent as MuiTableHead,
-    TableRowComponent as MuiTableRow,
+    Table as MuiTable,
+    TableBody as MuiTableBody,
+    TableCell as MuiTableCell,
+    TableContainer as MuiTableContainer,
+    TableHead as MuiTableHead,
+    TableRow as MuiTableRow,
     styled,
-    TableProps,
     TableCellProps,
     TableRowProps,
     alpha
 } from '@mui/material';
 import { BORDER_RADIUS, COLORS, TYPOGRAPHY, SHADOWS, SPACING, TRANSITIONS } from '../../constants/design';
 
-export const TableComponentContainerComponent = styled(MuiTableContainer)(({ theme }) => ({
+export const TableContainerComponent = styled(MuiTableContainer)(({ theme }) => ({
     borderRadius: BORDER_RADIUS.lg / 8,
     boxShadow: SHADOWS.sm,
     border: theme.palette.mode === 'dark' ? `1px solid ${COLORS.border.main}` : 'none',
@@ -21,16 +20,16 @@ export const TableComponentContainerComponent = styled(MuiTableContainer)(({ the
     overflow: 'hidden',
 }));
 
-export const TableComponentComponent = styled(MuiTable)(({ theme }) => ({
+export const TableComponent = styled(MuiTable)(({ theme }) => ({
     borderCollapse: 'separate',
     borderSpacing: 0,
 }));
 
-export const TableComponentHeadComponent = styled(MuiTableHead)(({ theme }) => ({
+export const TableHeadComponent = styled(MuiTableHead)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? alpha(theme.palette.background.default, 0.5) : theme.palette.grey[50],
 }));
 
-export const TableComponentCellComponent = styled(MuiTableCell)<TableCellProps>(({ theme, align }) => ({
+export const TableCellComponent = styled(MuiTableCell)<TableCellProps>(({ theme, align }) => ({
     padding: `${SPACING.md}px ${SPACING.lg}px`,
     borderBottom: `1px solid ${theme.palette.divider}`,
     fontSize: TYPOGRAPHY.fontSize.sm,
@@ -45,7 +44,7 @@ export const TableComponentCellComponent = styled(MuiTableCell)<TableCellProps>(
     },
 }));
 
-export const TableComponentRowComponent = styled(MuiTableRow)<TableRowProps>(({ theme }) => ({
+export const TableRowComponent = styled(MuiTableRow)<TableRowProps>(({ theme }) => ({
     transition: `background-color ${TRANSITIONS.duration.fast} ${TRANSITIONS.easing.easeInOut}`,
     '&:last-child td, &:last-child th': {
         border: 0,
@@ -55,4 +54,4 @@ export const TableComponentRowComponent = styled(MuiTableRow)<TableRowProps>(({ 
     },
 }));
 
-export const TableComponentBodyComponent = MuiTableBody;
+export const TableBodyComponent = MuiTableBody;

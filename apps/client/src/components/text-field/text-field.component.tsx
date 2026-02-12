@@ -1,4 +1,4 @@
-import { TextFieldComponent as MuiTextField, TextFieldProps as MuiTextFieldProps, styled } from '@mui/material';
+import { TextField as MuiTextField, TextFieldProps as MuiTextFieldProps, styled } from '@mui/material';
 import { BORDER_RADIUS, COLORS, TYPOGRAPHY } from '../../constants/design';
 import { alpha } from '@mui/material/styles';
 
@@ -38,6 +38,6 @@ const StyledTextField = styled(MuiTextField)<MuiTextFieldProps>(({ theme }) => (
 }));
 
 
-export function TextFieldComponentComponent(props: TextFieldProps) {
+export function TextFieldComponent(props: TextFieldProps) {
     return <StyledTextField variant="outlined" {...props} />;
 }

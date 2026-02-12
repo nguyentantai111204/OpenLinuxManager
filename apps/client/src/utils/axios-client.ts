@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-// Create a configured axios instance
 export const axiosClient = axios.create({
-    baseURL: '', // Uses relative path (proxy)
+    baseURL: '',
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 import React from 'react';
-import { TableBodyComponent, TableSortLabel, Box } from '@mui/material';
-import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent } from '../../components';
+import { TableBody, TableSortLabel, Box } from '@mui/material';
+import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent } from '../../components';
 import { SPACING } from '../../constants/design';
 import { ProcessStatus } from '../../components/status-badge/status-badge.component';
 import { ProcessRow } from './process-row.part';

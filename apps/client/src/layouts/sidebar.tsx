@@ -7,6 +7,7 @@ import {
     Storage as StorageIcon,
     Settings as SettingsIcon,
     Person as PersonIcon,
+    History as HistoryIcon,
 } from '@mui/icons-material';
 import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
 import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../components/stack';
@@ -42,6 +43,12 @@ const menuItems: MenuItem[] = [
         label: 'Ổ Đĩa',
         icon: <StorageIcon />,
         path: '/storage',
+    },
+    {
+        id: 'audit-logs',
+        label: 'Nhật Ký',
+        icon: <HistoryIcon />,
+        path: '/audit-logs',
     },
     {
         id: 'settings',

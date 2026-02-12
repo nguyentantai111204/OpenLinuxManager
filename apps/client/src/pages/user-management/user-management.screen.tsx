@@ -6,12 +6,11 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    TableBodyComponent,
     IconButton,
     Snackbar,
     Alert,
 } from '@mui/material';
-import { ButtonComponent, TextFieldComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent } from '../../components';
+import { ButtonComponent, TextFieldComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent } from '../../components';
 import { Add as AddIcon, Delete as DeleteIcon, Person as PersonIcon } from '@mui/icons-material';
 import { axiosClient as axios } from '../../utils/axios-client';
 import { SPACING, TYPOGRAPHY, COLORS, ICON_SIZES } from '../../constants/design';

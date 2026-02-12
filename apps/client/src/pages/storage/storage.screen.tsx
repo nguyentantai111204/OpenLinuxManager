@@ -1,6 +1,6 @@
-import { Box, Typography, LinearProgress, TableBodyComponent, CircularProgress, alpha } from '@mui/material';
+import { Box, Typography, LinearProgress, CircularProgress, alpha } from '@mui/material';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
-import { CardComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent } from '../../components';
+import { CardComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent } from '../../components';
 import { SPACING, COLORS, BORDER_RADIUS, TYPOGRAPHY } from '../../constants/design';
 import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
 import { useSocket } from '../../hooks/use-socket';

@@ -1,11 +1,11 @@
-import { Chip } from '..';
+import { ChipComponent } from '..';
 import { COLORS, SPACING } from '../../constants/design';
 
 interface UserBadgeProps {
     username: string;
 }
 
-export function UserBadgeComponentComponent({ username }: UserBadgeProps) {
+export function UserBadgeComponent({ username }: UserBadgeProps) {
     const isRoot = username.toLowerCase() === 'root';
     const isSystemUser = username.toLowerCase() === 'user';
 
@@ -21,7 +21,7 @@ export function UserBadgeComponentComponent({ username }: UserBadgeProps) {
     }
 
     return (
-        <Chip
+        <ChipComponent
             label={username}
             size="small"
             sx={{

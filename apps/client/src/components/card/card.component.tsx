@@ -1,4 +1,4 @@
-import { CardComponent as MuiCard, CardProps, styled } from '@mui/material';
+import { Card as MuiCard, CardProps, styled } from '@mui/material';
 import { BORDER_RADIUS, SHADOWS, COLORS, TRANSITIONS } from '../../constants/design';
 
 interface CustomCardProps extends CardProps {
@@ -23,6 +23,6 @@ const StyledCard = styled(MuiCard, {
     }),
 }));
 
-export function CardComponentComponent({ children, sx, ...props }: CardProps) {
+export function CardComponent({ children, sx, ...props }: CardProps) {
     return <StyledCard elevation={0} {...props} />;
 }
