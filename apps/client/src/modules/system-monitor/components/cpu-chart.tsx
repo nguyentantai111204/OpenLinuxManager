@@ -11,8 +11,8 @@ import {
     Area,
     AreaChart,
 } from 'recharts';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../constants/design';
-import { StackRow } from './stack';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../shared/constants/design';
+import { StackRow } from '../../shared/components/stack';
 
 interface CpuChartProps {
     data: Array<{ time: string; cpu: number }>;

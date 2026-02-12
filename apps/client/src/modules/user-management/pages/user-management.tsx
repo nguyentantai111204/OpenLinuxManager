@@ -20,9 +20,9 @@ import {
     Alert,
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Person as PersonIcon } from '@mui/icons-material';
-import axios from 'axios';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS } from '../constants/design';
-import { StackRow, StackCol } from '../components/stack';
+import { axiosClient as axios } from '../../shared/utils/axios-client';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS } from '../../shared/constants/design';
+import { StackRow, StackCol } from '../../shared/components/stack';
 
 interface User {
     username: string;

@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Typography, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
-import { PageHeader } from '../components/common/page-header';
-import { SPACING, COLORS, BORDER_RADIUS } from '../constants/design';
-import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../components/stack';
+import { PageHeader } from '../../shared/components/common/page-header';
+import { SPACING, COLORS, BORDER_RADIUS } from '../../shared/constants/design';
+import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../../shared/components/stack';
 import { useSocket, StorageData } from '../hooks/use-socket';
 
 export function Storage() {

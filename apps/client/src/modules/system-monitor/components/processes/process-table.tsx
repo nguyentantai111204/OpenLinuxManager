@@ -1,7 +1,7 @@
 import React from 'react';
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, TableSortLabel, Box } from '@mui/material';
-import { BORDER_RADIUS, SPACING, TYPOGRAPHY, SHADOWS } from '../../constants/design';
-import { ProcessStatus } from '../common/status-badge';
+import { BORDER_RADIUS, SPACING, TYPOGRAPHY, SHADOWS } from '../../../shared/constants/design';
+import { ProcessStatus } from '../../../shared/components/common/status-badge';
 import { ProcessRow } from './process-row';
 
 export interface Process {

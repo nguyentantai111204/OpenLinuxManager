@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Typography, Switch, TextField, MenuItem, Divider } from '@mui/material';
-import { PageHeader } from '../components/common/page-header';
-import { SPACING, COLORS, BORDER_RADIUS } from '../constants/design';
-import { StackCol, StackRow, StackRowJusBetween } from '../components/stack';
+import { PageHeader } from '../modules/shared/components/common/page-header';
+import { SPACING, COLORS, BORDER_RADIUS } from '../modules/shared/constants/design';
+import { StackCol, StackRow, StackRowJusBetween } from '../modules/shared/components/stack';
 
 export function Settings() {
     return (

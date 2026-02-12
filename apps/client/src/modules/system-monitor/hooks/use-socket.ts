@@ -66,6 +66,7 @@ export function useSocket() {
 
         // Listen for system stats
         socketInstance.on('systemStats', (data: SystemStats) => {
+            console.log('Received systemStats:', data);
             setSystemStats(data);
         });
 
