@@ -85,5 +85,35 @@ export class SystemMonitorService {
             throw new InternalServerErrorException(`Failed to kill process ${pid}`);
         }
     }
+
+    async suspendProcess(pid: number): Promise<{ message: string }> {
+        if (!pid || isNaN(pid)) {
+            throw new BadRequestException('Invalid PID');
+        }
+
+        try {
+            await this.commandRunner.run('kill', ['-STOP', pid.toString()]);
+            await this.auditLogService.createLog('SUSPEND_PROCESS', pid.toString(), 'Process suspended');
+            return { message: `Process ${pid} suspended successfully` };
+        } catch (error) {
+            this.logger.error(`Error suspending process ${pid}`, error);
+            throw new InternalServerErrorException(`Failed to suspend process ${pid}`);
+        }
+    }
+
+    async resumeProcess(pid: number): Promise<{ message: string }> {
+        if (!pid || isNaN(pid)) {
+            throw new BadRequestException('Invalid PID');
+        }
+
+        try {
+            await this.commandRunner.run('kill', ['-CONT', pid.toString()]);
+            await this.auditLogService.createLog('RESUME_PROCESS', pid.toString(), 'Process resumed');
+            return { message: `Process ${pid} resumed successfully` };
+        } catch (error) {
+            this.logger.error(`Error resuming process ${pid}`, error);
+            throw new InternalServerErrorException(`Failed to resume process ${pid}`);
+        }
+    }
 }
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Box, Typography, CircularProgress, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
 import { Block as BlockIcon, Pause as PauseIcon } from '@mui/icons-material';
@@ -13,6 +13,7 @@ import { ProcessStatus } from '../../components/status-badge/status-badge.compon
 export function Processes() {
     const { isConnected, processes } = useSocket();
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedPids, setSelectedPids] = useState<number[]>([]);
 
     const mapStatus = (status: string): ProcessStatus => {
         const s = status.toLowerCase();
@@ -54,13 +55,38 @@ export function Processes() {
         severity: 'success',
     });
 
-    const handleKill = async (pid: number) => {
+    const handleKill = async (pid?: number) => {
+        const pidsToKill = pid ? [pid] : selectedPids;
+        if (pidsToKill.length === 0) return;
+
         try {
-            await axios.delete(`/api/system/processes/${pid}`);
-            setSnackbar({ open: true, message: `Killed process ${pid}`, severity: 'success' });
+            await Promise.all(pidsToKill.map(p => axios.delete(`/api/system/processes/${p}`)));
+            setSnackbar({
+                open: true,
+                message: `Successfully killed ${pidsToKill.length} process(es)`,
+                severity: 'success'
+            });
+            setSelectedPids([]);
         } catch (error) {
-            console.error('Failed to kill process', error);
-            setSnackbar({ open: true, message: `Failed to kill process ${pid}`, severity: 'error' });
+            console.error('Failed to kill processes', error);
+            setSnackbar({ open: true, message: 'Failed to kill one or more processes', severity: 'error' });
+        }
+    };
+
+    const handleSuspend = async () => {
+        if (selectedPids.length === 0) return;
+
+        try {
+            await Promise.all(selectedPids.map(pid => axios.patch(`/api/system/processes/${pid}/suspend`)));
+            setSnackbar({
+                open: true,
+                message: `Successfully suspended ${selectedPids.length} process(es)`,
+                severity: 'success'
+            });
+            setSelectedPids([]);
+        } catch (error) {
+            console.error('Failed to suspend processes', error);
+            setSnackbar({ open: true, message: 'Failed to suspend one or more processes', severity: 'error' });
         }
     };
 
@@ -97,15 +123,19 @@ export function Processes() {
                             startIcon={<BlockIcon />}
                             size="small"
                             color="error"
+                            disabled={selectedPids.length === 0}
+                            onClick={() => handleKill()}
                         >
-                            Kill
+                            Kill {selectedPids.length > 0 ? `(${selectedPids.length})` : ''}
                         </ButtonComponent>
                         <ButtonComponent
                             variant="outlined"
                             startIcon={<PauseIcon />}
                             size="small"
+                            disabled={selectedPids.length === 0}
+                            onClick={handleSuspend}
                         >
-                            Suspend
+                            Suspend {selectedPids.length > 0 ? `(${selectedPids.length})` : ''}
                         </ButtonComponent>
                     </StackRowComponent>
                 }
@@ -123,6 +153,8 @@ export function Processes() {
             <ProcessTable
                 processes={filteredProcesses}
                 onKill={handleKill}
+                selectedPids={selectedPids}
+                onSelectionChange={setSelectedPids}
             />
 
             <StackRowJusBetweenComponent sx={{ mt: SPACING.md / 8 }}>

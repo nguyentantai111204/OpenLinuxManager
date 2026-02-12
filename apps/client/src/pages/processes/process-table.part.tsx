@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableBody, TableSortLabel, Box } from '@mui/material';
+import { TableSortLabel, Checkbox } from '@mui/material';
 import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent } from '../../components';
 import { StackColAlignCenterJusCenterComponent } from '../../components/stack';
 import { SPACING } from '../../constants/design';
@@ -21,9 +21,11 @@ type SortOrder = 'asc' | 'desc';
 interface ProcessTableProps {
     processes: Process[];
     onKill?: (pid: number) => void;
+    selectedPids: number[];
+    onSelectionChange: (pids: number[]) => void;
 }
 
-export function ProcessTable({ processes, onKill }: ProcessTableProps) {
+export function ProcessTable({ processes, onKill, selectedPids, onSelectionChange }: ProcessTableProps) {
     const [orderBy, setOrderBy] = React.useState<SortField>('cpu');
     const [order, setOrder] = React.useState<SortOrder>('desc');
 
@@ -31,6 +33,27 @@ export function ProcessTable({ processes, onKill }: ProcessTableProps) {
         const isAsc = orderBy === field && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(field);
+    };
+
+    const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.checked) {
+            onSelectionChange(processes.map(p => p.pid));
+        } else {
+            onSelectionChange([]);
+        }
+    };
+
+    const handleToggleOne = (pid: number) => {
+        const currentIndex = selectedPids.indexOf(pid);
+        const newSelected = [...selectedPids];
+
+        if (currentIndex === -1) {
+            newSelected.push(pid);
+        } else {
+            newSelected.splice(currentIndex, 1);
+        }
+
+        onSelectionChange(newSelected);
     };
 
     const sortedProcesses = React.useMemo(() => {
@@ -60,7 +83,7 @@ export function ProcessTable({ processes, onKill }: ProcessTableProps) {
         { id: 'status', label: 'STATUS', align: 'left' },
         { id: 'cpu', label: 'CPU %', align: 'right' },
         { id: 'mem', label: 'MEM %', align: 'right' },
-        { id: 'pid', label: 'ACTIONS', align: 'right' }, // Using pid as dummy for actions sort cell
+        { id: 'pid', label: 'ACTIONS', align: 'right' },
     ];
 
     return (
@@ -68,6 +91,14 @@ export function ProcessTable({ processes, onKill }: ProcessTableProps) {
             <TableComponent sx={{ minWidth: 650 }}>
                 <TableHeadComponent>
                     <TableRowComponent>
+                        <TableCellComponent padding="checkbox">
+                            <Checkbox
+                                indeterminate={selectedPids.length > 0 && selectedPids.length < processes.length}
+                                checked={processes.length > 0 && selectedPids.length === processes.length}
+                                onChange={handleSelectAll}
+                                size="small"
+                            />
+                        </TableCellComponent>
                         {headCells.map((headCell, index) => (
                             <TableCellComponent
                                 key={`${headCell.id}-${index}`}
@@ -94,11 +125,13 @@ export function ProcessTable({ processes, onKill }: ProcessTableProps) {
                             key={process.pid}
                             process={process}
                             onKill={onKill}
+                            selected={selectedPids.includes(process.pid)}
+                            onToggleSelection={handleToggleOne}
                         />
                     ))}
                     {sortedProcesses.length === 0 && (
                         <TableRowComponent>
-                            <TableCellComponent colSpan={7} align="center" sx={{ py: SPACING.xl / 8 }}>
+                            <TableCellComponent colSpan={8} align="center" sx={{ py: SPACING.xl / 8 }}>
                                 <StackColAlignCenterJusCenterComponent sx={{ color: 'text.secondary' }}>
                                     No processes found
                                 </StackColAlignCenterJusCenterComponent>

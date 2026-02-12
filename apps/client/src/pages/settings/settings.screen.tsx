@@ -5,15 +5,43 @@ import {
     Switch,
     FormControlLabel,
     Divider,
-    MenuItem
+    MenuItem,
+    Snackbar,
+    Alert
 } from '@mui/material';
 import { CardComponent, ButtonComponent, TextFieldComponent } from '../../components';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { SPACING, TYPOGRAPHY } from '../../constants/design';
 import { StackColComponent } from '../../components/stack';
 
+import { useState, useEffect } from 'react';
+
 export function Settings() {
     const { mode, toggleTheme } = useThemeMode();
+    const [settings, setSettings] = useState({
+        refreshInterval: '5000',
+        logHistorySize: '1000'
+    });
+    const [snackbar, setSnackbar] = useState({ open: false, message: '' });
+
+    useEffect(() => {
+        const saved = localStorage.getItem('system_settings');
+        if (saved) {
+            setSettings(JSON.parse(saved));
+        }
+    }, []);
+
+    const handleSave = () => {
+        localStorage.setItem('system_settings', JSON.stringify(settings));
+        setSnackbar({ open: true, message: 'Settings saved successfully' });
+    };
+
+    const handleReset = () => {
+        const defaults = { refreshInterval: '5000', logHistorySize: '1000' };
+        setSettings(defaults);
+        localStorage.setItem('system_settings', JSON.stringify(defaults));
+        setSnackbar({ open: true, message: 'Settings reset to defaults' });
+    };
 
     return (
         <Box sx={{ p: SPACING.lg / 8 }}>
@@ -50,7 +78,8 @@ export function Settings() {
                                         fullWidth
                                         select
                                         label="Refresh Interval"
-                                        defaultValue="5000"
+                                        value={settings.refreshInterval}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSettings({ ...settings, refreshInterval: e.target.value })}
                                         helperText="How often to update system stats"
                                     >
                                         <MenuItem value="1000">1 Second</MenuItem>
@@ -63,7 +92,8 @@ export function Settings() {
                                         fullWidth
                                         label="Log History Size"
                                         type="number"
-                                        defaultValue="1000"
+                                        value={settings.logHistorySize}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSettings({ ...settings, logHistorySize: e.target.value })}
                                         helperText="Maximum number of log lines to keep"
                                     />
                                 </StackColComponent>
@@ -72,12 +102,22 @@ export function Settings() {
                             <Divider />
 
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                                <ButtonComponent variant="outlined" color="inherit">Reset Defaults</ButtonComponent>
-                                <ButtonComponent variant="contained">Save Changes</ButtonComponent>
+                                <ButtonComponent variant="outlined" color="inherit" onClick={handleReset}>Reset Defaults</ButtonComponent>
+                                <ButtonComponent variant="contained" onClick={handleSave}>Save Changes</ButtonComponent>
                             </Box>
                         </StackColComponent>
                     </Box>
                 </CardComponent>
+
+                <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={4000}
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                >
+                    <Alert severity="success" sx={{ width: '100%' }}>
+                        {snackbar.message}
+                    </Alert>
+                </Snackbar>
 
                 {/* About Box */}
                 <CardComponent sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>

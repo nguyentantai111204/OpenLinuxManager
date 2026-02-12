@@ -1,4 +1,4 @@
-import { Typography, IconButton } from '@mui/material';
+import { Typography, IconButton, Checkbox } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { ProcessStatus, StatusBadgeComponent } from '../../components/status-badge/status-badge.component';
 import { UserBadgeComponent } from '../../components/user-badge/user-badge.component';
@@ -9,11 +9,20 @@ import { SPACING, TYPOGRAPHY, TRANSITIONS, COLORS } from '../../constants/design
 interface ProcessRowProps {
     process: Process;
     onKill?: (pid: number) => void;
+    selected?: boolean;
+    onToggleSelection?: (pid: number) => void;
 }
 
-export function ProcessRow({ process, onKill }: ProcessRowProps) {
+export function ProcessRow({ process, onKill, selected, onToggleSelection }: ProcessRowProps) {
     return (
-        <TableRowComponent>
+        <TableRowComponent selected={selected}>
+            <TableCellComponent padding="checkbox">
+                <Checkbox
+                    checked={selected || false}
+                    onChange={() => onToggleSelection?.(process.pid)}
+                    size="small"
+                />
+            </TableCellComponent>
             <TableCellComponent>
                 <Typography
                     variant="body2"

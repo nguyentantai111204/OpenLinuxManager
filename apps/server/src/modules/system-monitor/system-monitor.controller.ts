@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { Audit } from '@open-linux-manager/api';
 import { SystemMonitorService } from './system-monitor.service';
 
@@ -25,5 +25,17 @@ export class SystemMonitorController {
     @Audit('KILL_PROCESS', 'System Monitor')
     killProcess(@Param('pid') pid: string) {
         return this.systemMonitorService.killProcess(parseInt(pid, 10));
+    }
+
+    @Patch('processes/:pid/suspend')
+    @Audit('SUSPEND_PROCESS', 'System Monitor')
+    suspendProcess(@Param('pid') pid: string) {
+        return this.systemMonitorService.suspendProcess(parseInt(pid, 10));
+    }
+
+    @Patch('processes/:pid/resume')
+    @Audit('RESUME_PROCESS', 'System Monitor')
+    resumeProcess(@Param('pid') pid: string) {
+        return this.systemMonitorService.resumeProcess(parseInt(pid, 10));
     }
 }
