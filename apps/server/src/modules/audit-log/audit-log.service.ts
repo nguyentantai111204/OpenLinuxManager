@@ -10,20 +10,33 @@ export class AuditLogService {
         private auditLogRepository: Repository<AuditLog>,
     ) { }
 
-    async createLog(action: string, target: string, details?: string) {
+    async createLog(action: string, target: string, details?: string, performedBy: string = 'admin') {
         const log = this.auditLogRepository.create({
             action,
             target,
             details,
+            performedBy,
         });
         return this.auditLogRepository.save(log);
     }
 
-    async findAll() {
-        return this.auditLogRepository.find({
+    async findAll(page: number = 1, limit: number = 10) {
+        const [data, total] = await this.auditLogRepository.findAndCount({
             order: {
-                timestamp: 'DESC',
+                createdAt: 'DESC',
             },
+            take: limit,
+            skip: (page - 1) * limit,
         });
+
+        return {
+            data,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
     }
 }

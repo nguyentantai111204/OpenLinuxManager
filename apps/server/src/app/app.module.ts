@@ -3,9 +3,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { UserManagementModule } from '../modules/user-management/user-management.module';
 import { SystemMonitorModule } from '../modules/system-monitor/system-monitor.module';
 import { AuditLogModule } from '../modules/audit-log/audit-log.module';
+import { AuditInterceptor } from '../common/interceptors/audit.interceptor';
 
 @Module({
   imports: [
@@ -31,7 +33,13 @@ import { AuditLogModule } from '../modules/audit-log/audit-log.module';
     AuditLogModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditInterceptor,
+    },
+  ],
 })
 export class AppModule { }
 

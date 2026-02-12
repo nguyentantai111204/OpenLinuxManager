@@ -1,4 +1,5 @@
 import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Audit } from '@open-linux-manager/api';
 import { SystemMonitorService } from './system-monitor.service';
 
 @Controller('system')
@@ -21,6 +22,7 @@ export class SystemMonitorController {
     }
 
     @Delete('processes/:pid')
+    @Audit('KILL_PROCESS', 'System Monitor')
     killProcess(@Param('pid') pid: string) {
         return this.systemMonitorService.killProcess(parseInt(pid, 10));
     }
