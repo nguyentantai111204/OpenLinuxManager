@@ -20,9 +20,9 @@ import {
     Alert,
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Person as PersonIcon } from '@mui/icons-material';
-import { axiosClient as axios } from '../../../utils/axios-client';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS } from '../../../constants/design';
-import { StackRow, StackCol } from '../../../components/common/stack';
+import { axiosClient as axios } from '../../utils/axios-client';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS } from '../../constants/design';
+import { StackRow, StackCol } from '../../components/stack';
 
 interface User {
     username: string;
@@ -47,8 +47,10 @@ export function UserManagement() {
     const fetchUsers = async () => {
         try {
             const response = await axios.get('/api/users');
-            if (Array.isArray(response.data)) {
-                setUsers(response.data);
+            const userData = response.data?.data || response.data;
+
+            if (Array.isArray(userData)) {
+                setUsers(userData);
             } else {
                 console.error('API response is not an array:', response.data);
                 setUsers([]);

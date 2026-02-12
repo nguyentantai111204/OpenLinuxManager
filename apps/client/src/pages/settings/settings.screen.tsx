@@ -12,12 +12,12 @@ import {
     TextField,
     MenuItem
 } from '@mui/material';
-import { PageHeader } from '../../components/common/page-header';
+import { PageHeader } from '../../components/page-header/page-header';
 import { SPACING, COLORS, BORDER_RADIUS } from '../../constants/design';
 import { useSocket } from '../../hooks/use-socket';
-import { StackCol, StackRow, StackRowJusBetween } from '../../components/common/stack';
+import { StackCol, StackRow, StackRowJusBetween } from '../../components/stack';
 
-export function SettingsPage() {
+export function Settings() {
     return (
         <Box sx={{ p: SPACING.lg / 8 }}>
             <StackCol spacing={SPACING.lg / 8}>

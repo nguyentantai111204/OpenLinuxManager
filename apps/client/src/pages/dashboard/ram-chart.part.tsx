@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../../constants/design';
-import { StackCol, StackRow } from '../../../components/common/stack';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../constants/design';
+import { StackCol, StackRow } from '../../components/stack';
 
 interface RamChartProps {
     ramTotal: number;

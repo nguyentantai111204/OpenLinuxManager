@@ -1,10 +1,9 @@
 import { Route, Routes } from 'react-router-dom';
-import { Dashboard } from '../features/system-monitor/pages/dashboard';
-import { ThemeProvider as ThemeProviderWrapper } from '../contexts/theme-context';
-import { Processes } from '../features/system-monitor/pages/processes';
-import { Storage } from '../features/system-monitor/pages/storage';
-import { Settings } from '../pages/settings';
-import { UserManagement } from '../features/user-management/pages/user-management';
+import { Dashboard } from '../pages/dashboard/dashboard.screen';
+import { Processes } from '../pages/processes/processes.screen';
+import { Storage } from '../pages/storage/storage.screen';
+import { Settings } from '../pages/settings/settings.screen';
+import { UserManagement } from '../pages/user-management/user-management.screen';
 import { MainLayout } from '../layouts/main-layout';
 
 export function App() {

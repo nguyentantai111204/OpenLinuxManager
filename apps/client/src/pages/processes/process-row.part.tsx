@@ -1,9 +1,9 @@
 import { TableRow, TableCell, Typography, IconButton } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import { StatusBadge } from '../../../../components/common/status-badge';
-import { UserBadge } from '../../../../components/common/user-badge';
-import { Process } from './process-table';
-import { SPACING, TYPOGRAPHY, TRANSITIONS } from '../../../../constants/design';
+import { StatusBadge } from '../../components/status-badge/status-badge';
+import { UserBadge } from '../../components/user-badge/user-badge';
+import { Process } from './process-table.part';
+import { SPACING, TYPOGRAPHY, TRANSITIONS } from '../../constants/design';
 
 interface ProcessRowProps {
     process: Process;

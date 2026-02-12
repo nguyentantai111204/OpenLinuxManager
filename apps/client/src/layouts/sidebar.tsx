@@ -9,7 +9,7 @@ import {
     Person as PersonIcon,
 } from '@mui/icons-material';
 import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
-import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../components/common/stack';
+import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../components/stack';
 
 interface MenuItem {
     id: string;

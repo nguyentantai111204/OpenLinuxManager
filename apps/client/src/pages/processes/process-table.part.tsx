@@ -1,8 +1,8 @@
 import React from 'react';
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, TableSortLabel, Box } from '@mui/material';
-import { BORDER_RADIUS, SPACING, TYPOGRAPHY, SHADOWS } from '../../../../constants/design';
-import { ProcessStatus } from '../../../../components/common/status-badge';
-import { ProcessRow } from './process-row';
+import { BORDER_RADIUS, SPACING, TYPOGRAPHY, SHADOWS } from '../../constants/design';
+import { ProcessStatus } from '../../components/status-badge/status-badge';
+import { ProcessRow } from './process-row.part';
 
 export interface Process {
     pid: number;
