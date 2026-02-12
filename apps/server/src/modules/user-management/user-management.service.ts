@@ -1,6 +1,6 @@
 import { Injectable, Logger, HttpException, HttpStatus, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import * as fs from 'fs';
-import { ExecUtil } from '../../common/utils/exec.util';
+import { CommandRunnerService } from '../../system/services/command-runner.service';
 
 export interface SystemUser {
     username: string;
@@ -14,6 +14,8 @@ export interface SystemUser {
 export class UserManagementService {
     private readonly logger = new Logger(UserManagementService.name);
     private readonly debugLogFile = '/home/nguyentantai/OpenLinuxManager/debug-users.log';
+
+    constructor(private readonly commandRunner: CommandRunnerService) { }
 
     private logToFile(message: string) {
         try {
@@ -68,20 +70,22 @@ export class UserManagementService {
         try {
             this.logToFile(`Attempting to create user: ${username}`);
 
-            await ExecUtil.run(`sudo -n useradd -m -s /bin/bash ${username}`);
+           
+            await this.commandRunner.run('sudo', ['-n', 'useradd', '-m', '-s', '/bin/bash', username]);
 
             if (password) {
                 try {
-                    const cmd = `echo "${username}:${password}" | sudo -n chpasswd`;
-                    const { exec } = require('child_process');
-                    const util = require('util');
-                    const execAsync = util.promisify(exec);
-
-                    await execAsync(cmd);
-
+                    
+                    const input = `${username}:${password}`;
+                    await this.commandRunner.runWithInput('sudo', ['-n', 'chpasswd'], input);
                 } catch (pwdError) {
                     this.logToFile(`Error setting password for ${username}: ${(pwdError as Error).message}`);
-                    await ExecUtil.run(`sudo -n userdel -r ${username}`);
+                    try {
+                        await this.commandRunner.run('sudo', ['-n', 'userdel', '-r', username]);
+                        this.logToFile(`Cleaned up user ${username} after password failure`);
+                    } catch (cleanupError) {
+                        this.logToFile(`Failed to cleanup user ${username}: ${(cleanupError as Error).message}`);
+                    }
                     throw pwdError;
                 }
             }
@@ -110,7 +114,7 @@ export class UserManagementService {
         }
 
         try {
-            await ExecUtil.run(`sudo -n userdel -r ${username}`);
+            await this.commandRunner.run('sudo', ['-n', 'userdel', '-r', username]);
             return { message: `User ${username} deleted successfully` };
         } catch (error) {
             const errorMessage = (error as Error).message;
@@ -127,3 +131,4 @@ export class UserManagementService {
         }
     }
 }
+
