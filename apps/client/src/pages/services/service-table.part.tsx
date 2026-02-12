@@ -12,7 +12,7 @@ import { SPACING } from '../../constants/design';
 
 interface ServiceTableProps {
     services: SystemService[];
-    onAction: (name: string, action: 'start' | 'stop' | 'restart') => void;
+    onAction: (name: string, action: 'start' | 'stop' | 'restart' | 'enable' | 'disable') => void;
 }
 
 export function ServiceTable({ services = [], onAction }: ServiceTableProps) {
@@ -23,6 +23,7 @@ export function ServiceTable({ services = [], onAction }: ServiceTableProps) {
                     <TableRowComponent>
                         <TableCellComponent>SERVICE NAME & DESCRIPTION</TableCellComponent>
                         <TableCellComponent>STATUS</TableCellComponent>
+                        <TableCellComponent>AUTO</TableCellComponent>
                         <TableCellComponent align="right">ACTIONS</TableCellComponent>
                     </TableRowComponent>
                 </TableHeadComponent>

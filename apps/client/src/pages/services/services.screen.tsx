@@ -38,7 +38,7 @@ export function Services() {
         return () => clearInterval(interval);
     }, []);
 
-    const handleAction = async (name: string, action: 'start' | 'stop' | 'restart') => {
+    const handleAction = async (name: string, action: 'start' | 'stop' | 'restart' | 'enable' | 'disable') => {
         try {
             await axios.post(`/api/services/${name}/action`, { action });
             setSnackbar({ open: true, message: `Service ${name} ${action}ed successfully`, severity: 'success' });

@@ -5,7 +5,9 @@ import {
     RestartAlt as RestartIcon,
     CheckCircle as CheckCircleIcon,
     Error as ErrorIcon,
-    PowerSettingsNew as PowerIcon
+    PowerSettingsNew as PowerIcon,
+    NotificationsActive as EnabledIcon,
+    NotificationsOff as DisabledIcon
 } from '@mui/icons-material';
 import { TableRowComponent, TableCellComponent } from '../../components';
 import { StatusBadgeComponent, ProcessStatus } from '../../components/status-badge/status-badge.component';
@@ -21,7 +23,7 @@ export interface SystemService {
 
 interface ServiceRowProps {
     service: SystemService;
-    onAction: (name: string, action: 'start' | 'stop' | 'restart') => void;
+    onAction: (name: string, action: 'start' | 'stop' | 'restart' | 'enable' | 'disable') => void;
 }
 
 export function ServiceRow({ service, onAction }: ServiceRowProps) {
@@ -64,6 +66,17 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
                     </Typography>
                 </Box>
             </TableCellComponent>
+            <TableCellComponent>
+                <Tooltip title={service.enabled ? 'Enabled' : 'Disabled'}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {service.enabled ? (
+                            <EnabledIcon sx={{ color: COLORS.primary.main, fontSize: 18 }} />
+                        ) : (
+                            <DisabledIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
+                        )}
+                    </Box>
+                </Tooltip>
+            </TableCellComponent>
             <TableCellComponent align="right">
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                     {service.status !== 'active' ? (
@@ -99,6 +112,29 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
                             <RestartIcon fontSize="small" />
                         </IconButton>
                     </Tooltip>
+                    {!service.enabled ? (
+                        <Tooltip title="Enable Service">
+                            <IconButton
+                                size="small"
+                                color="info"
+                                onClick={() => onAction(service.name, 'enable')}
+                                sx={{ transition: `all ${TRANSITIONS.duration.fast}` }}
+                            >
+                                <EnabledIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    ) : (
+                        <Tooltip title="Disable Service">
+                            <IconButton
+                                size="small"
+                                color="warning"
+                                onClick={() => onAction(service.name, 'disable')}
+                                sx={{ transition: `all ${TRANSITIONS.duration.fast}` }}
+                            >
+                                <DisabledIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                 </Box>
             </TableCellComponent>
         </TableRowComponent>

@@ -21,52 +21,69 @@ export class ServiceManagerService {
 
     async getServices(): Promise<SystemService[]> {
         try {
-            // Using systemctl list-units to get active/failed units
-            const stdout = await this.commandRunner.run('systemctl', [
+            // 1. Get active/all units with status
+            const unitsJson = await this.commandRunner.run('systemctl', [
                 'list-units',
                 '--type=service',
                 '--all',
-                '--no-legend',
-                '--no-pager'
+                '--no-pager',
+                '-o', 'json'
             ]);
 
-            return this.parseSystemctlOutput(stdout);
+            // 2. Get unit files to check enablement status
+            const unitFilesJson = await this.commandRunner.run('systemctl', [
+                'list-unit-files',
+                '--type=service',
+                '--no-pager',
+                '-o', 'json'
+            ]);
+
+            const units = JSON.parse(unitsJson);
+            const unitFiles = JSON.parse(unitFilesJson);
+
+            // Create a map for quick enablement lookup
+            const enablementMap = new Map<string, string>();
+            unitFiles.forEach((file: any) => {
+                enablementMap.set(file.unit_file, file.state);
+            });
+
+            return units.map((u: any) => {
+                const name = u.unit.replace('.service', '');
+                const enabledState = enablementMap.get(u.unit);
+
+                return {
+                    name,
+                    description: u.description || name,
+                    status: this.mapActiveStatus(u.active),
+                    running: u.sub === 'running',
+                    enabled: enabledState === 'enabled',
+                };
+            });
         } catch (error) {
             this.logger.error('Failed to list services', error);
-            throw new InternalServerErrorException('Failed to list system services');
+            // Fallback to empty if anything fails during JSON parsing or commands
+            return [];
         }
     }
 
     async performAction(name: string, action: 'start' | 'stop' | 'restart' | 'enable' | 'disable'): Promise<{ message: string }> {
         try {
-            await this.commandRunner.run('sudo', ['systemctl', action, name]);
+            const serviceName = name.endsWith('.service') ? name : `${name}.service`;
+            await this.commandRunner.run('sudo', ['systemctl', action, serviceName]);
             await this.auditLogService.createLog(`SERVICE_${action.toUpperCase()}`, name, `Service ${name} ${action}ed`);
             return { message: `Service ${name} ${action}ed successfully` };
         } catch (error) {
             this.logger.error(`Failed to ${action} service ${name}`, error);
-            throw new InternalServerErrorException(`Failed to ${action} service ${name}`);
+            throw new InternalServerErrorException(`Failed to ${action} service ${name}: ${error.message}`);
         }
     }
 
-    private parseSystemctlOutput(stdout: string): SystemService[] {
-        const lines = stdout.trim().split('\n');
-        return lines.map(line => {
-            const parts = line.trim().split(/\s+/);
-            if (parts.length < 5) return null;
-
-            const name = parts[0].replace('.service', '');
-            const loadStatus = parts[1]; // loaded
-            const activeStatus = parts[2]; // active, inactive, failed
-            const subStatus = parts[3]; // running, exited, dead
-            const description = parts.slice(4).join(' ');
-
-            return {
-                name,
-                description,
-                status: activeStatus as any,
-                running: subStatus === 'running',
-                enabled: true, // We'd need another command to check if enabled reliably for all
-            };
-        }).filter(s => s !== null) as SystemService[];
+    private mapActiveStatus(active: string): 'active' | 'inactive' | 'failed' | 'unknown' {
+        switch (active) {
+            case 'active': return 'active';
+            case 'inactive': return 'inactive';
+            case 'failed': return 'failed';
+            default: return 'unknown';
+        }
     }
 }
