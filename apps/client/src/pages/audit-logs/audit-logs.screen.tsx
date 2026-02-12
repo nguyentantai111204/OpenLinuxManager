@@ -119,7 +119,7 @@ export function AuditLogs() {
                                 ) : (
                                     <>
                                         {Array.isArray(logs) && logs.map((log) => (
-                                            <TableRowComponent key={log.id} hover>
+                                            <TableRowComponent key={log.id}>
                                                 <TableCellComponent sx={{ whiteSpace: 'nowrap', width: 180 }}>
                                                     {formatDate(log.createdAt)}
                                                 </TableCellComponent>

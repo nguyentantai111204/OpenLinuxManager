@@ -56,9 +56,8 @@ export function ProcessRow({ process, onKill }: ProcessRowProps) {
                             color: COLORS.status.stopped,
                             transition: `all ${TRANSITIONS.duration.fast} ${TRANSITIONS.easing.easeInOut}`,
                             '&:hover': {
-                                backgroundColor: COLORS.error.light,
-                                color: COLORS.error.dark,
-                                transform: 'scale(1.1)',
+                                backgroundColor: 'transparent',
+                                transform: 'none',
                             },
                         }}
                     >

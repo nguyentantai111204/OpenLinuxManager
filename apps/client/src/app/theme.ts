@@ -1,94 +1,45 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
+import { COLORS, COLORS_DARK } from '../constants/design';
 
 // Ecommerce-inspired color palette
+// Palette synchronized with design.ts
 const palette = {
     light: {
-        primary: {
-            main: '#1976d2', // Professional blue
-            light: '#42a5f5',
-            dark: '#1565c0',
-            contrastText: '#ffffff',
-        },
+        primary: COLORS.primary,
         secondary: {
-            main: '#9c27b0', // Purple accent
+            main: COLORS.chart.disk,
             light: '#ba68c8',
             dark: '#7b1fa2',
             contrastText: '#ffffff',
         },
-        success: {
-            main: '#2e7d32', // Green
-            light: '#4caf50',
-            dark: '#1b5e20',
-        },
-        warning: {
-            main: '#ed6c02', // Orange
-            light: '#ff9800',
-            dark: '#e65100',
-        },
-        error: {
-            main: '#d32f2f', // Red
-            light: '#ef5350',
-            dark: '#c62828',
-        },
-        info: {
-            main: '#0288d1', // Cyan
-            light: '#03a9f4',
-            dark: '#01579b',
-        },
-        background: {
-            default: '#f5f5f5',
-            paper: '#ffffff',
-        },
-        text: {
-            primary: 'rgba(0, 0, 0, 0.87)',
-            secondary: 'rgba(0, 0, 0, 0.6)',
-            disabled: 'rgba(0, 0, 0, 0.38)',
-        },
-        divider: 'rgba(0, 0, 0, 0.12)',
+        success: COLORS.success,
+        warning: COLORS.warning,
+        error: COLORS.error,
+        info: COLORS.info,
+        background: COLORS.background,
+        text: COLORS.text,
+        divider: COLORS.border.main,
     },
     dark: {
         primary: {
-            main: '#90caf9', // Lighter blue for dark mode
+            main: '#90caf9',
             light: '#e3f2fd',
             dark: '#42a5f5',
             contrastText: '#000000',
         },
         secondary: {
-            main: '#ce93d8', // Lighter purple
+            main: '#ce93d8',
             light: '#f3e5f5',
             dark: '#ab47bc',
             contrastText: '#000000',
         },
-        success: {
-            main: '#66bb6a',
-            light: '#81c784',
-            dark: '#388e3c',
-        },
-        warning: {
-            main: '#ffa726',
-            light: '#ffb74d',
-            dark: '#f57c00',
-        },
-        error: {
-            main: '#f44336',
-            light: '#e57373',
-            dark: '#d32f2f',
-        },
-        info: {
-            main: '#29b6f6',
-            light: '#4fc3f7',
-            dark: '#0288d1',
-        },
-        background: {
-            default: '#0a1929',
-            paper: '#132f4c',
-        },
-        text: {
-            primary: '#ffffff',
-            secondary: 'rgba(255, 255, 255, 0.7)',
-            disabled: 'rgba(255, 255, 255, 0.5)',
-        },
-        divider: 'rgba(255, 255, 255, 0.12)',
+        success: COLORS.success,
+        warning: COLORS.warning,
+        error: COLORS.error,
+        info: COLORS.info,
+        background: COLORS_DARK.background,
+        text: COLORS_DARK.text,
+        divider: COLORS_DARK.border.main,
     },
 };
 
@@ -190,12 +141,12 @@ const getThemeOptions = (mode: 'light' | 'dark'): ThemeOptions => ({
                     padding: '8px 16px',
                     boxShadow: 'none',
                     '&:hover': {
-                        boxShadow: '0px 4px 8px rgba(0,0,0,0.15)',
+                        boxShadow: 'none',
                     },
                 },
                 contained: {
                     '&:hover': {
-                        boxShadow: '0px 6px 12px rgba(0,0,0,0.2)',
+                        boxShadow: 'none',
                     },
                 },
             },
@@ -207,12 +158,12 @@ const getThemeOptions = (mode: 'light' | 'dark'): ThemeOptions => ({
                     boxShadow: mode === 'light'
                         ? '0px 4px 12px rgba(0,0,0,0.08)'
                         : '0px 4px 12px rgba(0,0,0,0.4)',
-                    transition: 'box-shadow 0.3s ease-in-out, transform 0.2s ease-in-out',
+                    transition: 'none',
                     '&:hover': {
                         boxShadow: mode === 'light'
-                            ? '0px 8px 24px rgba(0,0,0,0.12)'
-                            : '0px 8px 24px rgba(0,0,0,0.6)',
-                        transform: 'translateY(-2px)',
+                            ? '0px 4px 12px rgba(0,0,0,0.08)'
+                            : '0px 4px 12px rgba(0,0,0,0.4)',
+                        transform: 'none',
                     },
                 },
             },

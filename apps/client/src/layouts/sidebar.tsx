@@ -141,7 +141,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                                     color: COLORS.sidebar.text,
                                     transition: `all ${TRANSITIONS.duration.fast} ${TRANSITIONS.easing.easeInOut}`,
                                     '&:hover': {
-                                        backgroundColor: isActive ? COLORS.sidebar.active : COLORS.sidebar.hover,
+                                        backgroundColor: isActive ? COLORS.sidebar.active : 'transparent',
                                     },
                                     py: SPACING.md / 8,
                                 }}
