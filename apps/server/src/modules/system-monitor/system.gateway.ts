@@ -56,28 +56,19 @@ export class SystemGateway
         }
     }
 
-    /**
-     * Start all monitoring intervals
-     */
     private startMonitoring() {
         this.logger.log('Starting system monitoring...');
 
-        // 1. System Stats (CPU, RAM) - Fast (2s)
         this.emitSystemStats();
         this.statsInterval = setInterval(() => this.emitSystemStats(), 2000);
 
-        // 2. Processes - Medium (5s)
         this.emitProcesses();
         this.processesInterval = setInterval(() => this.emitProcesses(), 5000);
 
-        // 3. Storage - Slow (60s)
         this.emitStorage();
         this.storageInterval = setInterval(() => this.emitStorage(), 60000);
     }
 
-    /**
-     * Stop all monitoring intervals
-     */
     private stopMonitoring() {
         this.logger.log('Stopping system monitoring...');
 
@@ -97,9 +88,6 @@ export class SystemGateway
         }
     }
 
-    /**
-     * Fetch and emit system stats
-     */
     private async emitSystemStats() {
         try {
             const stats = await this.systemMonitorService.getSystemStats();
@@ -109,9 +97,6 @@ export class SystemGateway
         }
     }
 
-    /**
-     * Fetch and emit processes
-     */
     private async emitProcesses() {
         try {
             const processes = await this.systemMonitorService.getSystemProcesses();
@@ -121,9 +106,6 @@ export class SystemGateway
         }
     }
 
-    /**
-     * Fetch and emit storage data
-     */
     private async emitStorage() {
         try {
             const storage = await this.systemMonitorService.getStorageData();
@@ -133,9 +115,6 @@ export class SystemGateway
         }
     }
 
-    /**
-     * Cleanup on module destroy
-     */
     onModuleDestroy() {
         this.stopMonitoring();
     }

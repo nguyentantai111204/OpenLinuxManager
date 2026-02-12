@@ -9,7 +9,6 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
 
-  // Global Configuration
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     transform: true,

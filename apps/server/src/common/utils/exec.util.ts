@@ -7,14 +7,8 @@ const execAsync = promisify(exec);
 export class ExecUtil {
     private static readonly logger = new Logger(ExecUtil.name);
 
-    /**
-     * Execute a shell command safely
-     * @param command Command to execute
-     * @param errorMessage Custom error message
-     */
     static async run(command: string, errorMessage = 'Command execution failed'): Promise<string> {
         try {
-            // Log command (ensure no sensitive data is in the command string before passing here)
             this.logger.log(`Executing: ${command}`);
 
             const { stdout, stderr } = await execAsync(command);
