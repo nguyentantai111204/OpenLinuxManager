@@ -95,30 +95,43 @@ export function Dashboard() {
                     <Box sx={{ flex: 1 }}>
                         <Grow in timeout={300}>
                             <Box>
-                                <StatCard
-                                    icon={<DeveloperBoard />}
-                                    title="CPU Usage"
-                                    value={`${currentCpu.toFixed(1)}%`}
-                                    change="+2.4%"
-                                    changeType="positive"
-                                    subtitle="Current load"
-                                    iconColor={COLORS.chart.cpu}
-                                />
+                                {(() => {
+                                    const prevCpu = history.length > 1 ? history[history.length - 2].cpu : currentCpu;
+                                    const cpuDiff = currentCpu - prevCpu;
+                                    return (
+                                        <StatCard
+                                            icon={<DeveloperBoard />}
+                                            title="CPU Usage"
+                                            value={`${currentCpu.toFixed(1)}%`}
+                                            change={`${cpuDiff >= 0 ? '+' : ''}${cpuDiff.toFixed(1)}%`}
+                                            changeType={cpuDiff > 0 ? 'positive' : cpuDiff < 0 ? 'negative' : 'neutral'}
+                                            subtitle="Current load"
+                                            iconColor={COLORS.chart.cpu}
+                                        />
+                                    );
+                                })()}
                             </Box>
                         </Grow>
                     </Box>
                     <Box sx={{ flex: 1 }}>
                         <Grow in timeout={400}>
                             <Box>
-                                <StatCard
-                                    icon={<Memory />}
-                                    title="Memory"
-                                    value={`${ramUsageGB} GB`}
-                                    change="-0.5%"
-                                    changeType="negative"
-                                    subtitle={`of ${ramTotalGB} Total`}
-                                    iconColor={COLORS.chart.ram}
-                                />
+                                {(() => {
+                                    const ramPercent = (systemStats.ram_used / systemStats.ram_total) * 100;
+                                    const prevRamPercent = history.length > 1 ? history[history.length - 2].ram : ramPercent;
+                                    const ramDiff = ramPercent - prevRamPercent;
+                                    return (
+                                        <StatCard
+                                            icon={<Memory />}
+                                            title="Memory"
+                                            value={`${ramUsageGB} GB`}
+                                            change={`${ramDiff >= 0 ? '+' : ''}${ramDiff.toFixed(1)}%`}
+                                            changeType={ramDiff > 0 ? 'positive' : ramDiff < 0 ? 'negative' : 'neutral'}
+                                            subtitle={`of ${ramTotalGB} Total`}
+                                            iconColor={COLORS.chart.ram}
+                                        />
+                                    );
+                                })()}
                             </Box>
                         </Grow>
                     </Box>
@@ -130,7 +143,7 @@ export function Dashboard() {
                                     title="Disk Space"
                                     value={storage ? `${Math.round((storage.used / storage.total) * 100)}%` : '...'}
                                     change={storage ? `${storage.free} GB` : '...'}
-                                    changeType="positive"
+                                    changeType="neutral"
                                     subtitle="Free Space"
                                     iconColor={COLORS.chart.disk}
                                 />
@@ -144,8 +157,6 @@ export function Dashboard() {
                                     icon={<Timer />}
                                     title="Uptime"
                                     value={formatUptime(systemStats.uptime)}
-                                    change="0%"
-                                    changeType="neutral"
                                     subtitle="Since last boot"
                                     iconColor={COLORS.status.running}
                                 />
