@@ -1,7 +1,7 @@
 import { TableRow, TableCell, Typography, IconButton } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import { StatusBadge } from '../common/StatusBadge';
-import { UserBadge } from '../common/UserBadge';
+import { StatusBadge } from '../common/status-badge';
+import { UserBadge } from '../common/user-badge';
 import { Process } from './ProcessTable';
 import { SPACING, TYPOGRAPHY, TRANSITIONS } from '../../constants/design';
 

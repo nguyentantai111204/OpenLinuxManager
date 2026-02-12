@@ -1,8 +1,8 @@
 import { Box, Card, CardContent, Typography, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
-import { PageHeader } from '../components/common/PageHeader';
+import { PageHeader } from '../components/common/page-header';
 import { SPACING, COLORS, BORDER_RADIUS } from '../constants/design';
 import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../components/stack';
-import { useSocket, StorageData } from '../hooks/useSocket';
+import { useSocket, StorageData } from '../hooks/use-socket';
 
 export function Storage() {
     const { isConnected, storage } = useSocket();

@@ -27,7 +27,7 @@ export {
     StackRowAlignEndJusCenter,
     StackRowAlignEndJusEnd,
     StackRowAlignEndJusBetween,
-} from './StackRow';
+} from './stack-row';
 
 // Column variants
 export {
@@ -47,4 +47,4 @@ export {
     StackColAlignEndJusCenter,
     StackColAlignEndJusEnd,
     StackColAlignEndJusBetween,
-} from './StackCol';
+} from './stack-col';

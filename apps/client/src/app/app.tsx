@@ -1,10 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
-import { Dashboard } from '../pages/Dashboard';
-import { Processes } from '../pages/Processes';
-import { Storage } from '../pages/Storage';
-import { Settings } from '../pages/Settings';
-import { UserManagement } from '../pages/UserManagement';
-import { MainLayout } from '../components/layout/MainLayout';
+import { Dashboard } from '../pages/dashboard';
+import { ThemeProvider as ThemeProviderWrapper } from '../contexts/theme-context';
+import { Processes } from '../pages/processes';
+import { Storage } from '../pages/storage';
+import { Settings } from '../pages/settings';
+import { UserManagement } from '../pages/user-management';
+import { MainLayout } from '../components/layout/main-layout';
 
 export function App() {
   return (

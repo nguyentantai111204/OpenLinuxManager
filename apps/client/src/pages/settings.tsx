@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Typography, Switch, TextField, MenuItem, Divider } from '@mui/material';
-import { PageHeader } from '../components/common/PageHeader';
+import { PageHeader } from '../components/common/page-header';
 import { SPACING, COLORS, BORDER_RADIUS } from '../constants/design';
 import { StackCol, StackRow, StackRowJusBetween } from '../components/stack';
 
