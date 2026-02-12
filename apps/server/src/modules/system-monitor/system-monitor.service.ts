@@ -1,11 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import * as fs from 'fs';
-import * as child_process from 'child_process';
-import * as util from 'util';
 import { SystemStats, SystemProcess, StorageData } from './system-stats.interface';
-import { LinuxParser } from '../utils/linux-parser';
-
-const exec = util.promisify(child_process.exec);
+import { LinuxParser } from './utils/linux-parser';
+import { ExecUtil } from '../../common/utils/exec.util';
 
 @Injectable()
 export class SystemMonitorService {
@@ -64,18 +61,12 @@ export class SystemMonitorService {
             };
         } catch (error) {
             this.logger.error('Error getting system stats', error);
-            return {
-                cpu: 0,
-                ram_total: 0,
-                ram_used: 0,
-                ram_free: 0,
-                uptime: 0,
-                os_name: 'Error',
-                os_version: 'N/A',
-                os_pretty_name: 'System monitoring error',
-                timestamp: Date.now(),
-                error: (error as Error).message,
-            };
+            // We should probably throw here so the global exception filter catches it, 
+            // OR return a partial object if we want to be resilient.
+            // The original code returned an object with error field. 
+            // Let's stick to the interface, which might accept error string or incomplete data.
+            // But strict typing says SystemStats.
+            throw new InternalServerErrorException((error as Error).message);
         }
     }
 
@@ -84,11 +75,11 @@ export class SystemMonitorService {
      */
     async getSystemProcesses(): Promise<SystemProcess[]> {
         try {
-            const { stdout } = await exec('ps aux --sort=-%cpu | head -n 51');
+            const stdout = await ExecUtil.run('ps aux --sort=-%cpu | head -n 51');
             return LinuxParser.parsePsOutput(stdout);
         } catch (error) {
             this.logger.error('Error getting processes', error);
-            return [];
+            throw new InternalServerErrorException('Failed to retrieve processes');
         }
     }
 
@@ -100,33 +91,29 @@ export class SystemMonitorService {
             // -B1 for bytes
             // output custom columns
             // exclude tmpfs and devtmpfs
-            const { stdout } = await exec('df -B1 --output=source,size,used,avail,pcent,target -x tmpfs -x devtmpfs');
+            const stdout = await ExecUtil.run('df -B1 --output=source,size,used,avail,pcent,target -x tmpfs -x devtmpfs');
             return LinuxParser.parseDfOutput(stdout);
         } catch (error) {
             this.logger.error('Error getting storage data', error);
-            return {
-                total: 0,
-                used: 0,
-                free: 0,
-                partitions: [],
-            };
+            throw new InternalServerErrorException('Failed to retrieve storage data');
         }
     }
 
     /**
      * Kill a process by PID
      */
-    async killProcess(pid: number): Promise<{ success: boolean; message: string }> {
+    async killProcess(pid: number): Promise<{ message: string }> {
         if (!pid || isNaN(pid)) {
-            return { success: false, message: 'Invalid PID' };
+            throw new BadRequestException('Invalid PID');
         }
 
         try {
-            await exec(`kill -9 ${pid}`);
-            return { success: true, message: `Process ${pid} killed successfully` };
+            await ExecUtil.run(`kill -9 ${pid}`);
+            return { message: `Process ${pid} killed successfully` };
         } catch (error) {
             this.logger.error(`Error killing process ${pid}`, error);
-            return { success: false, message: `Failed to kill process ${pid}: ${(error as Error).message}` };
+            throw new InternalServerErrorException(`Failed to kill process ${pid}`);
         }
     }
 }
+

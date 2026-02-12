@@ -1,6 +1,6 @@
 
 import { Injectable, Logger } from '@nestjs/common';
-import { StorageData, SystemProcess, SystemStats } from '../system-monitor/system-stats.interface';
+import { StorageData, SystemProcess, SystemStats } from '../system-stats.interface';
 
 @Injectable()
 export class LinuxParser {
