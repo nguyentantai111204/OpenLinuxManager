@@ -73,15 +73,15 @@ def get_memory_info():
                     value = parts[1].strip().split()[0]  # Get the number, ignore 'kB'
                     mem_info[key] = int(value)
         
-        # Calculate memory in MB
-        total_mb = round(mem_info.get('MemTotal', 0) / 1024, 2)
-        available_mb = round(mem_info.get('MemAvailable', 0) / 1024, 2)
-        used_mb = round(total_mb - available_mb, 2)
+        # Calculate memory in Bytes (input is in kB)
+        total_bytes = mem_info.get('MemTotal', 0) * 1024
+        available_bytes = mem_info.get('MemAvailable', 0) * 1024
+        used_bytes = total_bytes - available_bytes
         
         return {
-            'ram_total': total_mb,
-            'ram_used': used_mb,
-            'ram_free': available_mb
+            'ram_total': total_bytes,
+            'ram_used': used_bytes,
+            'ram_free': available_bytes
         }
     except Exception as e:
         return {
