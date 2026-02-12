@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Box, Typography, Chip } from '@mui/material';
 import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@mui/icons-material';
 import { SPACING, TYPOGRAPHY } from '../../constants/design';
-import { StackRow, StackRowAlignStartJusBetween } from '../stack';
+import { StackRow, StackRowAlignStartJusBetween } from './stack';
 
 interface PageHeaderProps {
     title: string;

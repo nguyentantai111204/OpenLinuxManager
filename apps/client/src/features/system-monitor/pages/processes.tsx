@@ -2,13 +2,13 @@ import { useState, useMemo } from 'react';
 import { Box, Button, Typography, CircularProgress, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
 import { Block as BlockIcon, Pause as PauseIcon } from '@mui/icons-material';
-import { PageHeader } from '../../shared/components/common/page-header';
-import { SearchBar } from '../../shared/components/common/search-bar';
+import { PageHeader } from '../../../components/common/page-header';
+import { SearchBar } from '../../../components/common/search-bar';
 import { ProcessTable, Process } from '../components/processes/process-table';
-import { useSocket, SystemProcess } from '../hooks/use-socket';
-import { SPACING } from '../../shared/constants/design';
-import { StackRow, StackRowJusBetween, StackColAlignCenterJusCenter } from '../../shared/components/stack';
-import { ProcessStatus } from '../../shared/components/common/status-badge';
+import { useSocket, SystemProcess } from '../../../hooks/use-socket';
+import { SPACING } from '../../../constants/design';
+import { StackRow, StackRowJusBetween, StackColAlignCenterJusCenter } from '../../../components/common/stack';
+import { ProcessStatus } from '../../../components/common/status-badge';
 
 export function Processes() {
     const { isConnected, processes } = useSocket();

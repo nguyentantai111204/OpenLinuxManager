@@ -1,11 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
-import { Dashboard } from '../modules/system-monitor/pages/dashboard';
+import { Dashboard } from '../features/system-monitor/pages/dashboard';
 import { ThemeProvider as ThemeProviderWrapper } from '../contexts/theme-context';
-import { Processes } from '../modules/system-monitor/pages/processes';
-import { Storage } from '../modules/system-monitor/pages/storage';
+import { Processes } from '../features/system-monitor/pages/processes';
+import { Storage } from '../features/system-monitor/pages/storage';
 import { Settings } from '../pages/settings';
-import { UserManagement } from '../modules/user-management/pages/user-management';
-import { MainLayout } from '../modules/shared/components/layout/main-layout';
+import { UserManagement } from '../features/user-management/pages/user-management';
+import { MainLayout } from '../layouts/main-layout';
 
 export function App() {
   return (

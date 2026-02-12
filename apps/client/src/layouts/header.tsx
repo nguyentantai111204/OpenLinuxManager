@@ -10,7 +10,7 @@ import {
     Brightness7 as LightModeIcon,
     Computer as ComputerIcon,
 } from '@mui/icons-material';
-import { useThemeMode } from '../contexts/ThemeContext';
+import { useThemeMode } from '../contexts/theme-context';
 
 export function AppHeader() {
     const { mode, toggleTheme } = useThemeMode();

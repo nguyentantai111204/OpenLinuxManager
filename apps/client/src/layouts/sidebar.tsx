@@ -8,8 +8,8 @@ import {
     Settings as SettingsIcon,
     Person as PersonIcon,
 } from '@mui/icons-material';
-import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../../constants/design';
-import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../stack';
+import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
+import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../components/common/stack';
 
 interface MenuItem {
     id: string;

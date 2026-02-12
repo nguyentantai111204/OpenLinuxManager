@@ -2,8 +2,8 @@ import { ReactNode, useState } from 'react';
 import { Box, IconButton, useTheme, useMediaQuery } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { Sidebar } from './sidebar';
-import { StackRow } from '../stack';
-import { LAYOUT, SPACING } from '../../constants/design';
+import { StackRow } from '../components/common/stack';
+import { LAYOUT, SPACING } from '../constants/design';
 
 interface MainLayoutProps {
     children: ReactNode;

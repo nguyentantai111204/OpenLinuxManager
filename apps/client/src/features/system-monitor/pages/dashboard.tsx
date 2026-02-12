@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Box, Fade, Grow, CircularProgress, Alert } from '@mui/material';
 import { DeveloperBoard, Memory, Storage, Timer } from '@mui/icons-material';
-import { useSocket } from '../hooks/use-socket';
+import { useSocket } from '../../../hooks/use-socket';
 import { CpuChart } from '../components/cpu-chart';
 import { RamChart } from '../components/ram-chart';
-import { PageHeader } from '../../shared/components/common/page-header';
-import { SPACING, COLORS } from '../../shared/constants/design';
+import { PageHeader } from '../../../components/common/page-header';
+import { SPACING, COLORS } from '../../../constants/design';
 import { StatCard } from '../components/dashboard/stat-card';
-import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../../shared/components/stack';
+import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../../../components/common/stack';
 
 interface CpuDataPoint {
     time: string;

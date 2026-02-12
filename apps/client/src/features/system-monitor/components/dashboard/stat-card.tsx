@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Card, CardContent, Typography, Box, Stack, SxProps, Theme } from '@mui/material';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../../shared/constants/design';
-import { StackRowJusBetween, StackRow } from '../../../shared/components/stack';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../../../constants/design';
+import { StackRowJusBetween, StackRow } from '../../../../components/common/stack';
 
 interface StatCardProps {
     icon: ReactNode;
