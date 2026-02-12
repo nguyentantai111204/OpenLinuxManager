@@ -3,6 +3,7 @@ import { Dashboard } from '../pages/Dashboard';
 import { Processes } from '../pages/Processes';
 import { Storage } from '../pages/Storage';
 import { Settings } from '../pages/Settings';
+import { UserManagement } from '../pages/UserManagement';
 import { MainLayout } from '../components/layout/MainLayout';
 
 export function App() {
@@ -11,6 +12,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/processes" element={<Processes />} />
+        <Route path="/users" element={<UserManagement />} />
         <Route path="/storage" element={<Storage />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>

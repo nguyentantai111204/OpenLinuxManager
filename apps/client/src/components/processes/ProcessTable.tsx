@@ -13,7 +13,7 @@ export interface Process {
     memory: number;
 }
 
-type SortField = 'pid' | 'name' | 'user' | 'status' | 'cpu' | 'memory';
+type SortField = 'pid' | 'name' | 'user' | 'status' | 'cpu' | 'memory' | 'actions';
 type SortOrder = 'asc' | 'desc';
 
 interface ProcessTableProps {
@@ -34,6 +34,8 @@ export function ProcessTable({ processes, onKill, onSuspend }: ProcessTableProps
 
     const sortedProcesses = React.useMemo(() => {
         return [...processes].sort((a, b) => {
+            if (orderBy === 'actions') return 0;
+
             let aValue = a[orderBy];
             let bValue = b[orderBy];
 
@@ -59,6 +61,7 @@ export function ProcessTable({ processes, onKill, onSuspend }: ProcessTableProps
         { id: 'status', label: 'STATUS', align: 'left' },
         { id: 'cpu', label: 'CPU %', align: 'right' },
         { id: 'memory', label: 'MEMORY (MB)', align: 'right' },
+        { id: 'actions', label: 'ACTIONS', align: 'right' },
     ];
 
     return (

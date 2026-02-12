@@ -6,6 +6,7 @@ import {
     List as ListIcon,
     Storage as StorageIcon,
     Settings as SettingsIcon,
+    Person as PersonIcon,
 } from '@mui/icons-material';
 import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../../constants/design';
 import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../stack';
@@ -29,6 +30,12 @@ const menuItems: MenuItem[] = [
         label: 'Tiến Trình',
         icon: <ListIcon />,
         path: '/processes',
+    },
+    {
+        id: 'users',
+        label: 'Người Dùng',
+        icon: <PersonIcon />,
+        path: '/users',
     },
     {
         id: 'storage',

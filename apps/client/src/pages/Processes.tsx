@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Box, Button, Typography, CircularProgress } from '@mui/material';
+import { Box, Button, Typography, CircularProgress, Snackbar, Alert } from '@mui/material';
+import axios from 'axios';
 import { Block as BlockIcon, Pause as PauseIcon } from '@mui/icons-material';
 import { PageHeader } from '../components/common/PageHeader';
 import { SearchBar } from '../components/common/SearchBar';
@@ -47,9 +48,23 @@ export function Processes() {
         );
     }, [clientProcesses, searchQuery]);
 
-    const handleKill = (pid: number) => {
-        console.log('Kill process:', pid);
-        // Implement kill logic via socket/API later
+    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+        open: false,
+        message: '',
+        severity: 'success',
+    });
+
+    const handleKill = async (pid: number) => {
+        try {
+            // Optimistic update or wait for socket? Socket might be slow to update list?
+            // Let's just fire API call
+            await axios.delete(`/api/system/processes/${pid}`);
+            setSnackbar({ open: true, message: `Killed process ${pid}`, severity: 'success' });
+            // Socket should update the list automatically
+        } catch (error) {
+            console.error('Failed to kill process', error);
+            setSnackbar({ open: true, message: `Failed to kill process ${pid}`, severity: 'error' });
+        }
     };
 
     const handleSuspend = (pid: number) => {
@@ -115,6 +130,20 @@ export function Processes() {
                     Sorted by: CPU Usage (Desc)
                 </Typography>
             </StackRowJusBetween>
-        </Box>
+
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+            >
+                <Alert
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    severity={snackbar.severity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
+        </Box >
     );
 }

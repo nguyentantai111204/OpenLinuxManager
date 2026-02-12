@@ -1,4 +1,5 @@
-import { TableRow, TableCell, Typography } from '@mui/material';
+import { TableRow, TableCell, Typography, IconButton } from '@mui/material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import { StatusBadge } from '../common/StatusBadge';
 import { UserBadge } from '../common/UserBadge';
 import { Process } from './ProcessTable';
@@ -10,7 +11,7 @@ interface ProcessRowProps {
     onSuspend?: (pid: number) => void;
 }
 
-export function ProcessRow({ process }: ProcessRowProps) {
+export function ProcessRow({ process, onKill }: ProcessRowProps) {
     return (
         <TableRow
             sx={{
@@ -73,6 +74,26 @@ export function ProcessRow({ process }: ProcessRowProps) {
                 >
                     {process.memory.toFixed(0)} MB
                 </Typography>
+            </TableCell>
+            <TableCell align="right">
+                {onKill && (
+                    <IconButton
+                        size="small"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onKill(process.pid);
+                        }}
+                        sx={{
+                            color: 'error.main',
+                            '&:hover': {
+                                backgroundColor: 'error.light',
+                                color: 'error.dark',
+                            },
+                        }}
+                    >
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                )}
             </TableCell>
         </TableRow>
     );
