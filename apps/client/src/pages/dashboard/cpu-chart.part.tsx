@@ -98,6 +98,11 @@ export function CpuChart({ data }: CpuChartProps) {
                                         borderRadius: 8,
                                         boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
                                     }}
+                                    formatter={(value: number | undefined, name: string | undefined) => [
+                                        typeof value === 'number' ? `${value.toFixed(1)}%` : '',
+                                        name === 'cpu' ? 'CPU' : (name === 'ram' ? 'RAM' : (name || ''))
+                                    ]}
+                                    labelStyle={{ color: theme.palette.text.primary }}
                                 />
                                 <Area
                                     type="monotone"
