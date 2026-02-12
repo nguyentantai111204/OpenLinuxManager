@@ -186,7 +186,7 @@ const getThemeOptions = (mode: 'light' | 'dark'): ThemeOptions => ({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: 8,
+                    borderRadius: 12,
                     padding: '8px 16px',
                     boxShadow: 'none',
                     '&:hover': {
@@ -203,7 +203,7 @@ const getThemeOptions = (mode: 'light' | 'dark'): ThemeOptions => ({
         MuiCard: {
             styleOverrides: {
                 root: {
-                    borderRadius: 16,
+                    borderRadius: 12,
                     boxShadow: mode === 'light'
                         ? '0px 4px 12px rgba(0,0,0,0.08)'
                         : '0px 4px 12px rgba(0,0,0,0.4)',
@@ -221,6 +221,7 @@ const getThemeOptions = (mode: 'light' | 'dark'): ThemeOptions => ({
             styleOverrides: {
                 root: {
                     backgroundImage: 'none',
+                    borderRadius: 12,
                 },
                 elevation1: {
                     boxShadow: mode === 'light'
@@ -232,7 +233,7 @@ const getThemeOptions = (mode: 'light' | 'dark'): ThemeOptions => ({
         MuiChip: {
             styleOverrides: {
                 root: {
-                    borderRadius: 8,
+                    borderRadius: 12,
                     fontWeight: 600,
                 },
             },
@@ -243,6 +244,38 @@ const getThemeOptions = (mode: 'light' | 'dark'): ThemeOptions => ({
                     boxShadow: mode === 'light'
                         ? '0px 2px 8px rgba(0,0,0,0.08)'
                         : '0px 2px 8px rgba(0,0,0,0.4)',
+                },
+            },
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 12,
+                },
+            },
+        },
+        MuiTableContainer: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 12,
+                    boxShadow: 'none',
+                    border: mode === 'light'
+                        ? '1px solid rgba(0,0,0,0.08)'
+                        : '1px solid rgba(255,255,255,0.08)',
+                },
+            },
+        },
+        MuiTable: {
+            styleOverrides: {
+                root: {
+                    '& .MuiTableCell-root': {
+                        borderBottom: mode === 'light'
+                            ? '1px solid rgba(0,0,0,0.06)'
+                            : '1px solid rgba(255,255,255,0.06)',
+                    },
+                    '& .MuiTableRow-root:last-child .MuiTableCell-root': {
+                        borderBottom: 'none',
+                    },
                 },
             },
         },

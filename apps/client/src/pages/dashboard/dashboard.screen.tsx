@@ -54,7 +54,7 @@ export function Dashboard() {
                     <Alert
                         severity="warning"
                         icon={<CircularProgress size={20} />}
-                        sx={{ borderRadius: BORDER_RADIUS.md / 8 }}
+                        sx={{ borderRadius: BORDER_RADIUS.lg }}
                     >
                         Connecting to server...
                     </Alert>
@@ -179,7 +179,7 @@ export function Dashboard() {
                 {systemStats.error && (
                     <Fade in timeout={500}>
                         <Box>
-                            <Alert severity="error" sx={{ borderRadius: BORDER_RADIUS.md / 8 }}>
+                            <Alert severity="error" sx={{ borderRadius: BORDER_RADIUS.lg }}>
                                 {systemStats.error}
                             </Alert>
                         </Box>

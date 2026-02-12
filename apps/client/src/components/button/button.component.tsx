@@ -14,7 +14,7 @@ const StyledButton = styled(MuiButton, {
     textTransform: 'none',
     fontWeight: TYPOGRAPHY.fontWeight.semibold,
     fontSize: TYPOGRAPHY.fontSize.sm,
-    borderRadius: rounded ? BORDER_RADIUS.full : BORDER_RADIUS.md / 8,
+    borderRadius: rounded ? BORDER_RADIUS.full : BORDER_RADIUS.lg,
     padding: '8px 16px',
     boxShadow: 'none',
     transition: `all ${TRANSITIONS.duration.normal} ${TRANSITIONS.easing.easeInOut}`,

@@ -76,7 +76,7 @@ export function Storage() {
                         </Typography>
                         <StackRowComponent sx={{ flexWrap: 'wrap', gap: SPACING.lg / 8 }}>
                             {storageData.map((drive) => (
-                                <Box key={drive.mountPoint} sx={{ flex: '1 1 300px', p: SPACING.md / 8, border: `1px solid ${COLORS.border.light}`, borderRadius: BORDER_RADIUS.md }}>
+                                <Box key={drive.mountPoint} sx={{ flex: '1 1 300px', p: SPACING.md / 8, border: `1px solid ${COLORS.border.light}`, borderRadius: BORDER_RADIUS.lg }}>
                                     <Typography variant="subtitle2" sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>{drive.mountPoint} ({drive.name})</Typography>
                                     <StackRowJusBetweenComponent sx={{ mb: 0.5 }}>
                                         <Typography variant="caption" color="text.secondary">Usage</Typography>

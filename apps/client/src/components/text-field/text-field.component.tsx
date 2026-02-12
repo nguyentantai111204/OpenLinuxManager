@@ -6,7 +6,7 @@ export type TextFieldProps = MuiTextFieldProps;
 
 const StyledTextField = styled(MuiTextField)<MuiTextFieldProps>(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
-        borderRadius: BORDER_RADIUS.md / 8,
+        borderRadius: BORDER_RADIUS.lg,
         backgroundColor: theme.palette.mode === 'dark' ? alpha(COLORS.background.elevated, 0.4) : COLORS.background.paper,
         transition: 'all 0.2s ease-in-out',
 

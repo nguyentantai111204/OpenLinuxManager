@@ -95,7 +95,7 @@ export function CpuChart({ data }: CpuChartProps) {
                                     contentStyle={{
                                         backgroundColor: theme.palette.background.paper,
                                         border: `1px solid ${theme.palette.divider}`,
-                                        borderRadius: 8,
+                                        borderRadius: 12,
                                         boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
                                     }}
                                     formatter={(value: number | undefined, name: string | undefined) => [

@@ -136,7 +136,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                             <ListItemButton
                                 onClick={() => handleNavigate(item.path)}
                                 sx={{
-                                    borderRadius: BORDER_RADIUS.lg / 8,
+                                    borderRadius: BORDER_RADIUS.lg,
                                     backgroundColor: isActive ? COLORS.sidebar.active : 'transparent',
                                     color: COLORS.sidebar.text,
                                     transition: `all ${TRANSITIONS.duration.fast} ${TRANSITIONS.easing.easeInOut}`,

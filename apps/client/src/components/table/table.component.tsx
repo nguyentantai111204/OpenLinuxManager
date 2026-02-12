@@ -13,7 +13,7 @@ import {
 import { BORDER_RADIUS, COLORS, TYPOGRAPHY, SHADOWS, SPACING, TRANSITIONS } from '../../constants/design';
 
 export const TableContainerComponent = styled(MuiTableContainer)(({ theme }) => ({
-    borderRadius: BORDER_RADIUS.lg / 8,
+    borderRadius: BORDER_RADIUS.lg,
     boxShadow: SHADOWS.sm,
     border: theme.palette.mode === 'dark' ? `1px solid ${COLORS.border.main}` : 'none',
     backgroundColor: theme.palette.background.paper,
