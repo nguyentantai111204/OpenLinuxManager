@@ -23,37 +23,37 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
     {
         id: 'dashboard',
-        label: 'Tổng Quan',
+        label: 'Dashboard',
         icon: <DashboardIcon />,
         path: '/',
     },
     {
         id: 'processes',
-        label: 'Tiến Trình',
+        label: 'Processes',
         icon: <ListIcon />,
         path: '/processes',
     },
     {
         id: 'users',
-        label: 'Người Dùng',
+        label: 'Users',
         icon: <PersonIcon />,
         path: '/users',
     },
     {
         id: 'storage',
-        label: 'Ổ Đĩa',
+        label: 'Storage',
         icon: <StorageIcon />,
         path: '/storage',
     },
     {
         id: 'audit-logs',
-        label: 'Nhật Ký',
+        label: 'Audit Logs',
         icon: <HistoryIcon />,
         path: '/audit-logs',
     },
     {
         id: 'settings',
-        label: 'Cấu Hình',
+        label: 'Settings',
         icon: <SettingsIcon />,
         path: '/settings',
     },

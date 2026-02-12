@@ -40,7 +40,7 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         mb: SPACING.lg / 8,
                     }}
                 >
-                    Phân bổ RAM
+                    RAM Allocation
                 </Typography>
 
                 <Box sx={{ position: 'relative', height: 400 }}>
