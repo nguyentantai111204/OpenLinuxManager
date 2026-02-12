@@ -85,7 +85,7 @@ export function AuditLogs() {
                                     {logs.map((log) => (
                                         <TableRowComponent key={log.id} hover>
                                             <TableCellComponent sx={{ whiteSpace: 'nowrap', width: 180 }}>
-                                                {formatDate(log.timestamp)}
+                                                {formatDate(log.createdAt)}
                                             </TableCellComponent>
                                             <TableCellComponent>
                                                 <Chip

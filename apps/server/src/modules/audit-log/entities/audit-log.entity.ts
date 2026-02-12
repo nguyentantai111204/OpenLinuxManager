@@ -1,10 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseEntity } from '@open-linux-manager/api';
 
 @Entity()
-export class AuditLog {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-
+export class AuditLog extends BaseEntity {
     @Column()
     action: string;
 
@@ -16,7 +14,4 @@ export class AuditLog {
 
     @Column({ default: 'admin' }) // Hardcoded for now
     performedBy: string;
-
-    @CreateDateColumn()
-    timestamp: Date;
 }
