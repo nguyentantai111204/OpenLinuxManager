@@ -16,12 +16,16 @@ export function Processes() {
     const [selectedPids, setSelectedPids] = useState<number[]>([]);
 
     const mapStatus = (status: string): ProcessStatus => {
-        const s = status.toLowerCase();
-        if (['running', 'idle'].includes(s)) return 'running';
-        if (['sleeping', 'waiting', 'blocked', 'paging', 'unknown'].includes(s)) return 'sleeping';
-        if (['stopped', 'dead'].includes(s)) return 'stopped';
-        if (s === 'zombie') return 'zombie';
-        return 'sleeping';
+        const s = status.toUpperCase().charAt(0);
+        switch (s) {
+            case 'R': return 'running';
+            case 'S':
+            case 'D':
+            case 'I': return 'sleeping';
+            case 'T': return 'stopped';
+            case 'Z': return 'zombie';
+            default: return 'sleeping';
+        }
     };
 
     const clientProcesses: Process[] = useMemo(() => {
@@ -31,7 +35,7 @@ export function Processes() {
             user: p.user,
             status: mapStatus(p.status),
             cpu: p.cpu,
-            mem: p.memory,
+            mem: parseFloat(p.memory.toFixed(1)),
         }));
     }, [processes]);
 

@@ -53,7 +53,7 @@ export function ProcessRow({ process, onKill, selected, onToggleSelection }: Pro
             </TableCellComponent>
             <TableCellComponent align="right">
                 <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-                    {process.mem}%
+                    {process.mem} MB
                 </Typography>
             </TableCellComponent>
             <TableCellComponent align="right">

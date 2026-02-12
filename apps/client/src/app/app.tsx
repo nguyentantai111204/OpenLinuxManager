@@ -7,12 +7,15 @@ import { UserManagement } from '../pages/user-management/user-management.screen'
 import { AuditLogs } from '../pages/audit-logs/audit-logs.screen';
 import { MainLayout } from '../layouts/main-layout';
 
+import { Services } from '../pages/services/services.screen';
+
 export function App() {
   return (
     <MainLayout>
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/processes" element={<Processes />} />
+        <Route path="/services" element={<Services />} />
         <Route path="/users" element={<UserManagement />} />
         <Route path="/storage" element={<Storage />} />
         <Route path="/audit-logs" element={<AuditLogs />} />

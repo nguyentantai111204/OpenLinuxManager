@@ -5,9 +5,11 @@ import {
     Dashboard as DashboardIcon,
     List as ListIcon,
     Storage as StorageIcon,
+    Dns as DnsIcon,
+    History as HistoryIcon,
     Settings as SettingsIcon,
     Person as PersonIcon,
-    History as HistoryIcon,
+    Construction as ConstructionIcon,
 } from '@mui/icons-material';
 import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
 import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../components/stack';
@@ -44,6 +46,12 @@ const menuItems: MenuItem[] = [
         label: 'Storage',
         icon: <StorageIcon />,
         path: '/storage',
+    },
+    {
+        id: 'services',
+        label: 'Services',
+        icon: <ConstructionIcon />,
+        path: '/services',
     },
     {
         id: 'audit-logs',

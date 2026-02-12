@@ -82,7 +82,7 @@ export function ProcessTable({ processes, onKill, selectedPids, onSelectionChang
         { id: 'user', label: 'USER', align: 'left' },
         { id: 'status', label: 'STATUS', align: 'left' },
         { id: 'cpu', label: 'CPU %', align: 'right' },
-        { id: 'mem', label: 'MEM %', align: 'right' },
+        { id: 'mem', label: 'MEMORY', align: 'right' },
         { id: 'pid', label: 'ACTIONS', align: 'right' },
     ];
 

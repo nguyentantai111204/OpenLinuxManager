@@ -8,6 +8,7 @@ import { UserManagementModule } from '../modules/user-management/user-management
 import { SystemMonitorModule } from '../modules/system-monitor/system-monitor.module';
 import { AuditLogModule } from '../modules/audit-log/audit-log.module';
 import { AuditInterceptor } from '../common/interceptors/audit.interceptor';
+import { ServiceManagerModule } from '../modules/service-manager/service-manager.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { AuditInterceptor } from '../common/interceptors/audit.interceptor';
     UserManagementModule,
     SystemMonitorModule,
     AuditLogModule,
+    ServiceManagerModule,
   ],
   controllers: [AppController],
   providers: [
