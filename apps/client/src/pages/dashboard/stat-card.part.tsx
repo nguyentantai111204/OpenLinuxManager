@@ -51,7 +51,7 @@ export function StatCard({
                     <Box
                         sx={{
                             p: SPACING.sm / 8,
-                            borderRadius: BORDER_RADIUS.md / 8,
+                            borderRadius: BORDER_RADIUS.md,
                             backgroundColor: iconBgColor || alpha(iconColor, 0.1),
                             display: 'flex',
                             alignItems: 'center',
@@ -66,7 +66,7 @@ export function StatCard({
                             sx={{
                                 px: SPACING.sm / 8,
                                 py: SPACING.xs / 8,
-                                borderRadius: BORDER_RADIUS.sm / 8,
+                                borderRadius: BORDER_RADIUS.sm,
                                 backgroundColor: changeStyle.bg,
                                 color: changeStyle.text,
                                 fontSize: TYPOGRAPHY.fontSize.xs,

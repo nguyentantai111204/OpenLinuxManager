@@ -9,7 +9,7 @@ interface CustomCardProps extends CardProps {
 const StyledCard = styled(MuiCard, {
     shouldForwardProp: (prop) => prop !== 'hoverable' && prop !== 'flat',
 })<CustomCardProps>(({ theme, hoverable, flat }) => ({
-    borderRadius: BORDER_RADIUS.lg / 8,
+    borderRadius: BORDER_RADIUS.lg,
     backgroundColor: theme.palette.mode === 'dark' ? COLORS.background.paper : '#ffffff',
     boxShadow: flat ? 'none' : SHADOWS.sm,
     border: flat ? `1px solid ${theme.palette.divider}` : 'none',
@@ -24,5 +24,9 @@ const StyledCard = styled(MuiCard, {
 }));
 
 export function CardComponent({ children, sx, ...props }: CardProps) {
-    return <StyledCard elevation={0} {...props} />;
+    return (
+        <StyledCard elevation={0} sx={sx} {...props}>
+            {children}
+        </StyledCard>
+    );
 }
