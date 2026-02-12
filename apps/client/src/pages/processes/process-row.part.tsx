@@ -3,7 +3,7 @@ import { Delete as DeleteIcon } from '@mui/icons-material';
 import { StatusBadge } from '../../components/status-badge/status-badge';
 import { UserBadge } from '../../components/user-badge/user-badge';
 import { Process } from './process-table.part';
-import { SPACING, TYPOGRAPHY, TRANSITIONS } from '../../constants/design';
+import { SPACING, TYPOGRAPHY, TRANSITIONS, COLORS } from '../../constants/design';
 
 interface ProcessRowProps {
     process: Process;
@@ -18,7 +18,7 @@ export function ProcessRow({ process, onKill }: ProcessRowProps) {
                 '&:hover': {
                     backgroundColor: 'action.hover',
                 },
-                transition: `background-color ${TRANSITIONS.duration.fast} ${TRANSITIONS.easing.easeInOut}`,
+                transition: `background-color ${TRANSITIONS.duration.normal} ${TRANSITIONS.easing.easeInOut}`,
             }}
         >
             <TableCell>
@@ -85,9 +85,11 @@ export function ProcessRow({ process, onKill }: ProcessRowProps) {
                         }}
                         sx={{
                             color: 'error.main',
+                            transition: `all ${TRANSITIONS.duration.fast} ${TRANSITIONS.easing.easeInOut}`,
                             '&:hover': {
-                                backgroundColor: 'error.light',
-                                color: 'error.dark',
+                                backgroundColor: COLORS.error.light,
+                                color: COLORS.error.dark,
+                                transform: 'scale(1.1)',
                             },
                         }}
                     >

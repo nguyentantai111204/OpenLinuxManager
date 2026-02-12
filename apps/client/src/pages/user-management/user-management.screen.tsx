@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Person as PersonIcon } from '@mui/icons-material';
 import { axiosClient as axios } from '../../utils/axios-client';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS } from '../../constants/design';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS, ICON_SIZES } from '../../constants/design';
 import { StackRow, StackCol } from '../../components/stack';
 
 interface User {
@@ -105,10 +105,23 @@ export function UserManagement() {
         <Box sx={{ p: SPACING.lg / 8 }}>
             <StackRow sx={{ mb: SPACING.lg / 8, justifyContent: 'space-between' }}>
                 <Box>
-                    <Typography variant="h4" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, mb: 1 }}>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            fontWeight: TYPOGRAPHY.fontWeight.bold,
+                            fontSize: TYPOGRAPHY.fontSize['3xl'],
+                            mb: SPACING.xs / 8
+                        }}
+                    >
                         User Management
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography
+                        variant="body1"
+                        sx={{
+                            color: 'text.secondary',
+                            fontSize: TYPOGRAPHY.fontSize.base,
+                        }}
+                    >
                         Manage system users and permissions
                     </Typography>
                 </Box>
@@ -137,21 +150,27 @@ export function UserManagement() {
                 <Table>
                     <TableHead>
                         <TableRow sx={{ backgroundColor: 'background.default' }}>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>USERNAME</TableCell>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>UID</TableCell>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>GID</TableCell>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>HOME DIRECTORY</TableCell>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>SHELL</TableCell>
-                            <TableCell align="right" sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>ACTIONS</TableCell>
+                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>USERNAME</TableCell>
+                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>UID</TableCell>
+                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>GID</TableCell>
+                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>HOME DIRECTORY</TableCell>
+                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>SHELL</TableCell>
+                            <TableCell align="right" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>ACTIONS</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {users.map((user) => (
                             <TableRow key={user.username} hover>
                                 <TableCell>
-                                    <StackRow spacing={1} alignItems="center">
-                                        <PersonIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
-                                        <Typography variant="body2" fontWeight="medium">
+                                    <StackRow spacing={SPACING.sm / 8} alignItems="center">
+                                        <PersonIcon sx={{ color: 'text.secondary', fontSize: ICON_SIZES.sm }} />
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                fontWeight: TYPOGRAPHY.fontWeight.medium,
+                                                fontSize: TYPOGRAPHY.fontSize.sm,
+                                            }}
+                                        >
                                             {user.username}
                                         </Typography>
                                     </StackRow>

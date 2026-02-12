@@ -85,12 +85,12 @@ export function ProcessTable({ processes, onKill, onSuspend }: ProcessTableProps
                                 key={headCell.id}
                                 align={headCell.align}
                                 sx={{
-                                    fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                                    fontWeight: TYPOGRAPHY.fontWeight.bold,
                                     fontSize: TYPOGRAPHY.fontSize.xs,
                                     color: 'text.secondary',
                                     textTransform: 'uppercase',
                                     letterSpacing: '0.05em',
-                                    py: SPACING.md / 8,
+                                    py: SPACING.lg / 8,
                                 }}
                             >
                                 <TableSortLabel

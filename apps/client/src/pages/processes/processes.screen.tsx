@@ -6,7 +6,7 @@ import { PageHeader } from '../../components/page-header/page-header';
 import { SearchBar } from '../../components/search-bar/search-bar';
 import { ProcessTable, Process } from './process-table.part';
 import { useSocket, SystemProcess } from '../../hooks/use-socket';
-import { SPACING } from '../../constants/design';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../constants/design';
 import { StackRow, StackRowJusBetween, StackColAlignCenterJusCenter } from '../../components/stack';
 import { ProcessStatus } from '../../components/status-badge/status-badge';
 
@@ -76,8 +76,15 @@ export function Processes() {
         return (
             <Box sx={{ p: SPACING.lg / 8 }}>
                 <StackColAlignCenterJusCenter sx={{ minHeight: '50vh' }}>
-                    <CircularProgress />
-                    <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
+                    <CircularProgress color="primary" />
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            mt: SPACING.md / 8,
+                            color: 'text.secondary',
+                            fontWeight: TYPOGRAPHY.fontWeight.medium,
+                        }}
+                    >
                         Connecting to server...
                     </Typography>
                 </StackColAlignCenterJusCenter>
@@ -96,7 +103,12 @@ export function Processes() {
                             variant="outlined"
                             startIcon={<BlockIcon />}
                             size="small"
-                            sx={{ textTransform: 'none' }}
+                            color="error"
+                            sx={{
+                                textTransform: 'none',
+                                borderRadius: BORDER_RADIUS.md / 8,
+                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                            }}
                         >
                             Kill
                         </Button>
@@ -104,7 +116,11 @@ export function Processes() {
                             variant="outlined"
                             startIcon={<PauseIcon />}
                             size="small"
-                            sx={{ textTransform: 'none' }}
+                            sx={{
+                                textTransform: 'none',
+                                borderRadius: BORDER_RADIUS.md / 8,
+                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
+                            }}
                         >
                             Suspend
                         </Button>
@@ -123,10 +139,22 @@ export function Processes() {
             />
 
             <StackRowJusBetween sx={{ mt: SPACING.md / 8 }}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: 'text.secondary',
+                        fontWeight: TYPOGRAPHY.fontWeight.medium,
+                    }}
+                >
                     Total Processes: {processes.length}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: 'text.secondary',
+                        fontWeight: TYPOGRAPHY.fontWeight.medium,
+                    }}
+                >
                     Sorted by: CPU Usage (Desc)
                 </Typography>
             </StackRowJusBetween>
@@ -139,7 +167,10 @@ export function Processes() {
                 <Alert
                     onClose={() => setSnackbar({ ...snackbar, open: false })}
                     severity={snackbar.severity}
-                    sx={{ width: '100%' }}
+                    sx={{
+                        width: '100%',
+                        borderRadius: BORDER_RADIUS.md / 8,
+                    }}
                 >
                     {snackbar.message}
                 </Alert>

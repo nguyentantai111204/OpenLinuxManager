@@ -5,7 +5,7 @@ import { useSocket } from '../../hooks/use-socket';
 import { CpuChart } from './cpu-chart.part';
 import { RamChart } from './ram-chart.part';
 import { PageHeader } from '../../components/page-header/page-header';
-import { SPACING, COLORS } from '../../constants/design';
+import { SPACING, COLORS, BORDER_RADIUS } from '../../constants/design';
 import { StatCard } from './stat-card.part';
 import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../../components/stack';
 
@@ -50,11 +50,11 @@ export function Dashboard() {
     if (!isConnected) {
         return (
             <Box sx={{ p: SPACING.xl / 8 }}>
-                <Fade in timeout={500}>
+                <Fade in timeout={300}>
                     <Alert
                         severity="warning"
                         icon={<CircularProgress size={20} />}
-                        sx={{ borderRadius: SPACING.md / 8 }}
+                        sx={{ borderRadius: BORDER_RADIUS.md / 8 }}
                     >
                         Connecting to server...
                     </Alert>
@@ -67,7 +67,7 @@ export function Dashboard() {
         return (
             <Box sx={{ p: SPACING.xl / 8 }}>
                 <StackColAlignCenterJusCenter sx={{ minHeight: '50vh' }}>
-                    <CircularProgress size={60} thickness={4} />
+                    <CircularProgress size={60} thickness={4} color="primary" />
                 </StackColAlignCenterJusCenter>
             </Box>
         );
@@ -158,8 +158,8 @@ export function Dashboard() {
                     </Box>
                 </StackRow>
 
-                <StackRow spacing={SPACING.lg / 8} sx={{ flex: 1 }}>
-                    <Box sx={{ flex: 2 }}>
+                <StackRow spacing={SPACING.lg / 8} sx={{ flex: 1, minHeight: 0 }}>
+                    <Box sx={{ flex: 2, height: '100%' }}>
                         <Grow in timeout={700}>
                             <Box sx={{ height: '100%' }}>
                                 <CpuChart data={cpuHistory} />
@@ -167,7 +167,7 @@ export function Dashboard() {
                         </Grow>
                     </Box>
 
-                    <Box sx={{ flex: 1 }}>
+                    <Box sx={{ flex: 1, height: '100%' }}>
                         <Grow in timeout={800}>
                             <Box sx={{ height: '100%' }}>
                                 <RamChart

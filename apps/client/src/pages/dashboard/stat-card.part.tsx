@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Card, CardContent, Typography, Box, Stack, SxProps, Theme } from '@mui/material';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../constants/design';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS, TRANSITIONS, SHADOWS } from '../../constants/design';
 import { StackRowJusBetween, StackRow } from '../../components/stack';
 
 interface StatCardProps {
@@ -22,8 +22,8 @@ export function StatCard({
     subtitle,
     change,
     changeType = 'neutral',
-    iconColor = '#3b82f6',
-    iconBgColor = '#eff6ff',
+    iconColor = COLORS.primary.main,
+    iconBgColor = COLORS.background.elevated,
     sx
 }: StatCardProps) {
     const changeColors = {
@@ -42,9 +42,9 @@ export function StatCard({
                 borderColor: 'divider',
                 height: '100%',
                 p: SPACING.md / 8,
-                transition: 'all 0.2s ease-in-out',
+                transition: `all ${TRANSITIONS.duration.normal} ${TRANSITIONS.easing.easeInOut}`,
                 '&:hover': {
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                    boxShadow: SHADOWS.md,
                     transform: 'translateY(-2px)',
                 },
                 ...sx

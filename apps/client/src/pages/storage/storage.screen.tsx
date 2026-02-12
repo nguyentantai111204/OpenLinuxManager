@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Typography, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
 import { PageHeader } from '../../components/page-header/page-header';
-import { SPACING, COLORS, BORDER_RADIUS } from '../../constants/design';
+import { SPACING, COLORS, BORDER_RADIUS, TYPOGRAPHY } from '../../constants/design';
 import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../../components/stack';
 import { useSocket, StorageData } from '../../hooks/use-socket';
 
@@ -11,8 +11,15 @@ export function Storage() {
         return (
             <Box sx={{ p: SPACING.lg / 8 }}>
                 <StackColAlignCenterJusCenter sx={{ minHeight: '50vh' }}>
-                    <CircularProgress />
-                    <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
+                    <CircularProgress color="primary" />
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            mt: SPACING.md / 8,
+                            color: 'text.secondary',
+                            fontWeight: TYPOGRAPHY.fontWeight.medium,
+                        }}
+                    >
                         Loading storage info...
                     </Typography>
                 </StackColAlignCenterJusCenter>
@@ -43,11 +50,12 @@ export function Storage() {
                                     variant="determinate"
                                     value={(storage.used / storage.total) * 100}
                                     sx={{
-                                        height: 10,
-                                        borderRadius: 5,
+                                        height: 8,
+                                        borderRadius: BORDER_RADIUS.full,
                                         backgroundColor: COLORS.background.elevated,
                                         '& .MuiLinearProgress-bar': {
-                                            backgroundColor: COLORS.chart.disk
+                                            backgroundColor: COLORS.chart.disk,
+                                            borderRadius: BORDER_RADIUS.full,
                                         }
                                     }}
                                 />

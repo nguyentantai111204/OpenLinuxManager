@@ -13,7 +13,7 @@ import {
     MenuItem
 } from '@mui/material';
 import { PageHeader } from '../../components/page-header/page-header';
-import { SPACING, COLORS, BORDER_RADIUS } from '../../constants/design';
+import { SPACING, COLORS, BORDER_RADIUS, TYPOGRAPHY, TRANSITIONS } from '../../constants/design';
 import { useSocket } from '../../hooks/use-socket';
 import { StackCol, StackRow, StackRowJusBetween } from '../../components/stack';
 
@@ -31,11 +31,20 @@ export function Settings() {
                         <StackCol spacing={SPACING.lg / 8}>
                             {/* General Settings */}
                             <Box>
-                                <Typography variant="h6" fontWeight="bold" sx={{ mb: SPACING.md / 8 }}>General</Typography>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        fontWeight: TYPOGRAPHY.fontWeight.bold,
+                                        mb: SPACING.md / 8,
+                                        fontSize: TYPOGRAPHY.fontSize.lg,
+                                    }}
+                                >
+                                    General
+                                </Typography>
                                 <StackCol spacing={SPACING.md / 8}>
                                     <StackRowJusBetween>
                                         <Box>
-                                            <Typography variant="body1">Dark Mode</Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: TYPOGRAPHY.fontWeight.medium }}>Dark Mode</Typography>
                                             <Typography variant="caption" color="text.secondary">Use dark theme for the application</Typography>
                                         </Box>
                                         <Switch defaultChecked />
@@ -43,14 +52,19 @@ export function Settings() {
                                     <Divider />
                                     <StackRowJusBetween>
                                         <Box>
-                                            <Typography variant="body1">Refresh Rate</Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: TYPOGRAPHY.fontWeight.medium }}>Refresh Rate</Typography>
                                             <Typography variant="caption" color="text.secondary">Interval for fetching system stats</Typography>
                                         </Box>
                                         <TextField
                                             select
                                             size="small"
                                             defaultValue={1000}
-                                            sx={{ width: 150 }}
+                                            sx={{
+                                                width: 150,
+                                                '& .MuiInputBase-root': {
+                                                    borderRadius: BORDER_RADIUS.md / 8,
+                                                }
+                                            }}
                                         >
                                             <MenuItem value={500}>500ms</MenuItem>
                                             <MenuItem value={1000}>1000ms</MenuItem>
@@ -63,17 +77,31 @@ export function Settings() {
 
                             {/* Connection Settings */}
                             <Box>
-                                <Typography variant="h6" fontWeight="bold" sx={{ mb: SPACING.md / 8 }}>Connection</Typography>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        fontWeight: TYPOGRAPHY.fontWeight.bold,
+                                        mb: SPACING.md / 8,
+                                        fontSize: TYPOGRAPHY.fontSize.lg,
+                                    }}
+                                >
+                                    Connection
+                                </Typography>
                                 <StackCol spacing={SPACING.md / 8}>
                                     <StackRowJusBetween>
                                         <Box>
-                                            <Typography variant="body1">Server URL</Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: TYPOGRAPHY.fontWeight.medium }}>Server URL</Typography>
                                             <Typography variant="caption" color="text.secondary">WebSocket server address</Typography>
                                         </Box>
                                         <TextField
                                             size="small"
                                             defaultValue="http://localhost:3000"
-                                            sx={{ width: 250 }}
+                                            sx={{
+                                                width: 250,
+                                                '& .MuiInputBase-root': {
+                                                    borderRadius: BORDER_RADIUS.md / 8,
+                                                }
+                                            }}
                                             InputProps={{
                                                 readOnly: true,
                                             }}
@@ -84,7 +112,16 @@ export function Settings() {
 
                             {/* About */}
                             <Box>
-                                <Typography variant="h6" fontWeight="bold" sx={{ mb: SPACING.md / 8 }}>About</Typography>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        fontWeight: TYPOGRAPHY.fontWeight.bold,
+                                        mb: SPACING.md / 8,
+                                        fontSize: TYPOGRAPHY.fontSize.lg,
+                                    }}
+                                >
+                                    About
+                                </Typography>
                                 <StackCol spacing={SPACING.xs / 8}>
                                     <Typography variant="body2" color="text.secondary">OpenLinuxManager Client v1.0.0</Typography>
                                     <Typography variant="body2" color="text.secondary">© 2026 OpenLinuxManager Team</Typography>
