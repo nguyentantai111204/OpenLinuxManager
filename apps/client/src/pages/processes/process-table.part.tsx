@@ -1,6 +1,7 @@
 import React from 'react';
 import { TableBody, TableSortLabel, Box } from '@mui/material';
 import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent } from '../../components';
+import { StackColAlignCenterJusCenterComponent } from '../../components/stack';
 import { SPACING } from '../../constants/design';
 import { ProcessStatus } from '../../components/status-badge/status-badge.component';
 import { ProcessRow } from './process-row.part';
@@ -98,9 +99,9 @@ export function ProcessTable({ processes, onKill }: ProcessTableProps) {
                     {sortedProcesses.length === 0 && (
                         <TableRowComponent>
                             <TableCellComponent colSpan={7} align="center" sx={{ py: SPACING.xl / 8 }}>
-                                <Box sx={{ color: 'text.secondary' }}>
+                                <StackColAlignCenterJusCenterComponent sx={{ color: 'text.secondary' }}>
                                     No processes found
-                                </Box>
+                                </StackColAlignCenterJusCenterComponent>
                             </TableCellComponent>
                         </TableRowComponent>
                     )}

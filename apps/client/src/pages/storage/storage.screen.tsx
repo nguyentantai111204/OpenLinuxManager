@@ -2,7 +2,7 @@ import { Box, Typography, LinearProgress, CircularProgress, alpha } from '@mui/m
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { CardComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent } from '../../components';
 import { SPACING, COLORS, BORDER_RADIUS, TYPOGRAPHY } from '../../constants/design';
-import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
+import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent, StackRowJusBetweenComponent } from '../../components/stack';
 import { useSocket } from '../../hooks/use-socket';
 
 export function Storage() {
@@ -53,11 +53,11 @@ export function Storage() {
                                 value={(storage.used / (storage.total || 1)) * 100}
                                 sx={{
                                     height: 8,
-                                    borderRadius: BORDER_RADIUS.full / 8,
+                                    borderRadius: BORDER_RADIUS.full,
                                     backgroundColor: COLORS.background.elevated,
                                     '& .MuiLinearProgress-bar': {
                                         backgroundColor: COLORS.chart.disk,
-                                        borderRadius: BORDER_RADIUS.full / 8,
+                                        borderRadius: BORDER_RADIUS.full,
                                     }
                                 }}
                             />
@@ -76,16 +76,16 @@ export function Storage() {
                         </Typography>
                         <StackRowComponent sx={{ flexWrap: 'wrap', gap: SPACING.lg / 8 }}>
                             {storageData.map((drive) => (
-                                <Box key={drive.mountPoint} sx={{ flex: '1 1 300px', p: SPACING.md / 8, border: `1px solid ${COLORS.border.light}`, borderRadius: BORDER_RADIUS.md / 8 }}>
+                                <Box key={drive.mountPoint} sx={{ flex: '1 1 300px', p: SPACING.md / 8, border: `1px solid ${COLORS.border.light}`, borderRadius: BORDER_RADIUS.md }}>
                                     <Typography variant="subtitle2" sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>{drive.mountPoint} ({drive.name})</Typography>
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                    <StackRowJusBetweenComponent sx={{ mb: 0.5 }}>
                                         <Typography variant="caption" color="text.secondary">Usage</Typography>
                                         <Typography variant="caption" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold }}>{drive.usePercent}%</Typography>
-                                    </Box>
+                                    </StackRowJusBetweenComponent>
                                     <LinearProgress
                                         variant="determinate"
                                         value={parseInt(drive.usePercent.toString())}
-                                        sx={{ height: 8, borderRadius: 4, bgcolor: alpha(COLORS.primary.main, 0.1) }}
+                                        sx={{ height: 8, borderRadius: BORDER_RADIUS.sm, bgcolor: alpha(COLORS.primary.main, 0.1) }}
                                     />
                                 </Box>
                             ))}
@@ -115,16 +115,16 @@ export function Storage() {
                                     <TableCellComponent>{drive.avail}</TableCellComponent>
                                     <TableCellComponent sx={{ minWidth: 150 }}>
                                         <Box sx={{ width: '100%' }}>
-                                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                            <StackRowJusBetweenComponent sx={{ mb: 0.5 }}>
                                                 <LinearProgress
                                                     variant="determinate"
                                                     value={parseInt(drive.usePercent.toString())}
-                                                    sx={{ flexGrow: 1, height: 6, borderRadius: 3, mr: 1, alignSelf: 'center' }}
+                                                    sx={{ flexGrow: 1, height: 6, borderRadius: BORDER_RADIUS.sm, mr: 1, alignSelf: 'center' }}
                                                 />
                                                 <Typography variant="caption" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold }}>
                                                     {drive.usePercent}%
                                                 </Typography>
-                                            </Box>
+                                            </StackRowJusBetweenComponent>
                                         </Box>
                                     </TableCellComponent>
                                     <TableCellComponent>{drive.mountPoint}</TableCellComponent>

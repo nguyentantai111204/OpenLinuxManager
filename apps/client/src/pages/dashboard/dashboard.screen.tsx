@@ -16,7 +16,7 @@ interface SystemHistoryPoint {
 }
 
 export function Dashboard() {
-    const { systemStats, isConnected } = useSocket();
+    const { systemStats, isConnected, storage } = useSocket();
     const [history, setHistory] = useState<SystemHistoryPoint[]>([]);
 
     useEffect(() => {
@@ -128,10 +128,10 @@ export function Dashboard() {
                                 <StatCard
                                     icon={<Storage />}
                                     title="Disk Space"
-                                    value="64%"
-                                    change="+0.1%"
+                                    value={storage ? `${Math.round((storage.used / storage.total) * 100)}%` : '...'}
+                                    change={storage ? `${storage.free} GB` : '...'}
                                     changeType="positive"
-                                    subtitle="120GB Free"
+                                    subtitle="Free Space"
                                     iconColor={COLORS.chart.disk}
                                 />
                             </Box>

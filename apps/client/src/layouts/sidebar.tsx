@@ -11,6 +11,7 @@ import {
 } from '@mui/icons-material';
 import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
 import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../components/stack';
+import { useSocket } from '../hooks/use-socket';
 
 interface MenuItem {
     id: string;
@@ -68,6 +69,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const { systemStats } = useSocket();
 
     const handleNavigate = (path: string) => {
         navigate(path);
@@ -191,7 +193,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                             fontSize: TYPOGRAPHY.fontSize.sm,
                         }}
                     >
-                        Admin User
+                        System Admin
                     </Typography>
                     <Typography
                         variant="caption"
@@ -200,7 +202,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                             fontSize: TYPOGRAPHY.fontSize.xs,
                         }}
                     >
-                        Ubuntu 22.04 LTS
+                        {systemStats?.os_pretty_name || 'Loading OS...'}
                     </Typography>
                 </Box>
             </StackRowComponent>

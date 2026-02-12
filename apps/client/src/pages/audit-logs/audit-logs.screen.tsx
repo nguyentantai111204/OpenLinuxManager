@@ -4,7 +4,7 @@ import { PageHeaderComponent } from '../../components';
 import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, CardComponent } from '../../components';
 import { AuditLogApi } from '../../apis/audit-log/audit-log.api';
 import { SPACING, COLORS } from '../../constants/design';
-import { StackColComponent } from '../../components/stack';
+import { StackColComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
 import { AuditLog } from '../../apis/audit-log/audit-log.interface';
 
 export function AuditLogs() {
@@ -66,9 +66,9 @@ export function AuditLogs() {
 
                 <CardComponent sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                     {loading && logs.length === 0 ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                        <StackColAlignCenterJusCenterComponent sx={{ p: 4 }}>
                             <CircularProgress />
-                        </Box>
+                        </StackColAlignCenterJusCenterComponent>
                     ) : (
                         <TableContainerComponent sx={{ flex: 1, overflow: 'auto' }}>
                             <TableComponent stickyHeader>

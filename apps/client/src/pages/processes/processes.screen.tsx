@@ -156,7 +156,7 @@ export function Processes() {
                     severity={snackbar.severity}
                     sx={{
                         width: '100%',
-                        borderRadius: BORDER_RADIUS.md / 8,
+                        borderRadius: BORDER_RADIUS.md,
                     }}
                 >
                     {snackbar.message}
