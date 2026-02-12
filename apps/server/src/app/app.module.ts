@@ -22,7 +22,7 @@ import { AuditLogModule } from '../modules/audit-log/audit-log.module';
         username: config.get<string>('DB_USERNAME', 'postgres'),
         password: config.get<string>('DB_PASSWORD', 'postgres'),
         database: config.get<string>('DB_DATABASE', 'open_linux_manager'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        autoLoadEntities: true,
         synchronize: true, // Only for development!
       }),
     }),
