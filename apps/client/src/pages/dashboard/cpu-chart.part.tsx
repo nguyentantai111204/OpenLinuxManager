@@ -1,8 +1,6 @@
-import { useMemo } from 'react';
-import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
+import { Typography, Box, useTheme, alpha } from '@mui/material';
+import { CardComponent } from '../../components';
 import {
-    LineChart,
-    Line,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -11,27 +9,19 @@ import {
     Area,
     AreaChart,
 } from 'recharts';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../constants/design';
-import { StackRow } from '../../components/stack';
+import { SPACING, TYPOGRAPHY, COLORS } from '../../constants/design';
+import { StackRowComponent } from '../../components/stack';
 
 interface CpuChartProps {
-    data: Array<{ time: string; cpu: number }>;
+    data: Array<{ time: string; cpu: number; ram: number }>;
 }
 
 export function CpuChart({ data }: CpuChartProps) {
     const theme = useTheme();
+
     return (
-        <Card
-            elevation={0}
-            sx={{
-                borderRadius: BORDER_RADIUS.lg / 8,
-                background: 'background.paper',
-                border: '1px solid',
-                borderColor: 'divider',
-                height: '100%',
-            }}
-        >
-            <CardContent sx={{ p: SPACING.lg / 8 }}>
+        <CardComponent sx={{ p: 0, height: '100%' }}>
+            <Box sx={{ p: SPACING.lg / 8, height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ mb: SPACING.lg / 8 }}>
                     <Typography
                         variant="h6"
@@ -42,77 +32,83 @@ export function CpuChart({ data }: CpuChartProps) {
                             mb: SPACING.xs / 8,
                         }}
                     >
-                        Hiệu năng thời gian thực
+                        Real-time Performance
                     </Typography>
-                    <StackRow spacing={SPACING.md / 8}>
-                        <StackRow spacing={SPACING.xs / 8}>
+                    <StackRowComponent spacing={SPACING.md / 8}>
+                        <StackRowComponent spacing={SPACING.xs / 8}>
                             <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: COLORS.chart.cpu }} />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: TYPOGRAPHY.fontSize.xs }}>
                                 CPU
                             </Typography>
-                        </StackRow>
-                        <StackRow spacing={SPACING.xs / 8}>
+                        </StackRowComponent>
+                        <StackRowComponent spacing={SPACING.xs / 8}>
                             <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: COLORS.chart.ram }} />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: TYPOGRAPHY.fontSize.xs }}>
                                 RAM
                             </Typography>
-                        </StackRow>
-                    </StackRow>
+                        </StackRowComponent>
+                    </StackRowComponent>
                 </Box>
 
-                <ResponsiveContainer width="100%" height={400}>
-                    <AreaChart data={data}>
-                        <defs>
-                            <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor={COLORS.chart.cpu} stopOpacity={0.2} />
-                                <stop offset="95%" stopColor={COLORS.chart.cpu} stopOpacity={0.05} />
-                            </linearGradient>
-                            <linearGradient id="ramGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor={COLORS.chart.ram} stopOpacity={0.2} />
-                                <stop offset="95%" stopColor={COLORS.chart.ram} stopOpacity={0.05} />
-                            </linearGradient>
-                        </defs>
-                        <CartesianGrid
-                            strokeDasharray="3 3"
-                            stroke={theme.palette.divider}
-                            opacity={0.2}
-                            vertical={false}
-                        />
-                        <XAxis
-                            dataKey="time"
-                            stroke={theme.palette.text.secondary}
-                            tick={{ fill: theme.palette.text.secondary, fontSize: 11 }}
-                            tickLine={false}
-                            axisLine={false}
-                            hide
-                        />
-                        <YAxis
-                            domain={[0, 100]}
-                            stroke={theme.palette.text.secondary}
-                            tick={{ fill: theme.palette.text.secondary, fontSize: 11 }}
-                            tickLine={false}
-                            axisLine={false}
-                            hide
-                        />
-                        <Tooltip
-                            contentStyle={{
-                                backgroundColor: theme.palette.background.paper,
-                                border: `1px solid ${theme.palette.divider}`,
-                                borderRadius: 8,
-                                fontSize: 12,
-                            }}
-                        />
-                        <Area
-                            type="monotone"
-                            dataKey="cpu"
-                            stroke={COLORS.chart.cpu}
-                            strokeWidth={2}
-                            fill="url(#cpuGradient)"
-                            animationDuration={300}
-                        />
-                    </AreaChart>
-                </ResponsiveContainer>
-            </CardContent>
-        </Card>
+                <Box sx={{ flexGrow: 1, minHeight: 300 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <defs>
+                                <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor={COLORS.chart.cpu} stopOpacity={0.2} />
+                                    <stop offset="95%" stopColor={COLORS.chart.cpu} stopOpacity={0.01} />
+                                </linearGradient>
+                                <linearGradient id="ramGradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor={COLORS.chart.ram} stopOpacity={0.2} />
+                                    <stop offset="95%" stopColor={COLORS.chart.ram} stopOpacity={0.01} />
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke={theme.palette.divider}
+                                opacity={0.3}
+                                vertical={false}
+                            />
+                            <XAxis
+                                dataKey="time"
+                                hide
+                            />
+                            <YAxis
+                                domain={[0, 100]}
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{ fill: theme.palette.text.secondary, fontSize: 10 }}
+                            />
+                            <Tooltip
+                                contentStyle={{
+                                    backgroundColor: theme.palette.background.paper,
+                                    border: `1px solid ${theme.palette.divider}`,
+                                    borderRadius: 8,
+                                    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                                }}
+                            />
+                            <Area
+                                type="monotone"
+                                dataKey="cpu"
+                                stroke={COLORS.chart.cpu}
+                                strokeWidth={3}
+                                fill="url(#cpuGradient)"
+                                animationDuration={1000}
+                                isAnimationActive={true}
+                            />
+                            <Area
+                                type="monotone"
+                                dataKey="ram"
+                                stroke={COLORS.chart.ram}
+                                strokeWidth={3}
+                                fill="url(#ramGradient)"
+                                animationDuration={1000}
+                                isAnimationActive={true}
+                            />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </Box>
+            </Box>
+        </CardComponent>
     );
 }

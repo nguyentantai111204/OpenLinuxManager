@@ -1,27 +1,20 @@
-import { TableRow, TableCell, Typography, IconButton } from '@mui/material';
+import { Typography, IconButton } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import { StatusBadge } from '../../components/status-badge/status-badge';
-import { UserBadge } from '../../components/user-badge/user-badge';
+import { ProcessStatus, StatusBadgeComponent } from '../../components/status-badge/status-badge.component';
+import { UserBadgeComponent } from '../../components/user-badge/user-badge.component';
 import { Process } from './process-table.part';
+import { TableRowComponent, TableCellComponent } from '../../components';
 import { SPACING, TYPOGRAPHY, TRANSITIONS, COLORS } from '../../constants/design';
 
 interface ProcessRowProps {
     process: Process;
     onKill?: (pid: number) => void;
-    onSuspend?: (pid: number) => void;
 }
 
 export function ProcessRow({ process, onKill }: ProcessRowProps) {
     return (
-        <TableRow
-            sx={{
-                '&:hover': {
-                    backgroundColor: 'action.hover',
-                },
-                transition: `background-color ${TRANSITIONS.duration.normal} ${TRANSITIONS.easing.easeInOut}`,
-            }}
-        >
-            <TableCell>
+        <TableRowComponent>
+            <TableCellComponent>
                 <Typography
                     variant="body2"
                     sx={{
@@ -32,59 +25,35 @@ export function ProcessRow({ process, onKill }: ProcessRowProps) {
                 >
                     {process.pid}
                 </Typography>
-            </TableCell>
-            <TableCell>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontWeight: TYPOGRAPHY.fontWeight.semibold,
-                        fontSize: TYPOGRAPHY.fontSize.sm,
-                        color: 'text.primary',
-                    }}
-                >
+            </TableCellComponent>
+            <TableCellComponent>
+                <Typography variant="body2" sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>
                     {process.name}
                 </Typography>
-            </TableCell>
-            <TableCell>
-                <UserBadge username={process.user} />
-            </TableCell>
-            <TableCell>
-                <StatusBadge status={process.status} />
-            </TableCell>
-            <TableCell align="right">
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontWeight: TYPOGRAPHY.fontWeight.semibold,
-                        fontSize: TYPOGRAPHY.fontSize.sm,
-                        color: process.cpu > 50 ? 'error.main' : 'text.primary',
-                    }}
-                >
-                    {process.cpu.toFixed(1)}%
+            </TableCellComponent>
+            <TableCellComponent>
+                <UserBadgeComponent username={process.user} />
+            </TableCellComponent>
+            <TableCellComponent>
+                <StatusBadgeComponent status={process.status.toLowerCase() as ProcessStatus} />
+            </TableCellComponent>
+            <TableCellComponent align="right">
+                <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                    {process.cpu}%
                 </Typography>
-            </TableCell>
-            <TableCell align="right">
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontWeight: TYPOGRAPHY.fontWeight.medium,
-                        fontSize: TYPOGRAPHY.fontSize.sm,
-                        color: 'text.secondary',
-                    }}
-                >
-                    {process.memory.toFixed(0)} MB
+            </TableCellComponent>
+            <TableCellComponent align="right">
+                <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                    {process.mem}%
                 </Typography>
-            </TableCell>
-            <TableCell align="right">
+            </TableCellComponent>
+            <TableCellComponent align="right">
                 {onKill && (
                     <IconButton
+                        onClick={() => onKill(process.pid)}
                         size="small"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onKill(process.pid);
-                        }}
                         sx={{
-                            color: 'error.main',
+                            color: COLORS.status.stopped,
                             transition: `all ${TRANSITIONS.duration.fast} ${TRANSITIONS.easing.easeInOut}`,
                             '&:hover': {
                                 backgroundColor: COLORS.error.light,
@@ -96,7 +65,7 @@ export function ProcessRow({ process, onKill }: ProcessRowProps) {
                         <DeleteIcon fontSize="small" />
                     </IconButton>
                 )}
-            </TableCell>
-        </TableRow>
+            </TableCellComponent>
+        </TableRowComponent>
     );
 }

@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
-import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
+import { Typography, Box, useTheme } from '@mui/material';
+import { CardComponent } from '../../components';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../constants/design';
-import { StackCol, StackRow } from '../../components/stack';
+import { StackColComponent, StackRowComponent } from '../../components/stack';
 
 interface RamChartProps {
     ramTotal: number;
@@ -28,17 +29,8 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
     }, [ramTotal, ramUsed]);
 
     return (
-        <Card
-            elevation={0}
-            sx={{
-                borderRadius: BORDER_RADIUS.lg / 8,
-                background: 'background.paper',
-                border: '1px solid',
-                borderColor: 'divider',
-                height: '100%',
-            }}
-        >
-            <CardContent sx={{ p: SPACING.lg / 8 }}>
+        <CardComponent sx={{ height: '100%' }}>
+            <Box sx={{ p: SPACING.lg / 8, height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <Typography
                     variant="h6"
                     sx={{
@@ -76,7 +68,7 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         </PieChart>
                     </ResponsiveContainer>
 
-                    <StackCol
+                    <StackColComponent
                         sx={{
                             position: 'absolute',
                             top: '50%',
@@ -107,11 +99,11 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         >
                             GB Used
                         </Typography>
-                    </StackCol>
+                    </StackColComponent>
                 </Box>
 
-                <StackRow sx={{ justifyContent: 'center', gap: SPACING.xl / 8, mt: SPACING.md / 8 }}>
-                    <StackCol sx={{ textAlign: 'center' }} spacing={SPACING.xs / 8}>
+                <StackRowComponent sx={{ justifyContent: 'center', gap: SPACING.xl / 8, mt: SPACING.md / 8 }}>
+                    <StackColComponent sx={{ textAlign: 'center' }} spacing={SPACING.xs / 8}>
                         <Typography
                             variant="caption"
                             sx={{
@@ -131,8 +123,8 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         >
                             {(ramFree / 1024 / 1024 / 1024).toFixed(1)} GB
                         </Typography>
-                    </StackCol>
-                    <StackCol sx={{ textAlign: 'center' }} spacing={SPACING.xs / 8}>
+                    </StackColComponent>
+                    <StackColComponent sx={{ textAlign: 'center' }} spacing={SPACING.xs / 8}>
                         <Typography
                             variant="caption"
                             sx={{
@@ -152,9 +144,9 @@ export function RamChart({ ramTotal, ramUsed, ramFree }: RamChartProps) {
                         >
                             {(ramUsed / 1024 / 1024 / 1024).toFixed(1)} GB
                         </Typography>
-                    </StackCol>
-                </StackRow>
-            </CardContent>
-        </Card>
+                    </StackColComponent>
+                </StackRowComponent>
+            </Box>
+        </CardComponent>
     );
 }

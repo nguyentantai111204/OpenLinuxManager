@@ -2,27 +2,21 @@ import React, { useEffect, useState } from 'react';
 import {
     Box,
     Typography,
-    Button,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Dialog,
     DialogTitle,
     DialogContent,
     DialogActions,
-    TextField,
+    TableBodyComponent,
     IconButton,
     Snackbar,
     Alert,
 } from '@mui/material';
+import { ButtonComponent, TextFieldComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent } from '../../components';
 import { Add as AddIcon, Delete as DeleteIcon, Person as PersonIcon } from '@mui/icons-material';
 import { axiosClient as axios } from '../../utils/axios-client';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS, COLORS, ICON_SIZES } from '../../constants/design';
-import { StackRow, StackCol } from '../../components/stack';
+import { SPACING, TYPOGRAPHY, COLORS, ICON_SIZES } from '../../constants/design';
+import { StackRowComponent, StackColComponent } from '../../components/stack';
+import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 
 interface User {
     username: string;
@@ -103,133 +97,106 @@ export function UserManagement() {
 
     return (
         <Box sx={{ p: SPACING.lg / 8 }}>
-            <StackRow sx={{ mb: SPACING.lg / 8, justifyContent: 'space-between' }}>
-                <Box>
-                    <Typography
-                        variant="h4"
-                        sx={{
-                            fontWeight: TYPOGRAPHY.fontWeight.bold,
-                            fontSize: TYPOGRAPHY.fontSize['3xl'],
-                            mb: SPACING.xs / 8
-                        }}
+            <StackColComponent spacing={SPACING.lg / 8}>
+                <StackRowComponent sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                    <PageHeaderComponent
+                        title="User Management"
+                        subtitle="Manage system users and permissions"
+                    />
+                    <ButtonComponent
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={() => setOpenAddDialog(true)}
                     >
-                        User Management
-                    </Typography>
-                    <Typography
-                        variant="body1"
-                        sx={{
-                            color: 'text.secondary',
-                            fontSize: TYPOGRAPHY.fontSize.base,
-                        }}
-                    >
-                        Manage system users and permissions
-                    </Typography>
-                </Box>
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={() => setOpenAddDialog(true)}
-                    sx={{
-                        borderRadius: BORDER_RADIUS.md / 8,
-                        textTransform: 'none',
-                        fontWeight: TYPOGRAPHY.fontWeight.semibold,
-                    }}
-                >
-                    Add User
-                </Button>
-            </StackRow>
+                        Add User
+                    </ButtonComponent>
+                </StackRowComponent>
 
-            <TableContainer
-                component={Paper}
-                sx={{
-                    borderRadius: BORDER_RADIUS.lg / 8,
-                    boxShadow: SHADOWS.md,
-                    overflow: 'hidden',
-                }}
-            >
-                <Table>
-                    <TableHead>
-                        <TableRow sx={{ backgroundColor: 'background.default' }}>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>USERNAME</TableCell>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>UID</TableCell>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>GID</TableCell>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>HOME DIRECTORY</TableCell>
-                            <TableCell sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>SHELL</TableCell>
-                            <TableCell align="right" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary', textTransform: 'uppercase' }}>ACTIONS</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {users.map((user) => (
-                            <TableRow key={user.username} hover>
-                                <TableCell>
-                                    <StackRow spacing={SPACING.sm / 8} alignItems="center">
-                                        <PersonIcon sx={{ color: 'text.secondary', fontSize: ICON_SIZES.sm }} />
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                fontWeight: TYPOGRAPHY.fontWeight.medium,
-                                                fontSize: TYPOGRAPHY.fontSize.sm,
+                <TableContainerComponent>
+                    <TableComponent>
+                        <TableHeadComponent>
+                            <TableRowComponent>
+                                <TableCellComponent>USERNAME</TableCellComponent>
+                                <TableCellComponent>UID</TableCellComponent>
+                                <TableCellComponent>GID</TableCellComponent>
+                                <TableCellComponent>HOME DIRECTORY</TableCellComponent>
+                                <TableCellComponent>SHELL</TableCellComponent>
+                                <TableCellComponent align="right">ACTIONS</TableCellComponent>
+                            </TableRowComponent>
+                        </TableHeadComponent>
+                        <TableBodyComponent>
+                            {users.map((user) => (
+                                <TableRowComponent key={user.username}>
+                                    <TableCellComponent>
+                                        <StackRowComponent spacing={SPACING.sm / 8} alignItems="center">
+                                            <PersonIcon sx={{ color: 'text.secondary', fontSize: ICON_SIZES.sm }} />
+                                            <Typography
+                                                variant="body2"
+                                                sx={{
+                                                    fontWeight: TYPOGRAPHY.fontWeight.medium,
+                                                    fontSize: TYPOGRAPHY.fontSize.sm,
+                                                }}
+                                            >
+                                                {user.username}
+                                            </Typography>
+                                        </StackRowComponent>
+                                    </TableCellComponent>
+                                    <TableCellComponent>{user.uid}</TableCellComponent>
+                                    <TableCellComponent>{user.gid}</TableCellComponent>
+                                    <TableCellComponent>{user.home}</TableCellComponent>
+                                    <TableCellComponent>{user.shell}</TableCellComponent>
+                                    <TableCellComponent align="right">
+                                        <IconButton
+                                            onClick={() => {
+                                                setSelectedUser(user.username);
+                                                setOpenDeleteDialog(true);
                                             }}
+                                            color="error"
+                                            size="small"
                                         >
-                                            {user.username}
-                                        </Typography>
-                                    </StackRow>
-                                </TableCell>
-                                <TableCell>{user.uid}</TableCell>
-                                <TableCell>{user.gid}</TableCell>
-                                <TableCell>{user.home}</TableCell>
-                                <TableCell>{user.shell}</TableCell>
-                                <TableCell align="right">
-                                    <IconButton
-                                        onClick={() => {
-                                            setSelectedUser(user.username);
-                                            setOpenDeleteDialog(true);
-                                        }}
-                                        color="error"
-                                        size="small"
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        {users.length === 0 && (
-                            <TableRow>
-                                <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
-                                    <Typography color="text.secondary">No users found</Typography>
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCellComponent>
+                                </TableRowComponent>
+                            ))}
+                            {users.length === 0 && (
+                                <TableRowComponent>
+                                    <TableCellComponent colSpan={6} align="center" sx={{ py: 3 }}>
+                                        <Typography color="text.secondary">No users found</Typography>
+                                    </TableCellComponent>
+                                </TableRowComponent>
+                            )}
+                        </TableBodyComponent>
+                    </TableComponent>
+                </TableContainerComponent>
+            </StackColComponent>
 
             {/* Add User Dialog */}
             <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
                 <DialogTitle>Add New System User</DialogTitle>
                 <DialogContent>
-                    <StackCol spacing={2} sx={{ mt: 1, minWidth: 300 }}>
-                        <TextField
+                    <StackColComponent spacing={2} sx={{ mt: 1, minWidth: 300 }}>
+                        <TextFieldComponent
                             autoFocus
                             label="Username"
                             fullWidth
                             value={newUser.username}
-                            onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewUser({ ...newUser, username: e.target.value })}
                         />
-                        <TextField
+                        <TextFieldComponent
                             label="Password"
                             type="password"
                             fullWidth
                             value={newUser.password}
-                            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewUser({ ...newUser, password: e.target.value })}
                         />
-                    </StackCol>
+                    </StackColComponent>
                 </DialogContent>
                 <DialogActions sx={{ p: 2 }}>
-                    <Button onClick={() => setOpenAddDialog(false)}>Cancel</Button>
-                    <Button variant="contained" onClick={handleCreateUser} disabled={!newUser.username}>
+                    <ButtonComponent onClick={() => setOpenAddDialog(false)}>Cancel</ButtonComponent>
+                    <ButtonComponent variant="contained" onClick={handleCreateUser} disabled={!newUser.username}>
                         Create
-                    </Button>
+                    </ButtonComponent>
                 </DialogActions>
             </Dialog>
 
@@ -242,10 +209,10 @@ export function UserManagement() {
                     </Typography>
                 </DialogContent>
                 <DialogActions sx={{ p: 2 }}>
-                    <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-                    <Button variant="contained" color="error" onClick={handleDeleteUser}>
+                    <ButtonComponent onClick={() => setOpenDeleteDialog(false)}>Cancel</ButtonComponent>
+                    <ButtonComponent variant="contained" color="error" onClick={handleDeleteUser}>
                         Delete
-                    </Button>
+                    </ButtonComponent>
                 </DialogActions>
             </Dialog>
 

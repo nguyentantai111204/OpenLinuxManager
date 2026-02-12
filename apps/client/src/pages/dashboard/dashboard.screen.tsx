@@ -4,19 +4,20 @@ import { DeveloperBoard, Memory, Storage, Timer } from '@mui/icons-material';
 import { useSocket } from '../../hooks/use-socket';
 import { CpuChart } from './cpu-chart.part';
 import { RamChart } from './ram-chart.part';
-import { PageHeader } from '../../components/page-header/page-header';
+import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { SPACING, COLORS, BORDER_RADIUS } from '../../constants/design';
 import { StatCard } from './stat-card.part';
-import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../../components/stack';
+import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
 
-interface CpuDataPoint {
+interface SystemHistoryPoint {
     time: string;
     cpu: number;
+    ram: number;
 }
 
 export function Dashboard() {
     const { systemStats, isConnected } = useSocket();
-    const [cpuHistory, setCpuHistory] = useState<CpuDataPoint[]>([]);
+    const [history, setHistory] = useState<SystemHistoryPoint[]>([]);
 
     useEffect(() => {
         if (systemStats) {
@@ -26,14 +27,13 @@ export function Dashboard() {
                 .toString()
                 .padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
 
-            setCpuHistory((prev) => {
-                const newHistory = [
-                    ...prev,
-                    {
-                        time: timeStr,
-                        cpu: systemStats.cpu,
-                    },
-                ];
+            setHistory((prev) => {
+                const newPoint = {
+                    time: timeStr,
+                    cpu: systemStats.cpu,
+                    ram: (systemStats.ram_used / systemStats.ram_total) * 100
+                };
+                const newHistory = [...prev, newPoint];
                 return newHistory.slice(-30);
             });
         }
@@ -66,23 +66,23 @@ export function Dashboard() {
     if (!systemStats) {
         return (
             <Box sx={{ p: SPACING.xl / 8 }}>
-                <StackColAlignCenterJusCenter sx={{ minHeight: '50vh' }}>
+                <StackColAlignCenterJusCenterComponent sx={{ minHeight: '50vh' }}>
                     <CircularProgress size={60} thickness={4} color="primary" />
-                </StackColAlignCenterJusCenter>
+                </StackColAlignCenterJusCenterComponent>
             </Box>
         );
     }
 
-    const currentCpu = cpuHistory.length > 0 ? cpuHistory[cpuHistory.length - 1].cpu : systemStats.cpu;
+    const currentCpu = history.length > 0 ? history[history.length - 1].cpu : systemStats.cpu;
     const ramUsageGB = (systemStats.ram_used / 1024 / 1024 / 1024).toFixed(1);
     const ramTotalGB = (systemStats.ram_total / 1024 / 1024 / 1024).toFixed(1);
 
     return (
         <Box sx={{ p: SPACING.lg / 8, height: '100%', overflow: 'hidden' }}>
-            <StackCol spacing={SPACING.xl / 8} sx={{ height: '100%' }}>
+            <StackColComponent spacing={SPACING.xl / 8} sx={{ height: '100%' }}>
                 <Fade in timeout={300}>
                     <Box>
-                        <PageHeader
+                        <PageHeaderComponent
                             title="System Dashboard"
                             subtitle="Real-time monitoring and system statistics"
                             isConnected={isConnected}
@@ -91,7 +91,7 @@ export function Dashboard() {
                 </Fade>
 
                 {/* Stats Overview Row */}
-                <StackRow spacing={SPACING.md / 8}>
+                <StackRowComponent spacing={SPACING.md / 8}>
                     <Box sx={{ flex: 1 }}>
                         <Grow in timeout={300}>
                             <Box>
@@ -101,9 +101,8 @@ export function Dashboard() {
                                     value={`${currentCpu.toFixed(1)}%`}
                                     change="+2.4%"
                                     changeType="positive"
-                                    subtitle="12 Cores Active"
+                                    subtitle="Current load"
                                     iconColor={COLORS.chart.cpu}
-                                    iconBgColor={COLORS.background.elevated}
                                 />
                             </Box>
                         </Grow>
@@ -117,9 +116,8 @@ export function Dashboard() {
                                     value={`${ramUsageGB} GB`}
                                     change="-0.5%"
                                     changeType="negative"
-                                    subtitle={`of ${ramTotalGB} GB Total`}
+                                    subtitle={`of ${ramTotalGB} Total`}
                                     iconColor={COLORS.chart.ram}
-                                    iconBgColor={COLORS.background.elevated}
                                 />
                             </Box>
                         </Grow>
@@ -135,7 +133,6 @@ export function Dashboard() {
                                     changeType="positive"
                                     subtitle="120GB Free"
                                     iconColor={COLORS.chart.disk}
-                                    iconBgColor={COLORS.background.elevated}
                                 />
                             </Box>
                         </Grow>
@@ -151,18 +148,17 @@ export function Dashboard() {
                                     changeType="neutral"
                                     subtitle="Since last boot"
                                     iconColor={COLORS.status.running}
-                                    iconBgColor={COLORS.background.elevated}
                                 />
                             </Box>
                         </Grow>
                     </Box>
-                </StackRow>
+                </StackRowComponent>
 
-                <StackRow spacing={SPACING.lg / 8} sx={{ flex: 1, minHeight: 0 }}>
+                <StackRowComponent spacing={SPACING.lg / 8} sx={{ flex: 1, minHeight: 0 }}>
                     <Box sx={{ flex: 2, height: '100%' }}>
                         <Grow in timeout={700}>
                             <Box sx={{ height: '100%' }}>
-                                <CpuChart data={cpuHistory} />
+                                <CpuChart data={history} />
                             </Box>
                         </Grow>
                     </Box>
@@ -178,18 +174,18 @@ export function Dashboard() {
                             </Box>
                         </Grow>
                     </Box>
-                </StackRow>
+                </StackRowComponent>
 
                 {systemStats.error && (
                     <Fade in timeout={500}>
                         <Box>
-                            <Alert severity="error" sx={{ borderRadius: SPACING.md / 8 }}>
+                            <Alert severity="error" sx={{ borderRadius: BORDER_RADIUS.md / 8 }}>
                                 {systemStats.error}
                             </Alert>
                         </Box>
                     </Fade>
                 )}
-            </StackCol>
+            </StackColComponent>
         </Box>
     );
 }

@@ -6,7 +6,7 @@ interface VStackProps extends Omit<StackProps, 'direction'> {
     spacing?: number | string;
 }
 
-export function VStack({ children, spacing = 1, ...props }: VStackProps) {
+export function VStackComponent({ children, spacing = 1, ...props }: VStackProps) {
     return (
         <Stack direction="column" spacing={spacing} {...props}>
             {children}

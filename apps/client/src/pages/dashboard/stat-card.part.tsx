@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
-import { Card, CardContent, Typography, Box, Stack, SxProps, Theme } from '@mui/material';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS, TRANSITIONS, SHADOWS } from '../../constants/design';
-import { StackRowJusBetween, StackRow } from '../../components/stack';
+import { Typography, Box, SxProps, Theme, alpha } from '@mui/material';
+import { CardComponent } from '../../components';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../constants/design';
+import { StackRowJusBetweenComponent } from '../../components/stack';
 
 interface StatCardProps {
     icon: ReactNode;
@@ -23,103 +24,95 @@ export function StatCard({
     change,
     changeType = 'neutral',
     iconColor = COLORS.primary.main,
-    iconBgColor = COLORS.background.elevated,
+    iconBgColor,
     sx
 }: StatCardProps) {
     const changeColors = {
-        positive: COLORS.status.running,
-        negative: COLORS.status.stopped,
-        neutral: COLORS.text.secondary
+        positive: {
+            bg: alpha(COLORS.status.running, 0.1),
+            text: COLORS.status.running
+        },
+        negative: {
+            bg: alpha(COLORS.status.stopped, 0.1),
+            text: COLORS.status.stopped
+        },
+        neutral: {
+            bg: alpha(COLORS.text.secondary, 0.1),
+            text: COLORS.text.secondary
+        }
     };
 
+    const changeStyle = changeColors[changeType];
+
     return (
-        <Card
-            elevation={0}
-            sx={{
-                borderRadius: BORDER_RADIUS.lg / 8,
-                background: 'background.paper',
-                border: '1px solid',
-                borderColor: 'divider',
-                height: '100%',
-                p: SPACING.md / 8,
-                transition: `all ${TRANSITIONS.duration.normal} ${TRANSITIONS.easing.easeInOut}`,
-                '&:hover': {
-                    boxShadow: SHADOWS.md,
-                    transform: 'translateY(-2px)',
-                },
-                ...sx
-            }}
-        >
-            <CardContent sx={{ p: 0 }}>
-                <StackRowJusBetween sx={{ mb: SPACING.md / 8 }}>
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            color: 'text.secondary',
-                            fontWeight: TYPOGRAPHY.fontWeight.medium,
-                            fontSize: TYPOGRAPHY.fontSize.xs,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px',
-                        }}
-                    >
-                        {title}
-                    </Typography>
+        <CardComponent sx={{ height: '100%', ...sx }}>
+            <Box sx={{ p: SPACING.lg / 8 }}>
+                <StackRowJusBetweenComponent sx={{ mb: SPACING.md / 8 }}>
                     <Box
                         sx={{
-                            width: 40,
-                            height: 40,
+                            p: SPACING.sm / 8,
                             borderRadius: BORDER_RADIUS.md / 8,
-                            backgroundColor: iconBgColor,
+                            backgroundColor: iconBgColor || alpha(iconColor, 0.1),
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: iconColor,
+                            color: iconColor
                         }}
                     >
                         {icon}
                     </Box>
-                </StackRowJusBetween>
+                    {change && (
+                        <Box
+                            sx={{
+                                px: SPACING.sm / 8,
+                                py: SPACING.xs / 8,
+                                borderRadius: BORDER_RADIUS.sm / 8,
+                                backgroundColor: changeStyle.bg,
+                                color: changeStyle.text,
+                                fontSize: TYPOGRAPHY.fontSize.xs,
+                                fontWeight: TYPOGRAPHY.fontWeight.bold,
+                            }}
+                        >
+                            {change}
+                        </Box>
+                    )}
+                </StackRowJusBetweenComponent>
 
                 <Typography
-                    variant="h3"
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                        fontWeight: TYPOGRAPHY.fontWeight.medium,
+                        mb: SPACING.xs / 8,
+                    }}
+                >
+                    {title}
+                </Typography>
+
+                <Typography
+                    variant="h4"
                     sx={{
                         fontWeight: TYPOGRAPHY.fontWeight.bold,
-                        fontSize: TYPOGRAPHY.fontSize['3xl'],
                         color: 'text.primary',
-                        mb: SPACING.xs / 8,
-                        lineHeight: 1.2,
+                        mb: subtitle ? SPACING.xs / 8 : 0,
                     }}
                 >
                     {value}
                 </Typography>
 
-                <StackRow spacing={SPACING.sm / 8}>
-                    {change && (
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: changeColors[changeType],
-                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
-                                fontSize: TYPOGRAPHY.fontSize.xs,
-                            }}
-                        >
-                            {change}
-                        </Typography>
-                    )}
-                    {subtitle && (
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: 'text.secondary',
-                                fontWeight: TYPOGRAPHY.fontWeight.regular,
-                                fontSize: TYPOGRAPHY.fontSize.xs,
-                            }}
-                        >
-                            {subtitle}
-                        </Typography>
-                    )}
-                </StackRow>
-            </CardContent>
-        </Card>
+                {subtitle && (
+                    <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{
+                            fontWeight: TYPOGRAPHY.fontWeight.regular,
+                            fontSize: TYPOGRAPHY.fontSize.xs,
+                        }}
+                    >
+                        {subtitle}
+                    </Typography>
+                )}
+            </Box>
+        </CardComponent>
     );
 }

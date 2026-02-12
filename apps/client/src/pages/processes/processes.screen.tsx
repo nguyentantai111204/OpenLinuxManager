@@ -1,14 +1,14 @@
 import { useState, useMemo } from 'react';
-import { Box, Button, Typography, CircularProgress, Snackbar, Alert } from '@mui/material';
+import { Box, Typography, CircularProgress, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
 import { Block as BlockIcon, Pause as PauseIcon } from '@mui/icons-material';
-import { PageHeader } from '../../components/page-header/page-header';
-import { SearchBar } from '../../components/search-bar/search-bar';
+import { ButtonComponent, SearchComponent } from '../../components';
+import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { ProcessTable, Process } from './process-table.part';
-import { useSocket, SystemProcess } from '../../hooks/use-socket';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS, COLORS } from '../../constants/design';
-import { StackRow, StackRowJusBetween, StackColAlignCenterJusCenter } from '../../components/stack';
-import { ProcessStatus } from '../../components/status-badge/status-badge';
+import { useSocket } from '../../hooks/use-socket';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../../constants/design';
+import { StackRowComponent, StackRowJusBetweenComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
+import { ProcessStatus } from '../../components/status-badge/status-badge.component';
 
 export function Processes() {
     const { isConnected, processes } = useSocket();
@@ -30,7 +30,7 @@ export function Processes() {
             user: p.user,
             status: mapStatus(p.status),
             cpu: p.cpu,
-            memory: p.memory,
+            mem: p.memory,
         }));
     }, [processes]);
 
@@ -56,26 +56,18 @@ export function Processes() {
 
     const handleKill = async (pid: number) => {
         try {
-            // Optimistic update or wait for socket? Socket might be slow to update list?
-            // Let's just fire API call
             await axios.delete(`/api/system/processes/${pid}`);
             setSnackbar({ open: true, message: `Killed process ${pid}`, severity: 'success' });
-            // Socket should update the list automatically
         } catch (error) {
             console.error('Failed to kill process', error);
             setSnackbar({ open: true, message: `Failed to kill process ${pid}`, severity: 'error' });
         }
     };
 
-    const handleSuspend = (pid: number) => {
-        console.log('Suspend process:', pid);
-        // Implement suspend logic via socket/API later
-    };
-
     if (!isConnected && processes.length === 0) {
         return (
             <Box sx={{ p: SPACING.lg / 8 }}>
-                <StackColAlignCenterJusCenter sx={{ minHeight: '50vh' }}>
+                <StackColAlignCenterJusCenterComponent sx={{ minHeight: '50vh' }}>
                     <CircularProgress color="primary" />
                     <Typography
                         variant="body2"
@@ -87,58 +79,53 @@ export function Processes() {
                     >
                         Connecting to server...
                     </Typography>
-                </StackColAlignCenterJusCenter>
+                </StackColAlignCenterJusCenterComponent>
             </Box>
         );
     }
 
     return (
         <Box sx={{ p: SPACING.lg / 8 }}>
-            <PageHeader
+            <PageHeaderComponent
                 title="Task Manager"
+                subtitle="Monitor and manage system processes"
                 isConnected={isConnected}
                 actions={
-                    <StackRow spacing={SPACING.sm / 8}>
-                        <Button
+                    <StackRowComponent spacing={SPACING.sm / 8}>
+                        <ButtonComponent
                             variant="outlined"
                             startIcon={<BlockIcon />}
                             size="small"
                             color="error"
-                            sx={{
-                                textTransform: 'none',
-                                borderRadius: BORDER_RADIUS.md / 8,
-                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
-                            }}
                         >
                             Kill
-                        </Button>
-                        <Button
+                        </ButtonComponent>
+                        <ButtonComponent
                             variant="outlined"
                             startIcon={<PauseIcon />}
                             size="small"
-                            sx={{
-                                textTransform: 'none',
-                                borderRadius: BORDER_RADIUS.md / 8,
-                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
-                            }}
                         >
                             Suspend
-                        </Button>
-                    </StackRow>
+                        </ButtonComponent>
+                    </StackRowComponent>
                 }
             />
 
             <Box sx={{ mb: SPACING.lg / 8 }}>
-                <SearchBar value={searchQuery} onChange={setSearchQuery} />
+                <SearchComponent
+                    placeholder="Filter by name, user, or PID..."
+                    value={searchQuery}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                    sx={{ maxWidth: 400 }}
+                />
             </Box>
 
             <ProcessTable
                 processes={filteredProcesses}
                 onKill={handleKill}
-                onSuspend={handleSuspend}
             />
 
-            <StackRowJusBetween sx={{ mt: SPACING.md / 8 }}>
+            <StackRowJusBetweenComponent sx={{ mt: SPACING.md / 8 }}>
                 <Typography
                     variant="body2"
                     sx={{
@@ -157,7 +144,7 @@ export function Processes() {
                 >
                     Sorted by: CPU Usage (Desc)
                 </Typography>
-            </StackRowJusBetween>
+            </StackRowJusBetweenComponent>
 
             <Snackbar
                 open={snackbar.open}

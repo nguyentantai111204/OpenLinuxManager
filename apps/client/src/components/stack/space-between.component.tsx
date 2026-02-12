@@ -7,7 +7,7 @@ interface SpaceBetweenProps extends Omit<StackProps, 'justifyContent'> {
     alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline';
 }
 
-export function SpaceBetween({
+export function SpaceBetweenComponent({
     children,
     direction = 'row',
     alignItems = 'center',

@@ -1,8 +1,9 @@
-import { Box, Card, CardContent, Typography, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
-import { PageHeader } from '../../components/page-header/page-header';
+import { Box, Typography, LinearProgress, TableBodyComponent, CircularProgress, alpha } from '@mui/material';
+import { PageHeaderComponent } from '../../components/page-header/page-header.component';
+import { CardComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent } from '../../components';
 import { SPACING, COLORS, BORDER_RADIUS, TYPOGRAPHY } from '../../constants/design';
-import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../../components/stack';
-import { useSocket, StorageData } from '../../hooks/use-socket';
+import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
+import { useSocket } from '../../hooks/use-socket';
 
 export function Storage() {
     const { isConnected, storage } = useSocket();
@@ -10,7 +11,7 @@ export function Storage() {
     if (!storage) {
         return (
             <Box sx={{ p: SPACING.lg / 8 }}>
-                <StackColAlignCenterJusCenter sx={{ minHeight: '50vh' }}>
+                <StackColAlignCenterJusCenterComponent sx={{ minHeight: '50vh' }}>
                     <CircularProgress color="primary" />
                     <Typography
                         variant="body2"
@@ -22,107 +23,124 @@ export function Storage() {
                     >
                         Loading storage info...
                     </Typography>
-                </StackColAlignCenterJusCenter>
+                </StackColAlignCenterJusCenterComponent>
             </Box>
         );
     }
 
+    const storageData = storage.partitions;
+
     return (
         <Box sx={{ p: SPACING.lg / 8 }}>
-            <StackCol spacing={SPACING.lg / 8}>
-                <PageHeader
+            <StackColComponent spacing={SPACING.lg / 8}>
+                <PageHeaderComponent
                     title="Disk Storage"
                     subtitle="Monitor disk usage and manage storage"
                     isConnected={isConnected}
                 />
 
-                {/* Overall Usage Card */}
-                <Card sx={{ borderRadius: BORDER_RADIUS.lg / 8, boxShadow: 'none', border: `1px solid ${COLORS.border.light}` }}>
-                    <CardContent>
-                        <StackCol spacing={SPACING.md / 8}>
-                            <Typography variant="h6" fontWeight="bold">Total Local Storage</Typography>
-                            <StackRow spacing={SPACING.md / 8} sx={{ alignItems: 'baseline' }}>
-                                <Typography variant="h3" color="primary.main">{storage.used} GB</Typography>
-                                <Typography variant="subtitle1" color="text.secondary">used of {storage.total} GB</Typography>
-                            </StackRow>
-                            <Box sx={{ width: '100%', mr: 1 }}>
-                                <LinearProgress
-                                    variant="determinate"
-                                    value={(storage.used / storage.total) * 100}
-                                    sx={{
-                                        height: 8,
-                                        borderRadius: BORDER_RADIUS.full,
-                                        backgroundColor: COLORS.background.elevated,
-                                        '& .MuiLinearProgress-bar': {
-                                            backgroundColor: COLORS.chart.disk,
-                                            borderRadius: BORDER_RADIUS.full,
-                                        }
-                                    }}
-                                />
-                            </Box>
-                            <Typography variant="caption" color="text.secondary">
-                                {storage.free} GB free
-                            </Typography>
-                        </StackCol>
-                    </CardContent>
-                </Card>
+                {/* Overall Usage CardComponent */}
+                <CardComponent sx={{ p: SPACING.md / 8 }}>
+                    <StackColComponent spacing={SPACING.md / 8}>
+                        <Typography variant="h6" fontWeight="bold">Total Local Storage</Typography>
+                        <StackRowComponent spacing={SPACING.md / 8} sx={{ alignItems: 'baseline' }}>
+                            <Typography variant="h3" color="primary.main">{storage.used} GB</Typography>
+                            <Typography variant="subtitle1" color="text.secondary">used of {storage.total} GB</Typography>
+                        </StackRowComponent>
+                        <Box sx={{ width: '100%', mr: 1 }}>
+                            <LinearProgress
+                                variant="determinate"
+                                value={(storage.used / (storage.total || 1)) * 100}
+                                sx={{
+                                    height: 8,
+                                    borderRadius: BORDER_RADIUS.full / 8,
+                                    backgroundColor: COLORS.background.elevated,
+                                    '& .MuiLinearProgress-bar': {
+                                        backgroundColor: COLORS.chart.disk,
+                                        borderRadius: BORDER_RADIUS.full / 8,
+                                    }
+                                }}
+                            />
+                        </Box>
+                        <Typography variant="caption" color="text.secondary">
+                            {storage.free} GB free
+                        </Typography>
+                    </StackColComponent>
+                </CardComponent>
 
-                {/* Partition Table */}
-                <Card sx={{ borderRadius: BORDER_RADIUS.lg / 8, boxShadow: 'none', border: `1px solid ${COLORS.border.light}` }}>
-                    <CardContent>
-                        <Typography variant="h6" fontWeight="bold" sx={{ mb: SPACING.md / 8 }}>Partitions</Typography>
-                        <TableContainer component={Paper} elevation={0}>
-                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Filesystem</TableCell>
-                                        <TableCell>Mount Point</TableCell>
-                                        <TableCell>Type</TableCell>
-                                        <TableCell>Size</TableCell>
-                                        <TableCell>Used</TableCell>
-                                        <TableCell>Avail</TableCell>
-                                        <TableCell>Use %</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {storage.partitions.map((row, index) => (
-                                        <TableRow
-                                            key={`${row.name}-${index}`}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                            <TableCell component="th" scope="row">
-                                                {row.name}
-                                            </TableCell>
-                                            <TableCell>{row.mountPoint}</TableCell>
-                                            <TableCell>{row.type}</TableCell>
-                                            <TableCell>{row.size}</TableCell>
-                                            <TableCell>{row.used}</TableCell>
-                                            <TableCell>{row.avail}</TableCell>
-                                            <TableCell>
-                                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                    <Box sx={{ width: '100%', mr: 1 }}>
-                                                        <LinearProgress variant="determinate" value={row.usePercent} />
-                                                    </Box>
-                                                    <Box sx={{ minWidth: 35 }}>
-                                                        <Typography variant="body2" color="text.secondary">{`${row.usePercent}%`}</Typography>
-                                                    </Box>
-                                                </Box>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                    {storage.partitions.length === 0 && (
-                                        <TableRow>
-                                            <TableCell colSpan={7} align="center">
-                                                No partitions found
-                                            </TableCell>
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </CardContent>
-                </Card>
-            </StackCol>
+                {/* Disk Usage Overview CardComponent */}
+                <CardComponent sx={{ mb: SPACING.xl / 8 }}>
+                    <Box sx={{ p: SPACING.lg / 8 }}>
+                        <Typography variant="h6" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, mb: SPACING.md / 8 }}>
+                            Disk Usage Overview
+                        </Typography>
+                        <StackRowComponent sx={{ flexWrap: 'wrap', gap: SPACING.lg / 8 }}>
+                            {storageData.map((drive) => (
+                                <Box key={drive.mountPoint} sx={{ flex: '1 1 300px', p: SPACING.md / 8, border: `1px solid ${COLORS.border.light}`, borderRadius: BORDER_RADIUS.md / 8 }}>
+                                    <Typography variant="subtitle2" sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>{drive.mountPoint} ({drive.name})</Typography>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                        <Typography variant="caption" color="text.secondary">Usage</Typography>
+                                        <Typography variant="caption" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold }}>{drive.usePercent}%</Typography>
+                                    </Box>
+                                    <LinearProgress
+                                        variant="determinate"
+                                        value={parseInt(drive.usePercent.toString())}
+                                        sx={{ height: 8, borderRadius: 4, bgcolor: alpha(COLORS.primary.main, 0.1) }}
+                                    />
+                                </Box>
+                            ))}
+                        </StackRowComponent>
+                    </Box>
+                </CardComponent>
+
+                {/* Partition TableComponent */}
+                <TableContainerComponent>
+                    <TableComponent sx={{ minWidth: 650 }}>
+                        <TableHeadComponent>
+                            <TableRowComponent>
+                                <TableCellComponent>Filesystem</TableCellComponent>
+                                <TableCellComponent>Size</TableCellComponent>
+                                <TableCellComponent>Used</TableCellComponent>
+                                <TableCellComponent>Available</TableCellComponent>
+                                <TableCellComponent>Usage %</TableCellComponent>
+                                <TableCellComponent>Mounted on</TableCellComponent>
+                            </TableRowComponent>
+                        </TableHeadComponent>
+                        <TableBodyComponent>
+                            {storageData.map((drive) => (
+                                <TableRowComponent key={drive.mountPoint}>
+                                    <TableCellComponent>{drive.name}</TableCellComponent>
+                                    <TableCellComponent>{drive.size}</TableCellComponent>
+                                    <TableCellComponent>{drive.used}</TableCellComponent>
+                                    <TableCellComponent>{drive.avail}</TableCellComponent>
+                                    <TableCellComponent sx={{ minWidth: 150 }}>
+                                        <Box sx={{ width: '100%' }}>
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                                <LinearProgress
+                                                    variant="determinate"
+                                                    value={parseInt(drive.usePercent.toString())}
+                                                    sx={{ flexGrow: 1, height: 6, borderRadius: 3, mr: 1, alignSelf: 'center' }}
+                                                />
+                                                <Typography variant="caption" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold }}>
+                                                    {drive.usePercent}%
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+                                    </TableCellComponent>
+                                    <TableCellComponent>{drive.mountPoint}</TableCellComponent>
+                                </TableRowComponent>
+                            ))}
+                            {storageData.length === 0 && (
+                                <TableRowComponent>
+                                    <TableCellComponent colSpan={6} align="center">
+                                        No partitions found
+                                    </TableCellComponent>
+                                </TableRowComponent>
+                            )}
+                        </TableBodyComponent>
+                    </TableComponent>
+                </TableContainerComponent>
+            </StackColComponent>
         </Box>
     );
 }

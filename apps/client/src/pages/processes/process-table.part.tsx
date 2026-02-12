@@ -1,7 +1,8 @@
 import React from 'react';
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, TableSortLabel, Box } from '@mui/material';
-import { BORDER_RADIUS, SPACING, TYPOGRAPHY, SHADOWS } from '../../constants/design';
-import { ProcessStatus } from '../../components/status-badge/status-badge';
+import { TableBodyComponent, TableSortLabel, Box } from '@mui/material';
+import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent } from '../../components';
+import { SPACING } from '../../constants/design';
+import { ProcessStatus } from '../../components/status-badge/status-badge.component';
 import { ProcessRow } from './process-row.part';
 
 export interface Process {
@@ -10,19 +11,18 @@ export interface Process {
     user: string;
     status: ProcessStatus;
     cpu: number;
-    memory: number;
+    mem: number;
 }
 
-type SortField = 'pid' | 'name' | 'user' | 'status' | 'cpu' | 'memory' | 'actions';
+type SortField = 'pid' | 'name' | 'user' | 'status' | 'cpu' | 'mem';
 type SortOrder = 'asc' | 'desc';
 
 interface ProcessTableProps {
     processes: Process[];
     onKill?: (pid: number) => void;
-    onSuspend?: (pid: number) => void;
 }
 
-export function ProcessTable({ processes, onKill, onSuspend }: ProcessTableProps) {
+export function ProcessTable({ processes, onKill }: ProcessTableProps) {
     const [orderBy, setOrderBy] = React.useState<SortField>('cpu');
     const [order, setOrder] = React.useState<SortOrder>('desc');
 
@@ -34,8 +34,6 @@ export function ProcessTable({ processes, onKill, onSuspend }: ProcessTableProps
 
     const sortedProcesses = React.useMemo(() => {
         return [...processes].sort((a, b) => {
-            if (orderBy === 'actions') return 0;
-
             let aValue = a[orderBy];
             let bValue = b[orderBy];
 
@@ -60,70 +58,54 @@ export function ProcessTable({ processes, onKill, onSuspend }: ProcessTableProps
         { id: 'user', label: 'USER', align: 'left' },
         { id: 'status', label: 'STATUS', align: 'left' },
         { id: 'cpu', label: 'CPU %', align: 'right' },
-        { id: 'memory', label: 'MEMORY (MB)', align: 'right' },
-        { id: 'actions', label: 'ACTIONS', align: 'right' },
+        { id: 'mem', label: 'MEM %', align: 'right' },
+        { id: 'pid', label: 'ACTIONS', align: 'right' }, // Using pid as dummy for actions sort cell
     ];
 
     return (
-        <TableContainer
-            component={Paper}
-            sx={{
-                borderRadius: BORDER_RADIUS.lg / 8,
-                boxShadow: SHADOWS.md,
-                overflow: 'hidden',
-            }}
-        >
-            <Table sx={{ minWidth: 650 }}>
-                <TableHead>
-                    <TableRow
-                        sx={{
-                            backgroundColor: 'background.default',
-                        }}
-                    >
-                        {headCells.map((headCell) => (
-                            <TableCell
-                                key={headCell.id}
+        <TableContainerComponent>
+            <TableComponent sx={{ minWidth: 650 }}>
+                <TableHeadComponent>
+                    <TableRowComponent>
+                        {headCells.map((headCell, index) => (
+                            <TableCellComponent
+                                key={`${headCell.id}-${index}`}
                                 align={headCell.align}
-                                sx={{
-                                    fontWeight: TYPOGRAPHY.fontWeight.bold,
-                                    fontSize: TYPOGRAPHY.fontSize.xs,
-                                    color: 'text.secondary',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.05em',
-                                    py: SPACING.lg / 8,
-                                }}
                             >
-                                <TableSortLabel
-                                    active={orderBy === headCell.id}
-                                    direction={orderBy === headCell.id ? order : 'asc'}
-                                    onClick={() => handleSort(headCell.id)}
-                                >
-                                    {headCell.label}
-                                </TableSortLabel>
-                            </TableCell>
+                                {headCell.label !== 'ACTIONS' ? (
+                                    <TableSortLabel
+                                        active={orderBy === headCell.id}
+                                        direction={orderBy === headCell.id ? order : 'asc'}
+                                        onClick={() => handleSort(headCell.id)}
+                                    >
+                                        {headCell.label}
+                                    </TableSortLabel>
+                                ) : (
+                                    headCell.label
+                                )}
+                            </TableCellComponent>
                         ))}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
+                    </TableRowComponent>
+                </TableHeadComponent>
+                <TableBodyComponent>
                     {sortedProcesses.map((process) => (
                         <ProcessRow
                             key={process.pid}
                             process={process}
                             onKill={onKill}
-                            onSuspend={onSuspend}
                         />
                     ))}
                     {sortedProcesses.length === 0 && (
-                        <TableRow>
-                            <TableCell colSpan={6} align="center" sx={{ py: SPACING.xl / 8 }}>
+                        <TableRowComponent>
+                            <TableCellComponent colSpan={7} align="center" sx={{ py: SPACING.xl / 8 }}>
                                 <Box sx={{ color: 'text.secondary' }}>
                                     No processes found
                                 </Box>
-                            </TableCell>
-                        </TableRow>
+                            </TableCellComponent>
+                        </TableRowComponent>
                     )}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                </TableBodyComponent>
+            </TableComponent>
+        </TableContainerComponent>
     );
 }

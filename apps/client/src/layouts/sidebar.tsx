@@ -9,7 +9,7 @@ import {
     Person as PersonIcon,
 } from '@mui/icons-material';
 import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
-import { StackCol, StackRow, StackColAlignCenterJusCenter } from '../components/stack';
+import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../components/stack';
 
 interface MenuItem {
     id: string;
@@ -70,7 +70,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
     };
 
     const sidebarContent = (
-        <StackCol
+        <StackColComponent
             sx={{
                 width: LAYOUT.sidebar.width,
                 height: '100%',
@@ -79,7 +79,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
             }}
             spacing={0}
         >
-            <StackRow
+            <StackRowComponent
                 sx={{
                     p: SPACING.lg / 8,
                     gap: SPACING.sm / 8,
@@ -87,7 +87,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                 }}
                 spacing={SPACING.sm / 8}
             >
-                <StackColAlignCenterJusCenter
+                <StackColAlignCenterJusCenterComponent
                     sx={{
                         width: 40,
                         height: 40,
@@ -99,7 +99,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                     spacing={0}
                 >
                     🐧
-                </StackColAlignCenterJusCenter>
+                </StackColAlignCenterJusCenterComponent>
                 <Typography
                     variant="h6"
                     sx={{
@@ -109,7 +109,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                 >
                     UbuntuMonitor
                 </Typography>
-            </StackRow>
+            </StackRowComponent>
 
             <List sx={{ flex: 1, py: SPACING.md / 8 }}>
                 {menuItems.map((item) => {
@@ -158,7 +158,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                 })}
             </List>
 
-            <StackRow
+            <StackRowComponent
                 sx={{
                     p: SPACING.md / 8,
                     borderTop: `1px solid ${COLORS.sidebar.hover}`,
@@ -196,8 +196,8 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                         Ubuntu 22.04 LTS
                     </Typography>
                 </Box>
-            </StackRow>
-        </StackCol>
+            </StackRowComponent>
+        </StackColComponent>
     );
 
     // Mobile: Temporary drawer

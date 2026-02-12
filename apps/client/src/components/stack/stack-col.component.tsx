@@ -6,7 +6,7 @@ interface StackColProps extends Omit<StackProps, 'direction'> {
     spacing?: number | string;
 }
 
-export function StackCol({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" spacing={spacing} {...props}>
             {children}
@@ -14,7 +14,7 @@ export function StackCol({ children, spacing = 1, ...props }: StackColProps) {
     );
 }
 
-export function StackColAlignStart({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignStartComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="flex-start" spacing={spacing} {...props}>
             {children}
@@ -22,7 +22,7 @@ export function StackColAlignStart({ children, spacing = 1, ...props }: StackCol
     );
 }
 
-export function StackColAlignCenter({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignCenterComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="center" spacing={spacing} {...props}>
             {children}
@@ -30,7 +30,7 @@ export function StackColAlignCenter({ children, spacing = 1, ...props }: StackCo
     );
 }
 
-export function StackColAlignEnd({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignEndComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="flex-end" spacing={spacing} {...props}>
             {children}
@@ -38,7 +38,7 @@ export function StackColAlignEnd({ children, spacing = 1, ...props }: StackColPr
     );
 }
 
-export function StackColJusCenter({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColJusCenterComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" justifyContent="center" spacing={spacing} {...props}>
             {children}
@@ -46,7 +46,7 @@ export function StackColJusCenter({ children, spacing = 1, ...props }: StackColP
     );
 }
 
-export function StackColJusEnd({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColJusEndComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" justifyContent="flex-end" spacing={spacing} {...props}>
             {children}
@@ -54,7 +54,7 @@ export function StackColJusEnd({ children, spacing = 1, ...props }: StackColProp
     );
 }
 
-export function StackColJusBetween({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColJusBetweenComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" justifyContent="space-between" spacing={spacing} {...props}>
             {children}
@@ -62,7 +62,7 @@ export function StackColJusBetween({ children, spacing = 1, ...props }: StackCol
     );
 }
 
-export function StackColAlignCenterJusCenter({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignCenterJusCenterComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="center" justifyContent="center" spacing={spacing} {...props}>
             {children}
@@ -70,7 +70,7 @@ export function StackColAlignCenterJusCenter({ children, spacing = 1, ...props }
     );
 }
 
-export function StackColAlignCenterJusEnd({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignCenterJusEndComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="center" justifyContent="flex-end" spacing={spacing} {...props}>
             {children}
@@ -78,7 +78,7 @@ export function StackColAlignCenterJusEnd({ children, spacing = 1, ...props }: S
     );
 }
 
-export function StackColAlignCenterJusBetween({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignCenterJusBetweenComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="center" justifyContent="space-between" spacing={spacing} {...props}>
             {children}
@@ -86,7 +86,7 @@ export function StackColAlignCenterJusBetween({ children, spacing = 1, ...props 
     );
 }
 
-export function StackColAlignStartJusCenter({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignStartJusCenterComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="flex-start" justifyContent="center" spacing={spacing} {...props}>
             {children}
@@ -94,7 +94,7 @@ export function StackColAlignStartJusCenter({ children, spacing = 1, ...props }:
     );
 }
 
-export function StackColAlignStartJusEnd({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignStartJusEndComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="flex-start" justifyContent="flex-end" spacing={spacing} {...props}>
             {children}
@@ -102,7 +102,7 @@ export function StackColAlignStartJusEnd({ children, spacing = 1, ...props }: St
     );
 }
 
-export function StackColAlignStartJusBetween({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignStartJusBetweenComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="flex-start" justifyContent="space-between" spacing={spacing} {...props}>
             {children}
@@ -110,7 +110,7 @@ export function StackColAlignStartJusBetween({ children, spacing = 1, ...props }
     );
 }
 
-export function StackColAlignEndJusCenter({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignEndJusCenterComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="flex-end" justifyContent="center" spacing={spacing} {...props}>
             {children}
@@ -118,7 +118,7 @@ export function StackColAlignEndJusCenter({ children, spacing = 1, ...props }: S
     );
 }
 
-export function StackColAlignEndJusEnd({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignEndJusEndComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="flex-end" justifyContent="flex-end" spacing={spacing} {...props}>
             {children}
@@ -126,7 +126,7 @@ export function StackColAlignEndJusEnd({ children, spacing = 1, ...props }: Stac
     );
 }
 
-export function StackColAlignEndJusBetween({ children, spacing = 1, ...props }: StackColProps) {
+export function StackColAlignEndJusBetweenComponent({ children, spacing = 1, ...props }: StackColProps) {
     return (
         <Stack direction="column" alignItems="flex-end" justifyContent="space-between" spacing={spacing} {...props}>
             {children}

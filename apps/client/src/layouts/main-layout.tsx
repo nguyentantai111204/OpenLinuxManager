@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react';
 import { Box, IconButton, useTheme, useMediaQuery } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { Sidebar } from './sidebar';
-import { StackRow } from '../components/stack';
+import { StackRowComponent } from '../components/stack';
 import { LAYOUT, SPACING, COLORS } from '../constants/design';
 
 interface MainLayoutProps {
@@ -13,7 +13,7 @@ export function MainLayout({ children }: MainLayoutProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
-        <StackRow sx={{ minHeight: '100vh' }} spacing={0}>
+        <StackRowComponent sx={{ minHeight: '100vh' }} spacing={0}>
             <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
             <Box
@@ -27,6 +27,6 @@ export function MainLayout({ children }: MainLayoutProps) {
             >
                 {children}
             </Box>
-        </StackRow>
+        </StackRowComponent>
     );
 }

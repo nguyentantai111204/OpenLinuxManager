@@ -6,7 +6,7 @@ interface CenterProps extends Omit<StackProps, 'justifyContent' | 'alignItems'> 
     direction?: 'row' | 'column';
 }
 
-export function Center({ children, direction = 'column', ...props }: CenterProps) {
+export function CenterComponent({ children, direction = 'column', ...props }: CenterProps) {
     return (
         <Stack
             direction={direction}

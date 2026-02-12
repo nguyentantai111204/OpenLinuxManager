@@ -7,7 +7,7 @@ interface StackRowProps extends Omit<StackProps, 'direction'> {
 }
 
 
-export function StackRow({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="center" spacing={spacing} {...props}>
             {children}
@@ -15,7 +15,7 @@ export function StackRow({ children, spacing = 1, ...props }: StackRowProps) {
     );
 }
 
-export function StackRowAlignStart({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowAlignStartComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="flex-start" spacing={spacing} {...props}>
             {children}
@@ -23,7 +23,7 @@ export function StackRowAlignStart({ children, spacing = 1, ...props }: StackRow
     );
 }
 
-export function StackRowAlignEnd({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowAlignEndComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="flex-end" spacing={spacing} {...props}>
             {children}
@@ -31,7 +31,7 @@ export function StackRowAlignEnd({ children, spacing = 1, ...props }: StackRowPr
     );
 }
 
-export function StackRowJusCenter({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowJusCenterComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="center" justifyContent="center" spacing={spacing} {...props}>
             {children}
@@ -39,7 +39,7 @@ export function StackRowJusCenter({ children, spacing = 1, ...props }: StackRowP
     );
 }
 
-export function StackRowJusEnd({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowJusEndComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={spacing} {...props}>
             {children}
@@ -47,7 +47,7 @@ export function StackRowJusEnd({ children, spacing = 1, ...props }: StackRowProp
     );
 }
 
-export function StackRowJusBetween({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowJusBetweenComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={spacing} {...props}>
             {children}
@@ -55,7 +55,7 @@ export function StackRowJusBetween({ children, spacing = 1, ...props }: StackRow
     );
 }
 
-export function StackRowAlignStartJusCenter({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowAlignStartJusCenterComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="flex-start" justifyContent="center" spacing={spacing} {...props}>
             {children}
@@ -63,7 +63,7 @@ export function StackRowAlignStartJusCenter({ children, spacing = 1, ...props }:
     );
 }
 
-export function StackRowAlignStartJusEnd({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowAlignStartJusEndComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="flex-start" justifyContent="flex-end" spacing={spacing} {...props}>
             {children}
@@ -71,7 +71,7 @@ export function StackRowAlignStartJusEnd({ children, spacing = 1, ...props }: St
     );
 }
 
-export function StackRowAlignStartJusBetween({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowAlignStartJusBetweenComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={spacing} {...props}>
             {children}
@@ -79,7 +79,7 @@ export function StackRowAlignStartJusBetween({ children, spacing = 1, ...props }
     );
 }
 
-export function StackRowAlignEndJusCenter({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowAlignEndJusCenterComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="flex-end" justifyContent="center" spacing={spacing} {...props}>
             {children}
@@ -87,7 +87,7 @@ export function StackRowAlignEndJusCenter({ children, spacing = 1, ...props }: S
     );
 }
 
-export function StackRowAlignEndJusEnd({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowAlignEndJusEndComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" spacing={spacing} {...props}>
             {children}
@@ -95,7 +95,7 @@ export function StackRowAlignEndJusEnd({ children, spacing = 1, ...props }: Stac
     );
 }
 
-export function StackRowAlignEndJusBetween({ children, spacing = 1, ...props }: StackRowProps) {
+export function StackRowAlignEndJusBetweenComponent({ children, spacing = 1, ...props }: StackRowProps) {
     return (
         <Stack direction="row" alignItems="flex-end" justifyContent="space-between" spacing={spacing} {...props}>
             {children}

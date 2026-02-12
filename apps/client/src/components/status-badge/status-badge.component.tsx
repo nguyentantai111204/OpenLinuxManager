@@ -1,6 +1,6 @@
-import { Chip } from '@mui/material';
 import { Circle as CircleIcon } from '@mui/icons-material';
-import { COLORS, TYPOGRAPHY, BORDER_RADIUS, SPACING } from '../../constants/design';
+import { COLORS, SPACING } from '../../constants/design';
+import { ChipComponent } from '../chip/chip.component';
 
 export type ProcessStatus = 'running' | 'sleeping' | 'stopped' | 'zombie';
 
@@ -27,11 +27,11 @@ const statusConfig: Record<ProcessStatus, { color: string; label: string }> = {
     },
 };
 
-export function StatusBadge({ status }: StatusBadgeProps) {
+export function StatusBadgeComponent({ status }: StatusBadgeProps) {
     const config = statusConfig[status];
 
     return (
-        <Chip
+        <ChipComponent
             icon={
                 <CircleIcon
                     sx={{
@@ -45,8 +45,6 @@ export function StatusBadge({ status }: StatusBadgeProps) {
             sx={{
                 backgroundColor: 'transparent',
                 border: 'none',
-                fontWeight: TYPOGRAPHY.fontWeight.medium,
-                fontSize: TYPOGRAPHY.fontSize.sm,
                 color: 'text.secondary',
                 '& .MuiChip-icon': {
                     marginLeft: 0,

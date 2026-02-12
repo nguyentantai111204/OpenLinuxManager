@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Box, Typography, Chip } from '@mui/material';
 import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@mui/icons-material';
 import { SPACING, TYPOGRAPHY } from '../../constants/design';
-import { StackRow, StackRowAlignStartJusBetween } from '../stack';
+import { StackRowComponent, StackRowAlignStartJusBetweenComponent } from '../stack';
 
 interface PageHeaderProps {
     title: string;
@@ -11,10 +11,10 @@ interface PageHeaderProps {
     actions?: ReactNode;
 }
 
-export function PageHeader({ title, subtitle, isConnected, actions }: PageHeaderProps) {
+export function PageHeaderComponentComponent({ title, subtitle, isConnected, actions }: PageHeaderProps) {
     return (
         <Box sx={{ mb: SPACING.lg / 8 }}>
-            <StackRowAlignStartJusBetween sx={{ mb: SPACING.sm / 8 }}>
+            <StackRowAlignStartJusBetweenComponent sx={{ mb: SPACING.sm / 8 }}>
                 <Box>
                     <Typography
                         variant="h4"
@@ -40,10 +40,10 @@ export function PageHeader({ title, subtitle, isConnected, actions }: PageHeader
                     )}
                 </Box>
                 {actions && <Box>{actions}</Box>}
-            </StackRowAlignStartJusBetween>
+            </StackRowAlignStartJusBetweenComponent>
 
             {isConnected !== undefined && (
-                <StackRow spacing={SPACING.sm / 8}>
+                <StackRowComponent spacing={SPACING.sm / 8}>
                     <Chip
                         icon={isConnected ? <CheckCircleIcon /> : <ErrorIcon />}
                         label={isConnected ? 'Connected' : 'Disconnected'}
@@ -51,7 +51,7 @@ export function PageHeader({ title, subtitle, isConnected, actions }: PageHeader
                         size="small"
                         sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}
                     />
-                </StackRow>
+                </StackRowComponent>
             )}
         </Box>
     );
