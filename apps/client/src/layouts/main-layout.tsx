@@ -3,7 +3,7 @@ import { Box, IconButton, useTheme, useMediaQuery } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { Sidebar } from './sidebar';
 import { StackRowComponent } from '../components/stack';
-import { LAYOUT, SPACING, COLORS } from '../constants/design';
+import { LAYOUT, SPACING } from '../constants/design';
 
 interface MainLayoutProps {
     children: ReactNode;
@@ -11,6 +11,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const theme = useTheme();
 
     return (
         <StackRowComponent sx={{ minHeight: '100vh' }} spacing={0}>
@@ -20,7 +21,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    backgroundColor: COLORS.background.default,
+                    backgroundColor: theme.palette.background.default,
                     minHeight: '100vh',
                     overflow: 'auto',
                 }}

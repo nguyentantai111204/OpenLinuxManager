@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Chip, CircularProgress, Alert, TablePagination } from '@mui/material';
+import { Box, Typography, Chip, CircularProgress, Alert, TablePagination, alpha } from '@mui/material';
 import { PageHeaderComponent } from '../../components';
 import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, CardComponent } from '../../components';
 import { AuditLogApi } from '../../apis/audit-log/audit-log.api';
@@ -142,11 +142,12 @@ export function AuditLogs() {
                                                     <Chip
                                                         label={log.performedBy}
                                                         size="small"
-                                                        sx={{
+                                                        sx={(theme) => ({
                                                             height: 20,
                                                             fontSize: '0.75rem',
-                                                            backgroundColor: COLORS.background.default
-                                                        }}
+                                                            backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                                                            color: theme.palette.text.primary,
+                                                        })}
                                                     />
                                                 </TableCellComponent>
                                             </TableRowComponent>

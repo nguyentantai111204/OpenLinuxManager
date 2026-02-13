@@ -51,15 +51,15 @@ export function Storage() {
                             <LinearProgress
                                 variant="determinate"
                                 value={(storage.used / (storage.total || 1)) * 100}
-                                sx={{
+                                sx={(theme) => ({
                                     height: 8,
                                     borderRadius: BORDER_RADIUS.full,
-                                    backgroundColor: COLORS.background.elevated,
+                                    backgroundColor: alpha(theme.palette.background.paper, 0.3),
                                     '& .MuiLinearProgress-bar': {
                                         backgroundColor: COLORS.chart.disk,
                                         borderRadius: BORDER_RADIUS.full,
                                     }
-                                }}
+                                })}
                             />
                         </Box>
                         <Typography variant="caption" color="text.secondary">

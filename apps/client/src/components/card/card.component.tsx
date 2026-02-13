@@ -10,7 +10,7 @@ const StyledCard = styled(MuiCard, {
     shouldForwardProp: (prop) => prop !== 'hoverable' && prop !== 'flat',
 })<CustomCardProps>(({ theme, hoverable, flat }) => ({
     borderRadius: BORDER_RADIUS.lg,
-    backgroundColor: theme.palette.mode === 'dark' ? COLORS.background.paper : '#ffffff',
+    backgroundColor: theme.palette.background.paper,
     boxShadow: flat ? 'none' : SHADOWS.sm,
     border: flat ? `1px solid ${theme.palette.divider}` : 'none',
     transition: `all ${TRANSITIONS.duration.normal} ${TRANSITIONS.easing.easeInOut}`,
