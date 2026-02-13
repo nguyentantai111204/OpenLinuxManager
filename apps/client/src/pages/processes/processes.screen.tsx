@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Block as BlockIcon, Pause as PauseIcon } from '@mui/icons-material';
 import { ButtonComponent, SearchComponent } from '../../components';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
+import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { ProcessTable, Process } from './process-table.part';
 import { useSocket } from '../../hooks/use-socket';
 import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../../constants/design';
@@ -14,6 +15,9 @@ export function Processes() {
     const { isConnected, processes } = useSocket();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedPids, setSelectedPids] = useState<number[]>([]);
+    const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; pid?: number; pids?: number[] }>({
+        open: false,
+    });
 
     const mapStatus = (status: string): ProcessStatus => {
         const s = status.toUpperCase().charAt(0);
@@ -59,21 +63,27 @@ export function Processes() {
         severity: 'success',
     });
 
-    const handleKill = async (pid?: number) => {
-        const pidsToKill = pid ? [pid] : selectedPids;
+    const handleKillClick = (pid?: number) => {
+        setConfirmDialog({ open: true, pid, pids: pid ? undefined : selectedPids });
+    };
+
+    const handleKillConfirm = async () => {
+        const pidsToKill = confirmDialog.pid ? [confirmDialog.pid] : (confirmDialog.pids || selectedPids);
         if (pidsToKill.length === 0) return;
+
+        setConfirmDialog({ open: false });
 
         try {
             await Promise.all(pidsToKill.map(p => axios.delete(`/api/system/processes/${p}`)));
             setSnackbar({
                 open: true,
-                message: `Successfully killed ${pidsToKill.length} process(es)`,
+                message: `Đã kết thúc ${pidsToKill.length} tiến trình thành công`,
                 severity: 'success'
             });
             setSelectedPids([]);
         } catch (error) {
             console.error('Failed to kill processes', error);
-            setSnackbar({ open: true, message: 'Failed to kill one or more processes', severity: 'error' });
+            setSnackbar({ open: true, message: 'Không thể kết thúc một hoặc nhiều tiến trình', severity: 'error' });
         }
     };
 
@@ -128,7 +138,7 @@ export function Processes() {
                             size="small"
                             color="error"
                             disabled={selectedPids.length === 0}
-                            onClick={() => handleKill()}
+                            onClick={() => handleKillClick()}
                         >
                             Kill {selectedPids.length > 0 ? `(${selectedPids.length})` : ''}
                         </ButtonComponent>
@@ -156,7 +166,7 @@ export function Processes() {
 
             <ProcessTable
                 processes={filteredProcesses}
-                onKill={handleKill}
+                onKill={handleKillClick}
                 selectedPids={selectedPids}
                 onSelectionChange={setSelectedPids}
             />
@@ -198,6 +208,21 @@ export function Processes() {
                     {snackbar.message}
                 </Alert>
             </Snackbar>
+
+            <ConfirmationDialogComponent
+                open={confirmDialog.open}
+                title="Xác nhận kết thúc tiến trình"
+                message={
+                    confirmDialog.pid
+                        ? `Bạn có chắc chắn muốn kết thúc tiến trình PID ${confirmDialog.pid}?`
+                        : `Bạn có chắc chắn muốn kết thúc ${confirmDialog.pids?.length || 0} tiến trình đã chọn?`
+                }
+                confirmText="Kết thúc"
+                cancelText="Hủy"
+                onConfirm={handleKillConfirm}
+                onCancel={() => setConfirmDialog({ open: false })}
+                severity="error"
+            />
         </Box >
     );
 }

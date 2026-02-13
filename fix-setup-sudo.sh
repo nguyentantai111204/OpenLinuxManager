@@ -13,7 +13,7 @@ echo "Setting up passwordless sudo for user: $TARGET_USER"
 # chpasswd: for setting passwords
 # usermod: for modifying groups/etc if needed
 # rm: allowed for cleanup in the script itself (optional, but good for debugging)
-SUDOERS_CONTENT="$TARGET_USER ALL=(root) NOPASSWD: /usr/sbin/useradd, /usr/sbin/userdel, /usr/sbin/chpasswd, /usr/sbin/usermod, /usr/bin/cat, /usr/bin/rm"
+SUDOERS_CONTENT="$TARGET_USER ALL=(root) NOPASSWD: /usr/sbin/useradd, /usr/sbin/userdel, /usr/sbin/chpasswd, /usr/sbin/usermod, /usr/bin/cat, /usr/bin/rm, /usr/bin/systemctl"
 
 echo "Writing configuration to $SUDOERS_FILE..."
 echo "$SUDOERS_CONTENT" | sudo tee $SUDOERS_FILE > /dev/null
@@ -32,11 +32,11 @@ else
 fi
 
 echo "Verifying active configuration..."
-# Check specifically for chpasswd which was missing before
-if sudo -l -U $TARGET_USER | grep "chpasswd"; then
-    echo "SUCCESS: 'chpasswd' is now allowed without password."
+# Check specifically for systemctl which is needed for service management
+if sudo -l -U $TARGET_USER | grep "systemctl"; then
+    echo "SUCCESS: 'systemctl' is now allowed without password."
 else
-    echo "WARNING: 'chpasswd' is NOT listed in 'sudo -l'. Configuration might be overridden."
+    echo "WARNING: 'systemctl' is NOT listed in 'sudo -l'. Configuration might be overridden."
     sudo -l -U $TARGET_USER
 fi
 
