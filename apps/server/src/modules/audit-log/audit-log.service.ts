@@ -10,7 +10,7 @@ export class AuditLogService {
         private auditLogRepository: Repository<AuditLog>,
     ) { }
 
-    async createLog(action: string, target: string, details?: string, performedBy: string = 'admin') {
+    async createLog(action: string, target: string, details?: string, performedBy = 'admin') {
         const log = this.auditLogRepository.create({
             action,
             target,
@@ -20,7 +20,7 @@ export class AuditLogService {
         return this.auditLogRepository.save(log);
     }
 
-    async findAll(page: number = 1, limit: number = 10) {
+    async findAll(page = 1, limit = 10) {
         const [data, total] = await this.auditLogRepository.findAndCount({
             order: {
                 createdAt: 'DESC',
