@@ -11,6 +11,10 @@ import { ApiResponse } from '../interfaces/api-response.interface';
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponse<T>> {
     intercept(context: ExecutionContext, next: CallHandler): Observable<ApiResponse<T>> {
+        if (context.getType() === 'ws') {
+            return next.handle() as any;
+        }
+
         return next.handle().pipe(
             map((data) => {
                 if (data && typeof data === 'object' && 'success' in data) {

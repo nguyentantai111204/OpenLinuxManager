@@ -16,6 +16,15 @@ export default defineConfig(() => ({
         changeOrigin: true,
         secure: false,
       },
+      // Proxy all socket.io traffic (WebSocket + polling) to the NestJS server.
+      // Without this, the browser at :4200 cannot establish a WebSocket to :3000
+      // (cross-port) and the dashboard / terminal will fail to receive any data.
+      '/socket.io': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+      },
     },
   },
   preview: {

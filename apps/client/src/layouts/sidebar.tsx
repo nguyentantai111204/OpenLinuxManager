@@ -10,10 +10,11 @@ import {
     Settings as SettingsIcon,
     Person as PersonIcon,
     Construction as ConstructionIcon,
+    Terminal as TerminalIcon,
 } from '@mui/icons-material';
 import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
 import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../components/stack';
-import { useSocket } from '../hooks/use-socket';
+import { useSocketContext } from '../contexts/socket-context';
 
 interface MenuItem {
     id: string;
@@ -60,6 +61,12 @@ const menuItems: MenuItem[] = [
         path: '/audit-logs',
     },
     {
+        id: 'terminal',
+        label: 'Terminal',
+        icon: <TerminalIcon />,
+        path: '/terminal',
+    },
+    {
         id: 'settings',
         label: 'Settings',
         icon: <SettingsIcon />,
@@ -77,7 +84,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const { systemStats } = useSocket();
+    const { systemStats } = useSocketContext();
 
     const handleNavigate = (path: string) => {
         navigate(path);

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Fade, Grow, CircularProgress, Alert } from '@mui/material';
 import { DeveloperBoard, Memory, Storage, Timer } from '@mui/icons-material';
-import { useSocket } from '../../hooks/use-socket';
+import { useSocketContext } from '../../contexts/socket-context';
 import { CpuChart } from './cpu-chart.part';
 import { RamChart } from './ram-chart.part';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
@@ -16,7 +16,7 @@ interface SystemHistoryPoint {
 }
 
 export function Dashboard() {
-    const { systemStats, isConnected, storage } = useSocket();
+    const { systemStats, isConnected, storage } = useSocketContext();
     const [history, setHistory] = useState<SystemHistoryPoint[]>([]);
 
     useEffect(() => {

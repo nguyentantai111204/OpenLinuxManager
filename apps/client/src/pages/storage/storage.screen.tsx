@@ -3,10 +3,10 @@ import { PageHeaderComponent } from '../../components/page-header/page-header.co
 import { CardComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent } from '../../components';
 import { SPACING, COLORS, BORDER_RADIUS, TYPOGRAPHY } from '../../constants/design';
 import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent, StackRowJusBetweenComponent } from '../../components/stack';
-import { useSocket } from '../../hooks/use-socket';
+import { useSocketContext } from '../../contexts/socket-context';
 
 export function Storage() {
-    const { isConnected, storage } = useSocket();
+    const { isConnected, storage } = useSocketContext();
 
     if (!storage) {
         return (

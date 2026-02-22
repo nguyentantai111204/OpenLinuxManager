@@ -6,13 +6,13 @@ import { ButtonComponent, SearchComponent } from '../../components';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { ProcessTable, Process } from './process-table.part';
-import { useSocket } from '../../hooks/use-socket';
+import { useSocketContext } from '../../contexts/socket-context';
 import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../../constants/design';
 import { StackRowComponent, StackRowJusBetweenComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
 import { ProcessStatus } from '../../components/status-badge/status-badge.component';
 
 export function Processes() {
-    const { isConnected, processes } = useSocket();
+    const { isConnected, processes } = useSocketContext();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedPids, setSelectedPids] = useState<number[]>([]);
     const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; pid?: number; pids?: number[] }>({
