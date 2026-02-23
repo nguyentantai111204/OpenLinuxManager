@@ -5,10 +5,10 @@ import {
     TableHeadComponent,
     TableRowComponent,
     TableCellComponent,
-    TableBodyComponent
+    TableBodyComponent,
+    TableEmptyRow
 } from '../../components';
 import { ServiceRow, SystemService } from './service-row.part';
-import { SPACING } from '../../constants/design';
 
 interface ServiceTableProps {
     services: SystemService[];
@@ -36,11 +36,7 @@ export function ServiceTable({ services = [], onAction }: ServiceTableProps) {
                         />
                     ))}
                     {services.length === 0 && (
-                        <TableRowComponent>
-                            <TableCellComponent colSpan={3} align="center" sx={{ py: SPACING.xl / 8 }}>
-                                No services found
-                            </TableCellComponent>
-                        </TableRowComponent>
+                        <TableEmptyRow colSpan={4} message="Không tìm thấy dịch vụ nào" />
                     )}
                 </TableBodyComponent>
             </TableComponent>

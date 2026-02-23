@@ -1,8 +1,6 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 import { COLORS, COLORS_DARK } from '../constants/design';
 
-// Ecommerce-inspired color palette
-// Palette synchronized with design.ts
 const palette = {
     light: {
         primary: COLORS.primary,
@@ -43,7 +41,6 @@ const palette = {
     },
 };
 
-// Shared theme options
 const getThemeOptions = (mode: 'light' | 'dark'): ThemeOptions => ({
     palette: {
         mode,

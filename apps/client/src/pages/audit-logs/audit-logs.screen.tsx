@@ -1,71 +1,19 @@
-import { useEffect, useState } from 'react';
-import { Box, Typography, Chip, CircularProgress, Alert, TablePagination, alpha } from '@mui/material';
+import { useState } from 'react';
+import { Box, Chip, Alert, TablePagination, alpha } from '@mui/material';
 import { PageHeaderComponent } from '../../components';
-import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, CardComponent } from '../../components';
-import { AuditLogApi } from '../../apis/audit-log/audit-log.api';
+import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, CardComponent, PageLoading, TableEmptyRow } from '../../components';
 import { SPACING, COLORS } from '../../constants/design';
-import { StackColComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
-import { AuditLog } from '../../apis/audit-log/audit-log.interface';
+import { StackColComponent } from '../../components/stack';
+import { useAuditLogs } from '../../hooks/use-audit-logs';
 
 export function AuditLogs() {
-    const [logs, setLogs] = useState<AuditLog[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    // Pagination state
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [total, setTotal] = useState(0);
 
-    const loadLogs = async (currentPage: number, currentLimit: number) => {
-        setLoading(true);
-        try {
-            const result = await AuditLogApi.getAll(currentPage + 1, currentLimit);
+    const { logs, total, isLoading, error } = useAuditLogs(page + 1, rowsPerPage);
 
-            // Defensive checks for both paginated and legacy array responses
-            if (result && 'data' in result && Array.isArray(result.data)) {
-                setLogs(result.data);
-                setTotal(result.meta?.total || result.data.length);
-            } else if (Array.isArray(result)) {
-                setLogs(result);
-                setTotal(result.length);
-            } else {
-                setLogs([]);
-                setTotal(0);
-            }
-            setError(null);
-        } catch (err) {
-            setLogs([]);
-            setError('Failed to load audit logs');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        loadLogs(page, rowsPerPage);
-    }, [page, rowsPerPage]);
-
-    // Cleanup interval if needed, but for now manual refresh/pagination is better for UX
-    /*
-    useEffect(() => {
-        const interval = setInterval(() => loadLogs(page, rowsPerPage), 30000);
-        return () => clearInterval(interval);
-    }, [page, rowsPerPage]);
-    */
-
-    const handleChangePage = (event: unknown, 控制: number) => {
-        setPage(控制);
-    };
-
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleString('en-US', {
+    const formatDate = (dateString: string) =>
+        new Date(dateString).toLocaleString('vi-VN', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
@@ -73,9 +21,8 @@ export function AuditLogs() {
             minute: '2-digit',
             second: '2-digit',
         });
-    };
 
-    const getActionColor = (action: string) => {
+    const getActionColor = (action: string): 'error' | 'success' | 'warning' | 'default' => {
         const a = action.toUpperCase();
         if (a.includes('DELETE') || a.includes('KILL')) return 'error';
         if (a.includes('CREATE')) return 'success';
@@ -87,14 +34,12 @@ export function AuditLogs() {
         <Box sx={{ p: SPACING.lg / 8, height: '100%', overflow: 'hidden' }}>
             <StackColComponent spacing={SPACING.lg / 8} sx={{ height: '100%' }}>
                 <PageHeaderComponent
-                    title="System Audit Logs"
-                    subtitle="History of system actions and security events"
+                    title="Nhật ký hệ thống"
+                    subtitle="Lịch sử các hoạt động và sự kiện bảo mật"
                 />
 
                 {error && (
-                    <Alert severity="error" onClose={() => setError(null)}>
-                        {error}
-                    </Alert>
+                    <Alert severity="error">Không thể tải nhật ký hệ thống</Alert>
                 )}
 
                 <CardComponent sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
@@ -102,23 +47,23 @@ export function AuditLogs() {
                         <TableComponent stickyHeader>
                             <TableHeadComponent>
                                 <TableRowComponent>
-                                    <TableCellComponent>Time</TableCellComponent>
-                                    <TableCellComponent>Action</TableCellComponent>
-                                    <TableCellComponent>Target</TableCellComponent>
-                                    <TableCellComponent>Details</TableCellComponent>
-                                    <TableCellComponent>User</TableCellComponent>
+                                    <TableCellComponent>Thời gian</TableCellComponent>
+                                    <TableCellComponent>Hành động</TableCellComponent>
+                                    <TableCellComponent>Đối tượng</TableCellComponent>
+                                    <TableCellComponent>Chi tiết</TableCellComponent>
+                                    <TableCellComponent>Người thực hiện</TableCellComponent>
                                 </TableRowComponent>
                             </TableHeadComponent>
                             <TableBodyComponent>
-                                {loading && logs.length === 0 ? (
+                                {isLoading && logs.length === 0 ? (
                                     <TableRowComponent>
                                         <TableCellComponent colSpan={5} align="center" sx={{ py: 8 }}>
-                                            <CircularProgress />
+                                            <PageLoading message="Đang tải nhật ký..." minHeight="10vh" size={32} />
                                         </TableCellComponent>
                                     </TableRowComponent>
                                 ) : (
                                     <>
-                                        {Array.isArray(logs) && logs.map((log) => (
+                                        {logs.map((log) => (
                                             <TableRowComponent key={log.id}>
                                                 <TableCellComponent sx={{ whiteSpace: 'nowrap', width: 180 }}>
                                                     {formatDate(log.createdAt)}
@@ -152,14 +97,8 @@ export function AuditLogs() {
                                                 </TableCellComponent>
                                             </TableRowComponent>
                                         ))}
-                                        {logs.length === 0 && !loading && (
-                                            <TableRowComponent>
-                                                <TableCellComponent colSpan={5} align="center" sx={{ py: 8 }}>
-                                                    <Typography color="text.secondary">
-                                                        No audit logs found
-                                                    </Typography>
-                                                </TableCellComponent>
-                                            </TableRowComponent>
+                                        {logs.length === 0 && !isLoading && (
+                                            <TableEmptyRow colSpan={5} message="Không có nhật ký nào" />
                                         )}
                                     </>
                                 )}
@@ -173,8 +112,11 @@ export function AuditLogs() {
                             count={total}
                             rowsPerPage={rowsPerPage}
                             page={page}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            onPageChange={(_e, p) => setPage(p)}
+                            onRowsPerPageChange={(e) => {
+                                setRowsPerPage(parseInt(e.target.value, 10));
+                                setPage(0);
+                            }}
                         />
                     </Box>
                 </CardComponent>

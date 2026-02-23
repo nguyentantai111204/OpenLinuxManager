@@ -1,25 +1,25 @@
 import React, { useState, useMemo } from 'react';
-import { Box, Typography, CircularProgress, Snackbar, Alert } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import axios from 'axios';
 import { Block as BlockIcon, Pause as PauseIcon } from '@mui/icons-material';
-import { ButtonComponent, SearchComponent } from '../../components';
+import { ButtonComponent, SearchComponent, AppSnackbar, PageLoading } from '../../components';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { ProcessTable, Process } from './process-table.part';
 import { useSocketContext } from '../../contexts/socket-context';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../../constants/design';
-import { StackRowComponent, StackRowJusBetweenComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
+import { SPACING, TYPOGRAPHY } from '../../constants/design';
+import { StackRowComponent, StackRowJusBetweenComponent } from '../../components/stack';
 import { mapProcessStatus } from '../../utils/process.utils';
+import { useSnackbar } from '../../hooks/use-snackbar';
 
 export function Processes() {
     const { isConnected, processes } = useSocketContext();
+    const { snackbarProps, showSnackbar } = useSnackbar();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedPids, setSelectedPids] = useState<number[]>([]);
     const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; pid?: number; pids?: number[] }>({
         open: false,
     });
-
-
 
     const clientProcesses: Process[] = useMemo(() => {
         return processes.map((p) => ({
@@ -33,80 +33,53 @@ export function Processes() {
     }, [processes]);
 
     const filteredProcesses = useMemo(() => {
-        if (!searchQuery.trim()) {
-            return clientProcesses;
-        }
-
+        if (!searchQuery.trim()) return clientProcesses;
         const query = searchQuery.toLowerCase();
         return clientProcesses.filter(
-            (process) =>
-                process.pid.toString().includes(query) ||
-                process.name.toLowerCase().includes(query) ||
-                process.user.toLowerCase().includes(query)
+            (p) =>
+                p.pid.toString().includes(query) ||
+                p.name.toLowerCase().includes(query) ||
+                p.user.toLowerCase().includes(query),
         );
     }, [clientProcesses, searchQuery]);
-
-    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
-        open: false,
-        message: '',
-        severity: 'success',
-    });
 
     const handleKillClick = (pid?: number) => {
         setConfirmDialog({ open: true, pid, pids: pid ? undefined : selectedPids });
     };
 
     const handleKillConfirm = async () => {
-        const pidsToKill = confirmDialog.pid ? [confirmDialog.pid] : (confirmDialog.pids || selectedPids);
+        const pidsToKill = confirmDialog.pid
+            ? [confirmDialog.pid]
+            : (confirmDialog.pids || selectedPids);
         if (pidsToKill.length === 0) return;
-
         setConfirmDialog({ open: false });
 
         try {
-            await Promise.all(pidsToKill.map(p => axios.delete(`/api/system/processes/${p}`)));
-            setSnackbar({
-                open: true,
-                message: `Đã kết thúc ${pidsToKill.length} tiến trình thành công`,
-                severity: 'success'
-            });
+            await Promise.all(pidsToKill.map((p) => axios.delete(`/api/system/processes/${p}`)));
+            showSnackbar(`Đã kết thúc ${pidsToKill.length} tiến trình thành công`, 'success');
             setSelectedPids([]);
         } catch {
-            setSnackbar({ open: true, message: 'Không thể kết thúc một hoặc nhiều tiến trình', severity: 'error' });
+            showSnackbar('Không thể kết thúc một hoặc nhiều tiến trình', 'error');
         }
     };
 
     const handleSuspend = async () => {
         if (selectedPids.length === 0) return;
-
         try {
-            await Promise.all(selectedPids.map(pid => axios.patch(`/api/system/processes/${pid}/suspend`)));
-            setSnackbar({
-                open: true,
-                message: `Successfully suspended ${selectedPids.length} process(es)`,
-                severity: 'success'
-            });
+            await Promise.all(
+                selectedPids.map((pid) => axios.patch(`/api/system/processes/${pid}/suspend`)),
+            );
+            showSnackbar(`Đã tạm dừng ${selectedPids.length} tiến trình thành công`, 'success');
             setSelectedPids([]);
         } catch {
-            setSnackbar({ open: true, message: 'Không thể tạm dừng một hoặc nhiều tiến trình', severity: 'error' });
+            showSnackbar('Không thể tạm dừng một hoặc nhiều tiến trình', 'error');
         }
     };
 
     if (!isConnected && processes.length === 0) {
         return (
             <Box sx={{ p: SPACING.lg / 8 }}>
-                <StackColAlignCenterJusCenterComponent sx={{ minHeight: '50vh' }}>
-                    <CircularProgress color="primary" />
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            mt: SPACING.md / 8,
-                            color: 'text.secondary',
-                            fontWeight: TYPOGRAPHY.fontWeight.medium,
-                        }}
-                    >
-                        Connecting to server...
-                    </Typography>
-                </StackColAlignCenterJusCenterComponent>
+                <PageLoading message="Đang kết nối đến server..." />
             </Box>
         );
     }
@@ -115,7 +88,7 @@ export function Processes() {
         <Box sx={{ p: SPACING.lg / 8 }}>
             <PageHeaderComponent
                 title="Task Manager"
-                subtitle="Monitor and manage system processes"
+                subtitle="Giám sát và quản lý tiến trình hệ thống"
                 isConnected={isConnected}
                 actions={
                     <StackRowComponent spacing={SPACING.sm / 8}>
@@ -127,7 +100,7 @@ export function Processes() {
                             disabled={selectedPids.length === 0}
                             onClick={() => handleKillClick()}
                         >
-                            Kill {selectedPids.length > 0 ? `(${selectedPids.length})` : ''}
+                            Kết thúc {selectedPids.length > 0 ? `(${selectedPids.length})` : ''}
                         </ButtonComponent>
                         <ButtonComponent
                             variant="outlined"
@@ -136,7 +109,7 @@ export function Processes() {
                             disabled={selectedPids.length === 0}
                             onClick={handleSuspend}
                         >
-                            Suspend {selectedPids.length > 0 ? `(${selectedPids.length})` : ''}
+                            Tạm dừng {selectedPids.length > 0 ? `(${selectedPids.length})` : ''}
                         </ButtonComponent>
                     </StackRowComponent>
                 }
@@ -144,7 +117,7 @@ export function Processes() {
 
             <Box sx={{ mb: SPACING.lg / 8 }}>
                 <SearchComponent
-                    placeholder="Filter by name, user, or PID..."
+                    placeholder="Lọc theo tên, người dùng hoặc PID..."
                     value={searchQuery}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                     sx={{ maxWidth: 400 }}
@@ -161,40 +134,17 @@ export function Processes() {
             <StackRowJusBetweenComponent sx={{ mt: SPACING.md / 8 }}>
                 <Typography
                     variant="body2"
-                    sx={{
-                        color: 'text.secondary',
-                        fontWeight: TYPOGRAPHY.fontWeight.medium,
-                    }}
+                    sx={{ color: 'text.secondary', fontWeight: TYPOGRAPHY.fontWeight.medium }}
                 >
-                    Total Processes: {processes.length}
+                    Tổng tiến trình: {processes.length}
                 </Typography>
                 <Typography
                     variant="body2"
-                    sx={{
-                        color: 'text.secondary',
-                        fontWeight: TYPOGRAPHY.fontWeight.medium,
-                    }}
+                    sx={{ color: 'text.secondary', fontWeight: TYPOGRAPHY.fontWeight.medium }}
                 >
-                    Sorted by: CPU Usage (Desc)
+                    Sắp xếp theo: CPU (Giảm dần)
                 </Typography>
             </StackRowJusBetweenComponent>
-
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={6000}
-                onClose={() => setSnackbar({ ...snackbar, open: false })}
-            >
-                <Alert
-                    onClose={() => setSnackbar({ ...snackbar, open: false })}
-                    severity={snackbar.severity}
-                    sx={{
-                        width: '100%',
-                        borderRadius: BORDER_RADIUS.md,
-                    }}
-                >
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
 
             <ConfirmationDialogComponent
                 open={confirmDialog.open}
@@ -210,6 +160,8 @@ export function Processes() {
                 onCancel={() => setConfirmDialog({ open: false })}
                 severity="error"
             />
-        </Box >
+
+            <AppSnackbar {...snackbarProps} />
+        </Box>
     );
 }
