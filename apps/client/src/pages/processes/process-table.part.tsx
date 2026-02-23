@@ -1,8 +1,6 @@
 import React from 'react';
 import { TableSortLabel, Checkbox } from '@mui/material';
-import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent } from '../../components';
-import { StackColAlignCenterJusCenterComponent } from '../../components/stack';
-import { SPACING } from '../../constants/design';
+import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, TableEmptyRow } from '../../components';
 import { ProcessStatus } from '../../components/status-badge/status-badge.component';
 import { ProcessRow } from './process-row.part';
 
@@ -130,13 +128,7 @@ export function ProcessTable({ processes, onKill, selectedPids, onSelectionChang
                         />
                     ))}
                     {sortedProcesses.length === 0 && (
-                        <TableRowComponent>
-                            <TableCellComponent colSpan={8} align="center" sx={{ py: SPACING.xl / 8 }}>
-                                <StackColAlignCenterJusCenterComponent sx={{ color: 'text.secondary' }}>
-                                    No processes found
-                                </StackColAlignCenterJusCenterComponent>
-                            </TableCellComponent>
-                        </TableRowComponent>
+                        <TableEmptyRow colSpan={8} message="Không tìm thấy tiến trình nào" />
                     )}
                 </TableBodyComponent>
             </TableComponent>

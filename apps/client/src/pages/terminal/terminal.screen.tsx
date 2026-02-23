@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { io, Socket } from 'socket.io-client';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
-import { SPACING, BORDER_RADIUS } from '../../constants/design';
-import { StackColComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
+import { PageLoading } from '../../components';
+import { SPACING, BORDER_RADIUS, COLORS } from '../../constants/design';
+import { StackColComponent } from '../../components/stack';
 import 'xterm/css/xterm.css';
 
 export function TerminalScreen() {
@@ -71,13 +72,11 @@ export function TerminalScreen() {
 
         // Socket event handlers
         socket.on('connect', () => {
-            console.log('Terminal WebSocket connected');
             setIsConnected(true);
             setIsLoading(false);
         });
 
         socket.on('disconnect', () => {
-            console.log('Terminal WebSocket disconnected');
             setIsConnected(false);
             term.writeln('\r\n\x1b[1;31m=== Connection lost ===\x1b[0m\r\n');
         });
@@ -112,7 +111,6 @@ export function TerminalScreen() {
 
         // Check if socket is already connected (race condition fix)
         if (socket.connected) {
-            console.log('Socket already connected on mount');
             setIsConnected(true);
             setIsLoading(false);
         }
@@ -135,23 +133,12 @@ export function TerminalScreen() {
                 />
 
                 {isLoading ? (
-                    <StackColAlignCenterJusCenterComponent sx={{ minHeight: '500px' }}>
-                        <CircularProgress color="primary" />
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                mt: SPACING.md / 8,
-                                color: 'text.secondary',
-                            }}
-                        >
-                            Connecting to terminal...
-                        </Typography>
-                    </StackColAlignCenterJusCenterComponent>
+                    <PageLoading message="Đang kết nối terminal..." minHeight="500px" />
                 ) : (
                     <Box
                         sx={{
-                            backgroundColor: '#0a1929',
-                            borderRadius: BORDER_RADIUS.lg / 8,
+                            backgroundColor: COLORS.terminal?.background ?? '#0a1929',
+                            borderRadius: BORDER_RADIUS.lg,
                             padding: SPACING.md / 8,
                             overflow: 'hidden',
                         }}

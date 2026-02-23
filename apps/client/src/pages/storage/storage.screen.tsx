@@ -1,8 +1,8 @@
-import { Box, Typography, LinearProgress, CircularProgress, alpha } from '@mui/material';
+import { Box, Typography, LinearProgress, alpha } from '@mui/material';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
-import { CardComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent } from '../../components';
+import { CardComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, PageLoading, TableEmptyRow } from '../../components';
 import { SPACING, COLORS, BORDER_RADIUS, TYPOGRAPHY } from '../../constants/design';
-import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent, StackRowJusBetweenComponent } from '../../components/stack';
+import { StackColComponent, StackRowComponent, StackRowJusBetweenComponent } from '../../components/stack';
 import { useSocketContext } from '../../contexts/socket-context';
 
 export function Storage() {
@@ -11,19 +11,7 @@ export function Storage() {
     if (!storage) {
         return (
             <Box sx={{ p: SPACING.lg / 8 }}>
-                <StackColAlignCenterJusCenterComponent sx={{ minHeight: '50vh' }}>
-                    <CircularProgress color="primary" />
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            mt: SPACING.md / 8,
-                            color: 'text.secondary',
-                            fontWeight: TYPOGRAPHY.fontWeight.medium,
-                        }}
-                    >
-                        Loading storage info...
-                    </Typography>
-                </StackColAlignCenterJusCenterComponent>
+                <PageLoading message="Đang tải thông tin đĩa..." />
             </Box>
         );
     }
@@ -34,15 +22,15 @@ export function Storage() {
         <Box sx={{ p: SPACING.lg / 8 }}>
             <StackColComponent spacing={SPACING.lg / 8}>
                 <PageHeaderComponent
-                    title="Disk Storage"
-                    subtitle="Monitor disk usage and manage storage"
+                    title="Đĩa cứng & Lưu trữ"
+                    subtitle="Giám sát dung lượng đĩa"
                     isConnected={isConnected}
                 />
 
                 {/* Overall Usage CardComponent */}
                 <CardComponent sx={{ p: SPACING.md / 8 }}>
                     <StackColComponent spacing={SPACING.md / 8}>
-                        <Typography variant="h6" fontWeight="bold">Total Local Storage</Typography>
+                        <Typography variant="h6" fontWeight="bold">Tổng dung lượng</Typography>
                         <StackRowComponent spacing={SPACING.md / 8} sx={{ alignItems: 'baseline' }}>
                             <Typography variant="h3" color="primary.main">{storage.used} GB</Typography>
                             <Typography variant="subtitle1" color="text.secondary">used of {storage.total} GB</Typography>
@@ -72,19 +60,19 @@ export function Storage() {
                 <CardComponent sx={{ mb: SPACING.xl / 8 }}>
                     <Box sx={{ p: SPACING.lg / 8 }}>
                         <Typography variant="h6" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, mb: SPACING.md / 8 }}>
-                            Disk Usage Overview
+                            Tổng quan sử dụng đĩa
                         </Typography>
                         <StackRowComponent sx={{ flexWrap: 'wrap', gap: SPACING.lg / 8 }}>
                             {storageData.map((drive) => (
                                 <Box key={drive.mountPoint} sx={{ flex: '1 1 300px', p: SPACING.md / 8, border: `1px solid ${COLORS.border.light}`, borderRadius: BORDER_RADIUS.lg }}>
                                     <Typography variant="subtitle2" sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>{drive.mountPoint} ({drive.name})</Typography>
                                     <StackRowJusBetweenComponent sx={{ mb: 0.5 }}>
-                                        <Typography variant="caption" color="text.secondary">Usage</Typography>
+                                        <Typography variant="caption" color="text.secondary">Sử dụng</Typography>
                                         <Typography variant="caption" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold }}>{drive.usePercent}%</Typography>
                                     </StackRowJusBetweenComponent>
                                     <LinearProgress
                                         variant="determinate"
-                                        value={parseInt(drive.usePercent.toString())}
+                                        value={drive.usePercent}
                                         sx={{ height: 8, borderRadius: BORDER_RADIUS.sm, bgcolor: alpha(COLORS.primary.main, 0.1) }}
                                     />
                                 </Box>
@@ -98,12 +86,12 @@ export function Storage() {
                     <TableComponent sx={{ minWidth: 650 }}>
                         <TableHeadComponent>
                             <TableRowComponent>
-                                <TableCellComponent>Filesystem</TableCellComponent>
-                                <TableCellComponent>Size</TableCellComponent>
-                                <TableCellComponent>Used</TableCellComponent>
-                                <TableCellComponent>Available</TableCellComponent>
-                                <TableCellComponent>Usage %</TableCellComponent>
-                                <TableCellComponent>Mounted on</TableCellComponent>
+                                <TableCellComponent>Hệ thống tệp</TableCellComponent>
+                                <TableCellComponent>Kích thước</TableCellComponent>
+                                <TableCellComponent>Đã dùng</TableCellComponent>
+                                <TableCellComponent>Còn trống</TableCellComponent>
+                                <TableCellComponent>% Sử dụng</TableCellComponent>
+                                <TableCellComponent>Điểm gắn kết</TableCellComponent>
                             </TableRowComponent>
                         </TableHeadComponent>
                         <TableBodyComponent>
@@ -118,7 +106,7 @@ export function Storage() {
                                             <StackRowJusBetweenComponent sx={{ mb: 0.5 }}>
                                                 <LinearProgress
                                                     variant="determinate"
-                                                    value={parseInt(drive.usePercent.toString())}
+                                                    value={drive.usePercent}
                                                     sx={{ flexGrow: 1, height: 6, borderRadius: BORDER_RADIUS.sm, mr: 1, alignSelf: 'center' }}
                                                 />
                                                 <Typography variant="caption" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold }}>
@@ -131,11 +119,7 @@ export function Storage() {
                                 </TableRowComponent>
                             ))}
                             {storageData.length === 0 && (
-                                <TableRowComponent>
-                                    <TableCellComponent colSpan={6} align="center">
-                                        No partitions found
-                                    </TableCellComponent>
-                                </TableRowComponent>
+                                <TableEmptyRow colSpan={6} message="Không tìm thấy phân vùng nào" />
                             )}
                         </TableBodyComponent>
                     </TableComponent>

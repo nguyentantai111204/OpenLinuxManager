@@ -12,14 +12,7 @@ import {
 import { TableRowComponent, TableCellComponent } from '../../components';
 import { StatusBadgeComponent, ProcessStatus } from '../../components/status-badge/status-badge.component';
 import { SPACING, TYPOGRAPHY, COLORS, TRANSITIONS } from '../../constants/design';
-
-export interface SystemService {
-    name: string;
-    description: string;
-    status: 'active' | 'inactive' | 'failed' | 'unknown';
-    running: boolean;
-    enabled: boolean;
-}
+import { SystemService } from '../../apis/services/services.api';
 
 interface ServiceRowProps {
     service: SystemService;

@@ -110,6 +110,11 @@ export const COLORS = {
         light: 'rgba(0, 0, 0, 0.08)',
         dark: 'rgba(0, 0, 0, 0.23)',
     },
+
+    // Terminal
+    terminal: {
+        background: '#0a1929',
+    },
 };
 
 // Dark mode colors

@@ -77,6 +77,13 @@ export function Dashboard() {
     const ramUsageGB = (systemStats.ram_used / 1024 / 1024 / 1024).toFixed(1);
     const ramTotalGB = (systemStats.ram_total / 1024 / 1024 / 1024).toFixed(1);
 
+    const prevCpu = history.length > 1 ? history[history.length - 2].cpu : currentCpu;
+    const cpuDiff = currentCpu - prevCpu;
+
+    const ramPercent = (systemStats.ram_used / systemStats.ram_total) * 100;
+    const prevRamPercent = history.length > 1 ? history[history.length - 2].ram : ramPercent;
+    const ramDiff = ramPercent - prevRamPercent;
+
     return (
         <Box sx={{ p: SPACING.lg / 8, height: '100%', overflow: 'hidden' }}>
             <StackColComponent spacing={SPACING.xl / 8} sx={{ height: '100%' }}>
@@ -84,7 +91,7 @@ export function Dashboard() {
                     <Box>
                         <PageHeaderComponent
                             title="System Dashboard"
-                            subtitle="Real-time monitoring and system statistics"
+                            subtitle="Giám sát thời gian thực và thống kê hệ thống"
                             isConnected={isConnected}
                         />
                     </Box>
@@ -95,43 +102,30 @@ export function Dashboard() {
                     <Box sx={{ flex: 1 }}>
                         <Grow in timeout={300}>
                             <Box>
-                                {(() => {
-                                    const prevCpu = history.length > 1 ? history[history.length - 2].cpu : currentCpu;
-                                    const cpuDiff = currentCpu - prevCpu;
-                                    return (
-                                        <StatCard
-                                            icon={<DeveloperBoard />}
-                                            title="CPU Usage"
-                                            value={`${currentCpu.toFixed(1)}%`}
-                                            change={`${cpuDiff >= 0 ? '+' : ''}${cpuDiff.toFixed(1)}%`}
-                                            changeType={cpuDiff > 0 ? 'positive' : cpuDiff < 0 ? 'negative' : 'neutral'}
-                                            subtitle="Current load"
-                                            iconColor={COLORS.chart.cpu}
-                                        />
-                                    );
-                                })()}
+                                <StatCard
+                                    icon={<DeveloperBoard />}
+                                    title="CPU"
+                                    value={`${currentCpu.toFixed(1)}%`}
+                                    change={`${cpuDiff >= 0 ? '+' : ''}${cpuDiff.toFixed(1)}%`}
+                                    changeType={cpuDiff > 0 ? 'positive' : cpuDiff < 0 ? 'negative' : 'neutral'}
+                                    subtitle="Tải hiện tại"
+                                    iconColor={COLORS.chart.cpu}
+                                />
                             </Box>
                         </Grow>
                     </Box>
                     <Box sx={{ flex: 1 }}>
                         <Grow in timeout={400}>
                             <Box>
-                                {(() => {
-                                    const ramPercent = (systemStats.ram_used / systemStats.ram_total) * 100;
-                                    const prevRamPercent = history.length > 1 ? history[history.length - 2].ram : ramPercent;
-                                    const ramDiff = ramPercent - prevRamPercent;
-                                    return (
-                                        <StatCard
-                                            icon={<Memory />}
-                                            title="Memory"
-                                            value={`${ramUsageGB} GB`}
-                                            change={`${ramDiff >= 0 ? '+' : ''}${ramDiff.toFixed(1)}%`}
-                                            changeType={ramDiff > 0 ? 'positive' : ramDiff < 0 ? 'negative' : 'neutral'}
-                                            subtitle={`of ${ramTotalGB} Total`}
-                                            iconColor={COLORS.chart.ram}
-                                        />
-                                    );
-                                })()}
+                                <StatCard
+                                    icon={<Memory />}
+                                    title="Bộ nhớ"
+                                    value={`${ramUsageGB} GB`}
+                                    change={`${ramDiff >= 0 ? '+' : ''}${ramDiff.toFixed(1)}%`}
+                                    changeType={ramDiff > 0 ? 'positive' : ramDiff < 0 ? 'negative' : 'neutral'}
+                                    subtitle={`trên ${ramTotalGB} GB`}
+                                    iconColor={COLORS.chart.ram}
+                                />
                             </Box>
                         </Grow>
                     </Box>
@@ -140,11 +134,11 @@ export function Dashboard() {
                             <Box>
                                 <StatCard
                                     icon={<Storage />}
-                                    title="Disk Space"
+                                    title="Đĩa cứng"
                                     value={storage ? `${Math.round((storage.used / storage.total) * 100)}%` : '...'}
                                     change={storage ? `${storage.free} GB` : '...'}
                                     changeType="neutral"
-                                    subtitle="Free Space"
+                                    subtitle="Không gian trống"
                                     iconColor={COLORS.chart.disk}
                                 />
                             </Box>
@@ -155,9 +149,9 @@ export function Dashboard() {
                             <Box>
                                 <StatCard
                                     icon={<Timer />}
-                                    title="Uptime"
+                                    title="Thời gian hoạt động"
                                     value={formatUptime(systemStats.uptime)}
-                                    subtitle="Since last boot"
+                                    subtitle="Kể từ lần khởi động"
                                     iconColor={COLORS.status.running}
                                 />
                             </Box>

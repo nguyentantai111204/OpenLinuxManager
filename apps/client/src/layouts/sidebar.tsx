@@ -24,54 +24,14 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-    {
-        id: 'dashboard',
-        label: 'Dashboard',
-        icon: <DashboardIcon />,
-        path: '/',
-    },
-    {
-        id: 'processes',
-        label: 'Processes',
-        icon: <ListIcon />,
-        path: '/processes',
-    },
-    {
-        id: 'users',
-        label: 'Users',
-        icon: <PersonIcon />,
-        path: '/users',
-    },
-    {
-        id: 'storage',
-        label: 'Storage',
-        icon: <StorageIcon />,
-        path: '/storage',
-    },
-    {
-        id: 'services',
-        label: 'Services',
-        icon: <ConstructionIcon />,
-        path: '/services',
-    },
-    {
-        id: 'audit-logs',
-        label: 'Audit Logs',
-        icon: <HistoryIcon />,
-        path: '/audit-logs',
-    },
-    {
-        id: 'terminal',
-        label: 'Terminal',
-        icon: <TerminalIcon />,
-        path: '/terminal',
-    },
-    {
-        id: 'settings',
-        label: 'Settings',
-        icon: <SettingsIcon />,
-        path: '/settings',
-    },
+    { id: 'dashboard', label: 'Bảng điều khiển', icon: <DashboardIcon />, path: '/' },
+    { id: 'processes', label: 'Tiến trình', icon: <ListIcon />, path: '/processes' },
+    { id: 'users', label: 'Người dùng', icon: <PersonIcon />, path: '/users' },
+    { id: 'storage', label: 'Lưu trữ', icon: <StorageIcon />, path: '/storage' },
+    { id: 'services', label: 'Dịch vụ', icon: <ConstructionIcon />, path: '/services' },
+    { id: 'audit-logs', label: 'Nhật ký', icon: <HistoryIcon />, path: '/audit-logs' },
+    { id: 'terminal', label: 'Terminal', icon: <TerminalIcon />, path: '/terminal' },
+    { id: 'settings', label: 'Cài đặt', icon: <SettingsIcon />, path: '/settings' },
 ];
 
 interface SidebarProps {
