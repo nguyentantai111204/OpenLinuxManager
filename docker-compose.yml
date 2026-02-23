@@ -1,8 +1,16 @@
 services:
   app:
     build: .
+    privileged: true
+    pid: "host"
     ports:
       - "3000:3000"
+    volumes:
+      - /proc:/proc:ro
+      - /sys:/sys:ro
+      - /etc:/etc:ro
+      - /var/run/dbus:/var/run/dbus
+      - /run/systemd:/run/systemd
     environment:
       - NODE_ENV=production
       - DB_TYPE=postgres
