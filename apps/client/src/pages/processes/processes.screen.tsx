@@ -9,7 +9,7 @@ import { ProcessTable, Process } from './process-table.part';
 import { useSocketContext } from '../../contexts/socket-context';
 import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../../constants/design';
 import { StackRowComponent, StackRowJusBetweenComponent, StackColAlignCenterJusCenterComponent } from '../../components/stack';
-import { ProcessStatus } from '../../components/status-badge/status-badge.component';
+import { mapProcessStatus } from '../../utils/process.utils';
 
 export function Processes() {
     const { isConnected, processes } = useSocketContext();
@@ -19,25 +19,14 @@ export function Processes() {
         open: false,
     });
 
-    const mapStatus = (status: string): ProcessStatus => {
-        const s = status.toUpperCase().charAt(0);
-        switch (s) {
-            case 'R': return 'running';
-            case 'S':
-            case 'D':
-            case 'I': return 'sleeping';
-            case 'T': return 'stopped';
-            case 'Z': return 'zombie';
-            default: return 'sleeping';
-        }
-    };
+
 
     const clientProcesses: Process[] = useMemo(() => {
         return processes.map((p) => ({
             pid: p.pid,
             name: p.name,
             user: p.user,
-            status: mapStatus(p.status),
+            status: mapProcessStatus(p.status),
             cpu: p.cpu,
             mem: parseFloat(p.memory.toFixed(1)),
         }));
@@ -81,8 +70,7 @@ export function Processes() {
                 severity: 'success'
             });
             setSelectedPids([]);
-        } catch (error) {
-            console.error('Failed to kill processes', error);
+        } catch {
             setSnackbar({ open: true, message: 'Không thể kết thúc một hoặc nhiều tiến trình', severity: 'error' });
         }
     };
@@ -98,9 +86,8 @@ export function Processes() {
                 severity: 'success'
             });
             setSelectedPids([]);
-        } catch (error) {
-            console.error('Failed to suspend processes', error);
-            setSnackbar({ open: true, message: 'Failed to suspend one or more processes', severity: 'error' });
+        } catch {
+            setSnackbar({ open: true, message: 'Không thể tạm dừng một hoặc nhiều tiến trình', severity: 'error' });
         }
     };
 

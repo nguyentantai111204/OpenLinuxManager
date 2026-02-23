@@ -46,10 +46,7 @@ export class SystemGateway
         const clientSubs: Subscription[] = [];
 
         clientSubs.push(
-            stats$.subscribe(data => {
-                this.logger.debug(`Emitting systemStats: ${JSON.stringify(data)}`);
-                client.emit('systemStats', data);
-            }),
+            stats$.subscribe(data => client.emit('systemStats', data)),
             processes$.subscribe(data => client.emit('systemProcesses', data)),
             storage$.subscribe(data => client.emit('systemStorage', data))
         );
