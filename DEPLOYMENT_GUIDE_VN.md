@@ -1,88 +1,62 @@
-# Hướng dẫn triển khai OpenLinuxManager cho bạn bè
+# Hướng Dẫn Cài Đặt OpenLinuxManager (10 Bước Hoàn Chỉnh)
 
-Tài liệu này hướng dẫn cách cài đặt và chạy dự án **OpenLinuxManager** trên máy ảo Ubuntu sử dụng Docker Compose.
+Chào mừng bạn! Đây là quy trình "chuẩn" để cài đặt hệ thống giám sát Linux này cho bạn bè của bạn, giúp họ tốn ít công sức nhất:
 
----
+### B1: Tải Ubuntu + VMware
+Tải và cài đặt **VMware Workstation Player** (miễn phí) và file ISO **Ubuntu Desktop 22.04 LTS** (hoặc mới hơn).
 
-## 1. Yêu cầu hệ thống (Máy ảo VMware)
+### B2: Cài đặt Ubuntu
+Chạy Ubuntu trên VM. Tạo thông tin user (Nhớ kỹ **username** và **password** vì đây sẽ là quyền root để quản lý hệ thống).
 
-Để đảm bảo ứng dụng chạy mượt mà, bạn nên cấu hình máy ảo Ubuntu với các thông số sau:
-
-*   **Hệ điều hành:** Ubuntu 22.04 LTS hoặc mới hơn.
-*   **CPU:** Tối thiểu 2 Cores.
-*   **RAM:** Tối thiểu 4GB (Khuyên dùng 8GB để chạy mượt cả Docker và các dịch vụ).
-*   **Dung lượng ổ cứng (Disk):** 
-    *   Tối thiểu: **20GB** trống.
-    *   Khuyên dùng: **40GB - 60GB** (Để có không gian cho Docker images, logs và database).
-*   **Mạng:** Chế độ `Bridged` để có thể truy cập internet.
-
----
-
-## 2. Cài đặt các công cụ cần thiết
-
-Mở terminal trong Ubuntu và chạy các lệnh sau:
-
-### Bước 1: Cập nhật hệ thống
+### B3: Cập nhật hệ thống
+Mở Terminal trong Ubuntu và chạy:
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### Bước 2: Cài đặt Git
+### B4: Cài đặt Git & Docker
 ```bash
-sudo apt install git -y
+sudo apt install git docker.io -y
 ```
 
-### Bước 3: Cài đặt Docker và Docker Compose
+### B5: Kích hoạt Docker
 ```bash
-# Cài đặt Docker
-sudo apt install docker.io -y
-
-# Khởi động và cho phép Docker chạy cùng hệ thống
 sudo systemctl enable --now docker
+# Kiểm tra: sudo systemctl status docker (thấy active running là xong)
+```
 
-# Thêm user hiện tại vào nhóm docker để không cần gõ sudo mỗi lần chạy lệnh docker
+### B6: Phân quyền Docker cho User (Rất quan trọng)
+```bash
 sudo usermod -aG docker $USER
-# Lưu ý: Bạn cần Log out và Log in lại để thay đổi này có hiệu lực.
+exit
+```
+**LƯU Ý:** Sau lệnh `exit`, hãy đăng nhập lại vào Ubuntu để quyền Docker có hiệu lực.
 
-# Cài đặt Docker Compose
+### B7: Kiểm tra Docker
+```bash
+docker ps
+# Nếu không thấy lỗi "Access Denied" là bạn đã thành công.
+```
+
+### B8: Cài đặt Docker Compose
+```bash
 sudo apt install docker-compose -y
 ```
 
----
-
-## 3. Pull code và khởi chạy dự án
-
-### Bước 1: Clone dự án từ GitHub
+### B9: Tải Source Code
 ```bash
 git clone https://github.com/nguyentantai111204/OpenLinuxManager.git
 cd OpenLinuxManager
 ```
 
-### Bước 2: Cấu hình môi trường
+### B10: Chạy Script Tự Động (Bước cuối cùng)
+Đây là bước "vũ khí" giúp bạn không cần sửa file `.env` hay config thủ công:
 ```bash
-cp .env.example .env
-```
-*(Bạn có thể chỉnh sửa file `.env` nếu muốn thay đổi password database, nhưng mặc định là có thể chạy được ngay).*
-
-### Bước 3: Chạy dự án bằng Docker Compose
-```bash
-docker-compose up --build -d
+chmod +x quick-start.sh
+./quick-start.sh
 ```
 
----
-
-## 4. Truy cập ứng dụng
-
-Sau khi lệnh trên hoàn thành, bạn có thể truy cập vào giao diện quản lý tại:
-
-*   **Địa chỉ:** `http://<IP-của-máy-ảo>:3000` (Nếu chạy trong Docker Compose, backend thường gộp frontend vào cổng 3000 hoặc tùy cấu hình nginx).
-*   Nếu bạn đang chạy trực tiếp trên máy ảo thì là: `http://localhost:3000`.
-
-> [!TIP]
-> Để biết IP của máy ảo, hãy gõ lệnh: `hostname -I` hoặc `ifconfig`.
+**Kết quả:** Hệ thống sẽ tự động tạo password bảo mật, cấu hình môi trường và khởi chạy ứng dụng. Bạn chỉ việc mở trình duyệt và truy cập: `http://localhost:3000`.
 
 ---
-
-## 5. Một số lưu ý quan trọng
-*   Dự án này tương tác trực tiếp với hệ thống Linux (CPU, RAM, Processes...), vì vậy nó cần được chạy trên môi trường Linux thật hoặc máy ảo Linux.
-*   Nếu gặp lỗi liên quan đến quyền truy cập database hoặc file, hãy kiểm tra lại logs bằng lệnh: `docker-compose logs -f`.
+**💡 Mẹo:** Nếu muốn quản lý các tiến trình hệ thống mượt mà nhất, hãy chạy file `./setup-sudo.sh` (nếu có) để hệ thống không hỏi password mỗi khi bạn thao tác trên giao diện web.

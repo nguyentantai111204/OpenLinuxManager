@@ -1,5 +1,19 @@
 # OpenLinuxManager
 
+A web-based Linux system management dashboard.
+
+## 🚀 Quick Start (Recommended)
+
+The easiest way to get started is using our automation script:
+
+```bash
+git clone <repository-url>
+cd OpenLinuxManager
+./quick-start.sh
+```
+
+This will automatically configure your environment and start the system using Docker.
+
 OpenLinuxManager là một ứng dụng giám sát và quản lý hệ thống Linux từ xa với giao diện hiện đại, trực quan.
 
 ## 🚀 Cách chạy nhanh nhất (Khuyên dùng)
