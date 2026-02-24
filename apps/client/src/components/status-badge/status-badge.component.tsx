@@ -2,7 +2,7 @@ import { Circle as CircleIcon } from '@mui/icons-material';
 import { COLORS, SPACING } from '../../constants/design';
 import { ChipComponent } from '../chip/chip.component';
 
-export type ProcessStatus = 'running' | 'sleeping' | 'stopped' | 'zombie';
+export type ProcessStatus = 'running' | 'sleeping' | 'stopped' | 'zombie' | 'disk-sleep' | 'idle' | 'unknown';
 
 interface StatusBadgeProps {
     status: ProcessStatus;
@@ -11,19 +11,31 @@ interface StatusBadgeProps {
 const statusConfig: Record<ProcessStatus, { color: string; label: string }> = {
     running: {
         color: COLORS.status.running,
-        label: 'running',
+        label: 'Đang chạy',
     },
     sleeping: {
         color: COLORS.status.sleeping,
-        label: 'sleeping',
+        label: 'Đang ngủ',
     },
     stopped: {
         color: COLORS.status.stopped,
-        label: 'stopped',
+        label: 'Đã dừng',
     },
     zombie: {
         color: COLORS.status.zombie,
-        label: 'zombie',
+        label: 'Zombie',
+    },
+    'disk-sleep': {
+        color: COLORS.status.sleeping, // Using sleeping color for disk sleep
+        label: 'Ngủ sâu (D)',
+    },
+    idle: {
+        color: COLORS.text.secondary,
+        label: 'Rảnh',
+    },
+    unknown: {
+        color: COLORS.text.secondary,
+        label: 'Không xác định',
     },
 };
 

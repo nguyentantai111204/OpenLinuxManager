@@ -6,13 +6,21 @@ import { ProcessStatus } from '../components/status-badge/status-badge.component
  *  R = running, S/D/I = sleeping, T = stopped, Z = zombie
  */
 export function mapProcessStatus(status: string): ProcessStatus {
-    switch (status.toUpperCase().charAt(0)) {
+    const s = status.toLowerCase();
+
+    // If it's already a valid mapped status, return it
+    if (['running', 'sleeping', 'stopped', 'zombie', 'disk-sleep', 'idle', 'unknown'].includes(s)) {
+        return s as ProcessStatus;
+    }
+
+    const firstChar = status.toUpperCase().charAt(0);
+    switch (firstChar) {
         case 'R': return 'running';
-        case 'S':
-        case 'D':
-        case 'I': return 'sleeping';
+        case 'S': return 'sleeping';
+        case 'D': return 'disk-sleep';
+        case 'I': return 'idle';
         case 'T': return 'stopped';
         case 'Z': return 'zombie';
-        default: return 'sleeping';
+        default: return 'unknown';
     }
 }

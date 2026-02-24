@@ -18,12 +18,23 @@ type SortOrder = 'asc' | 'desc';
 
 interface ProcessTableProps {
     processes: Process[];
-    onKill?: (pid: number) => void;
+    onTerminate?: (pid: number) => void;
+    onForceKill?: (pid: number) => void;
+    onSuspend?: (pid: number) => void;
+    onResume?: (pid: number) => void;
     selectedPids: number[];
     onSelectionChange: (pids: number[]) => void;
 }
 
-export function ProcessTable({ processes, onKill, selectedPids, onSelectionChange }: ProcessTableProps) {
+export function ProcessTable({
+    processes,
+    onTerminate,
+    onForceKill,
+    onSuspend,
+    onResume,
+    selectedPids,
+    onSelectionChange
+}: ProcessTableProps) {
     const [orderBy, setOrderBy] = React.useState<SortField>('cpu');
     const [order, setOrder] = React.useState<SortOrder>('desc');
 
@@ -122,7 +133,10 @@ export function ProcessTable({ processes, onKill, selectedPids, onSelectionChang
                         <ProcessRow
                             key={process.pid}
                             process={process}
-                            onKill={onKill}
+                            onTerminate={onTerminate}
+                            onForceKill={onForceKill}
+                            onSuspend={onSuspend}
+                            onResume={onResume}
                             selected={selectedPids.includes(process.pid)}
                             onToggleSelection={handleToggleOne}
                         />

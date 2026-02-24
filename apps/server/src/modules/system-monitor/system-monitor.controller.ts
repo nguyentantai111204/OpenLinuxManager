@@ -22,7 +22,13 @@ export class SystemMonitorController {
     }
 
     @Delete('processes/:pid')
-    @Audit('KILL_PROCESS', 'System Monitor')
+    @Audit('TERMINATE_PROCESS', 'System Monitor')
+    terminateProcess(@Param('pid') pid: string) {
+        return this.systemMonitorService.terminateProcess(parseInt(pid, 10));
+    }
+
+    @Delete('processes/:pid/force')
+    @Audit('FORCE_KILL_PROCESS', 'System Monitor')
     killProcess(@Param('pid') pid: string) {
         return this.systemMonitorService.killProcess(parseInt(pid, 10));
     }

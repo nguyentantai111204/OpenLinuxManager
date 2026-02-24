@@ -112,11 +112,25 @@ export class LinuxParser {
             const stat = parts[7];
             const command = parts.slice(10).join(' ');
 
+            // Map Linux process status codes
+            // R: Running, S: Sleeping, D: Disk Sleep, T: Stopped, Z: Zombie, I: Idle
+            let status = 'unknown';
+            const firstChar = stat.charAt(0).toUpperCase();
+            switch (firstChar) {
+                case 'R': status = 'running'; break;
+                case 'S': status = 'sleeping'; break;
+                case 'D': status = 'disk-sleep'; break;
+                case 'T': status = 'stopped'; break;
+                case 'Z': status = 'zombie'; break;
+                case 'I': status = 'idle'; break;
+                default: status = 'unknown'; break;
+            }
+
             return {
                 pid,
                 name: command.substring(0, 50), // Truncate for display
                 user,
-                status: stat,
+                status,
                 cpu,
                 memory: rss / 1024, // Convert KB to MB
             };

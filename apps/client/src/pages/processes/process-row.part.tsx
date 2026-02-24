@@ -1,19 +1,39 @@
-import { Typography, IconButton, Checkbox } from '@mui/material';
-import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Typography, IconButton, Checkbox, Tooltip } from '@mui/material';
+import {
+    Delete as DeleteIcon,
+    Pause as PauseIcon,
+    PlayArrow as PlayArrowIcon,
+    Block as BlockIcon
+} from '@mui/icons-material';
 import { ProcessStatus, StatusBadgeComponent } from '../../components/status-badge/status-badge.component';
 import { UserBadgeComponent } from '../../components/user-badge/user-badge.component';
 import { Process } from './process-table.part';
 import { TableRowComponent, TableCellComponent } from '../../components';
 import { SPACING, TYPOGRAPHY, TRANSITIONS, COLORS } from '../../constants/design';
+import { StackRowComponent } from '../../components/stack';
 
 interface ProcessRowProps {
     process: Process;
-    onKill?: (pid: number) => void;
+    onTerminate?: (pid: number) => void;
+    onForceKill?: (pid: number) => void;
+    onSuspend?: (pid: number) => void;
+    onResume?: (pid: number) => void;
     selected?: boolean;
     onToggleSelection?: (pid: number) => void;
 }
 
-export function ProcessRow({ process, onKill, selected, onToggleSelection }: ProcessRowProps) {
+export function ProcessRow({
+    process,
+    onTerminate,
+    onForceKill,
+    onSuspend,
+    onResume,
+    selected,
+    onToggleSelection
+}: ProcessRowProps) {
+    const isRunning = process.status === 'running' || process.status === 'sleeping';
+    const isStopped = process.status === 'stopped';
+
     return (
         <TableRowComponent selected={selected}>
             <TableCellComponent padding="checkbox">
@@ -44,7 +64,7 @@ export function ProcessRow({ process, onKill, selected, onToggleSelection }: Pro
                 <UserBadgeComponent username={process.user} />
             </TableCellComponent>
             <TableCellComponent>
-                <StatusBadgeComponent status={process.status.toLowerCase() as ProcessStatus} />
+                <StatusBadgeComponent status={process.status as ProcessStatus} />
             </TableCellComponent>
             <TableCellComponent align="right">
                 <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
@@ -57,22 +77,52 @@ export function ProcessRow({ process, onKill, selected, onToggleSelection }: Pro
                 </Typography>
             </TableCellComponent>
             <TableCellComponent align="right">
-                {onKill && (
-                    <IconButton
-                        onClick={() => onKill(process.pid)}
-                        size="small"
-                        sx={{
-                            color: COLORS.status.stopped,
-                            transition: `all ${TRANSITIONS.duration.fast} ${TRANSITIONS.easing.easeInOut}`,
-                            '&:hover': {
-                                backgroundColor: 'transparent',
-                                transform: 'none',
-                            },
-                        }}
-                    >
-                        <DeleteIcon fontSize="small" />
-                    </IconButton>
-                )}
+                <StackRowComponent spacing={1} justifyContent="flex-end">
+                    {isRunning && onSuspend && (
+                        <Tooltip title="Tạm dừng">
+                            <IconButton
+                                onClick={() => onSuspend(process.pid)}
+                                size="small"
+                                sx={{ color: COLORS.status.sleeping }}
+                            >
+                                <PauseIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                    {isStopped && onResume && (
+                        <Tooltip title="Tiếp tục">
+                            <IconButton
+                                onClick={() => onResume(process.pid)}
+                                size="small"
+                                sx={{ color: COLORS.status.running }}
+                            >
+                                <PlayArrowIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                    {onTerminate && (
+                        <Tooltip title="Kết thúc (Dịu dàng)">
+                            <IconButton
+                                onClick={() => onTerminate(process.pid)}
+                                size="small"
+                                sx={{ color: COLORS.status.stopped }}
+                            >
+                                <DeleteIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                    {onForceKill && (
+                        <Tooltip title="Buộc dừng (Mạnh mẽ)">
+                            <IconButton
+                                onClick={() => onForceKill(process.pid)}
+                                size="small"
+                                sx={{ color: 'error.main' }}
+                            >
+                                <BlockIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                </StackRowComponent>
             </TableCellComponent>
         </TableRowComponent>
     );

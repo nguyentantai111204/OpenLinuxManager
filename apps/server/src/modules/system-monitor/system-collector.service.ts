@@ -1,5 +1,5 @@
 
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, Inject, forwardRef } from '@nestjs/common';
 import { BehaviorSubject, Observable, filter } from 'rxjs';
 import { SystemStats, SystemProcess, StorageData } from './system-stats.interface';
 import { SystemMonitorService } from './system-monitor.service';
@@ -17,7 +17,10 @@ export class SystemCollectorService implements OnModuleDestroy {
     private processesInterval: NodeJS.Timeout | null = null;
     private storageInterval: NodeJS.Timeout | null = null;
 
-    constructor(private readonly monitorService: SystemMonitorService) { }
+    constructor(
+        @Inject(forwardRef(() => SystemMonitorService))
+        private readonly monitorService: SystemMonitorService
+    ) { }
 
     onModuleDestroy() {
         this.stopMonitoring();
@@ -78,7 +81,7 @@ export class SystemCollectorService implements OnModuleDestroy {
         }
     }
 
-    private async fetchStats() {
+    public async fetchStats() {
         try {
             const data = await this.monitorService.getSystemStats();
             this.stats$.next(data);
@@ -87,7 +90,7 @@ export class SystemCollectorService implements OnModuleDestroy {
         }
     }
 
-    private async fetchProcesses() {
+    public async fetchProcesses() {
         try {
             const data = await this.monitorService.getSystemProcesses();
             this.processes$.next(data);
@@ -96,12 +99,21 @@ export class SystemCollectorService implements OnModuleDestroy {
         }
     }
 
-    private async fetchStorage() {
+    public async fetchStorage() {
         try {
             const data = await this.monitorService.getStorageData();
             this.storage$.next(data);
         } catch (error) {
             this.logger.error('Failed to fetch storage', error);
         }
+    }
+
+    /**
+     * Trigger an immediate process list update
+     */
+    async triggerProcessRefresh() {
+        // Wait a bit for the system to reflect the changes (especially after signals)
+        await new Promise(resolve => setTimeout(resolve, 250));
+        await this.fetchProcesses();
     }
 }
