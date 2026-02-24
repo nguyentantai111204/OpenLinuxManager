@@ -26,12 +26,15 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install runtime dependencies for system management
+# Install runtime dependencies for system management and native module compilation
 RUN apt-get update && apt-get install -y \
     sudo \
     bash \
     passwd \
     procps \
+    python3 \
+    make \
+    g++ \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy built bundles from builder
