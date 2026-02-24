@@ -3,14 +3,14 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Install build dependencies
+# Install build dependencies for native modules (node-pty)
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies first (better caching)
+# Install all dependencies
 COPY package*.json ./
 RUN npm install
 
@@ -21,31 +21,27 @@ COPY . .
 RUN npx nx build client --prod
 RUN npx nx build server --prod
 
+# Prune dev dependencies to keep only production modules for the runtime stage
+RUN npm prune --production
+
 # Stage 2: Runtime
 FROM node:20-slim
 
 WORKDIR /app
 
-# Install runtime dependencies for system management and native module compilation
+# Install runtime dependencies for system management
 RUN apt-get update && apt-get install -y \
     sudo \
     bash \
     passwd \
     procps \
-    python3 \
-    make \
-    g++ \
     && rm -rf /var/lib/apt/lists/*
+
+# Copy production node_modules from builder
+COPY --from=builder /app/node_modules ./node_modules
 
 # Copy built bundles from builder
 COPY --from=builder /app/dist/apps ./dist/apps
-
-# Copy package files to install production deps
-COPY --from=builder /app/dist/apps/server/package*.json ./
-
-# Install production dependencies for the server (specifically for the built package)
-# node-pty needs to be rebuilt for the runtime environment
-RUN npm install --production
 
 # Expose port
 EXPOSE 3000

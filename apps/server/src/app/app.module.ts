@@ -20,7 +20,7 @@ import { TerminalModule } from '../modules/terminal/terminal.module';
       envFilePath: '.env',
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../client'), // In production, it will be in the same root
+      rootPath: join(__dirname, '../client'), // Correct for dist/apps/server/main.js
       exclude: ['/api/(.*)'],
     }),
     TypeOrmModule.forRootAsync({
