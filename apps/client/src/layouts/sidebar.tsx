@@ -10,7 +10,6 @@ import {
     Settings as SettingsIcon,
     Person as PersonIcon,
     Construction as ConstructionIcon,
-    Terminal as TerminalIcon,
 } from '@mui/icons-material';
 import { COLORS, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
 import { StackColComponent, StackRowComponent } from '../components/stack';
@@ -31,7 +30,6 @@ const menuItems: MenuItem[] = [
     { id: 'storage', label: 'Lưu trữ', icon: <StorageIcon />, path: '/storage' },
     { id: 'services', label: 'Dịch vụ', icon: <ConstructionIcon />, path: '/services' },
     { id: 'audit-logs', label: 'Nhật ký', icon: <HistoryIcon />, path: '/audit-logs' },
-    { id: 'terminal', label: 'Terminal', icon: <TerminalIcon />, path: '/terminal' },
     { id: 'settings', label: 'Cài đặt', icon: <SettingsIcon />, path: '/settings' },
 ];
 
