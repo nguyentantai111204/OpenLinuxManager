@@ -12,9 +12,10 @@ import {
     Construction as ConstructionIcon,
     Terminal as TerminalIcon,
 } from '@mui/icons-material';
-import { COLORS, SPACING, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
-import { StackColComponent, StackRowComponent, StackColAlignCenterJusCenterComponent } from '../components/stack';
+import { COLORS, BORDER_RADIUS, LAYOUT, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
+import { StackColComponent, StackRowComponent } from '../components/stack';
 import { useSocketContext } from '../contexts/socket-context';
+import { Brand } from '../components/brand/logo-brand.component';
 
 interface MenuItem {
     id: string;
@@ -60,42 +61,15 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                 height: '100%',
                 backgroundColor: COLORS.sidebar.background,
                 color: COLORS.sidebar.text,
+                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%)', // Subtle gradient
             }}
             spacing={0}
         >
-            <StackRowComponent
-                sx={{
-                    p: SPACING.lg / 8,
-                    gap: SPACING.sm / 8,
-                    borderBottom: `1px solid ${COLORS.sidebar.hover}`,
-                }}
-                spacing={SPACING.sm / 8}
-            >
-                <StackColAlignCenterJusCenterComponent
-                    sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: BORDER_RADIUS.md,
-                        background: `linear-gradient(135deg, ${COLORS.primary.main} 0%, ${COLORS.primary.dark} 100%)`,
-                        fontSize: TYPOGRAPHY.fontSize.xl,
-                        fontWeight: TYPOGRAPHY.fontWeight.bold,
-                    }}
-                    spacing={0}
-                >
-                    🐧
-                </StackColAlignCenterJusCenterComponent>
-                <Typography
-                    variant="h6"
-                    sx={{
-                        fontWeight: TYPOGRAPHY.fontWeight.bold,
-                        fontSize: TYPOGRAPHY.fontSize.lg,
-                    }}
-                >
-                    UbuntuMonitor
-                </Typography>
-            </StackRowComponent>
+            <Box sx={{ p: 3, pt: 4, mb: 1 }}>
+                <Brand variant="sidebar" />
+            </Box>
 
-            <List sx={{ flex: 1, py: SPACING.md / 8 }}>
+            <List sx={{ flex: 1, py: 1, px: 2, overflowY: 'auto', overflowX: 'hidden' }}>
                 {menuItems.map((item) => {
                     const isActive = location.pathname === item.path;
 
@@ -104,27 +78,48 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                             key={item.id}
                             disablePadding
                             sx={{
-                                px: SPACING.md / 8,
-                                mb: SPACING.xs / 8,
+                                mb: 0.5,
+                                position: 'relative',
                             }}
                         >
+                            {isActive && (
+                                <Box
+                                    sx={{
+                                        position: 'absolute',
+                                        left: 0,
+                                        width: 4,
+                                        height: '50%',
+                                        top: '25%',
+                                        backgroundColor: COLORS.primary.main,
+                                        borderRadius: '0 4px 4px 0',
+                                        boxShadow: `2px 0 8px ${COLORS.primary.main}60`,
+                                        zIndex: 1,
+                                    }}
+                                />
+                            )}
                             <ListItemButton
                                 onClick={() => handleNavigate(item.path)}
                                 sx={{
                                     borderRadius: BORDER_RADIUS.lg,
-                                    backgroundColor: isActive ? COLORS.sidebar.active : 'transparent',
-                                    color: COLORS.sidebar.text,
-                                    transition: `all ${TRANSITIONS.duration.fast} ${TRANSITIONS.easing.easeInOut}`,
+                                    backgroundColor: isActive ? COLORS.sidebar.activeSubtle : 'transparent',
+                                    color: isActive ? COLORS.primary.main : COLORS.sidebar.textSecondary,
+                                    transition: `all ${TRANSITIONS.duration.normal} ${TRANSITIONS.easing.easeInOut}`,
+                                    px: 2,
                                     '&:hover': {
-                                        backgroundColor: isActive ? COLORS.sidebar.active : 'transparent',
+                                        backgroundColor: COLORS.sidebar.hover,
+                                        color: COLORS.sidebar.text,
+                                        transform: 'translateX(4px)',
                                     },
-                                    py: SPACING.md / 8,
+                                    py: 1.5,
                                 }}
                             >
                                 <ListItemIcon
                                     sx={{
                                         color: 'inherit',
                                         minWidth: 40,
+                                        '& svg': {
+                                            fontSize: 22,
+                                        }
                                     }}
                                 >
                                     {item.icon}
@@ -132,8 +127,9 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                                 <ListItemText
                                     primary={item.label}
                                     primaryTypographyProps={{
-                                        fontWeight: isActive ? TYPOGRAPHY.fontWeight.semibold : TYPOGRAPHY.fontWeight.medium,
-                                        fontSize: TYPOGRAPHY.fontSize.base,
+                                        fontWeight: isActive ? TYPOGRAPHY.fontWeight.bold : TYPOGRAPHY.fontWeight.medium,
+                                        fontSize: '1rem',
+                                        letterSpacing: '0.2px',
                                     }}
                                 />
                             </ListItemButton>
@@ -142,45 +138,59 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                 })}
             </List>
 
-            <StackRowComponent
-                sx={{
-                    p: SPACING.md / 8,
-                    borderTop: `1px solid ${COLORS.sidebar.hover}`,
-                }}
-                spacing={SPACING.sm / 8}
-            >
-                <Avatar
+            <Box sx={{ p: 2 }}>
+                <StackRowComponent
                     sx={{
-                        width: 40,
-                        height: 40,
-                        backgroundColor: COLORS.primary.main,
-                        fontSize: TYPOGRAPHY.fontSize.lg,
-                        fontWeight: TYPOGRAPHY.fontWeight.bold,
+                        p: 1.5,
+                        borderRadius: BORDER_RADIUS.xl,
+                        backgroundColor: COLORS.sidebar.backgroundLight,
+                        border: `1px solid rgba(255,255,255,0.05)`,
+                        mb: 1,
                     }}
+                    spacing={1.5}
                 >
-                    A
-                </Avatar>
-                <Box sx={{ flex: 1 }}>
-                    <Typography
-                        variant="body2"
+                    <Avatar
                         sx={{
-                            fontWeight: TYPOGRAPHY.fontWeight.semibold,
-                            fontSize: TYPOGRAPHY.fontSize.sm,
+                            width: 36,
+                            height: 36,
+                            backgroundColor: COLORS.primary.main,
+                            fontSize: '1rem',
+                            fontWeight: TYPOGRAPHY.fontWeight.bold,
+                            boxShadow: `0 4px 8px rgba(0,0,0,0.2)`,
                         }}
                     >
-                        System Admin
-                    </Typography>
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            color: COLORS.sidebar.textSecondary,
-                            fontSize: TYPOGRAPHY.fontSize.xs,
-                        }}
-                    >
-                        {systemStats?.os_pretty_name || 'Loading OS...'}
-                    </Typography>
-                </Box>
-            </StackRowComponent>
+                        A
+                    </Avatar>
+                    <Box sx={{ flex: 1, overflow: 'hidden' }}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                fontWeight: TYPOGRAPHY.fontWeight.bold,
+                                fontSize: TYPOGRAPHY.fontSize.sm,
+                                color: COLORS.sidebar.text,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                            }}
+                        >
+                            System Admin
+                        </Typography>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: COLORS.sidebar.textSecondary,
+                                fontSize: '0.7rem',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: 'block',
+                            }}
+                        >
+                            {systemStats?.os_pretty_name || 'Linux System'}
+                        </Typography>
+                    </Box>
+                </StackRowComponent>
+            </Box>
         </StackColComponent>
     );
 
@@ -215,6 +225,7 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                     width: LAYOUT.sidebar.width,
                     boxSizing: 'border-box',
                     border: 'none',
+                    backgroundColor: COLORS.sidebar.background,
                 },
             }}
         >

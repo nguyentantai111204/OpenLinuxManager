@@ -1,9 +1,3 @@
-/**
- * Global Design System Constants
- * 
- * This file contains all design tokens used throughout the application.
- * Avoid hardcoding values - always import from this file instead.
- */
 
 // ============================================================================
 // COLORS
@@ -20,12 +14,13 @@ export const COLORS = {
 
     // Sidebar colors
     sidebar: {
-        background: '#2d1b3d',
-        backgroundLight: '#3d2b4d',
+        background: '#1e1b2e',
+        backgroundLight: '#2d2945',
         active: '#e8734e',
-        hover: 'rgba(255, 255, 255, 0.08)',
+        activeSubtle: 'rgba(232, 115, 78, 0.12)',
+        hover: 'rgba(255, 255, 255, 0.05)',
         text: '#ffffff',
-        textSecondary: 'rgba(255, 255, 255, 0.7)',
+        textSecondary: 'rgba(255, 255, 255, 0.6)',
     },
 
     // Status colors
@@ -261,7 +256,7 @@ export const TRANSITIONS = {
 
 export const LAYOUT = {
     sidebar: {
-        width: 220,
+        width: 260,
         widthCollapsed: 64,
     },
 

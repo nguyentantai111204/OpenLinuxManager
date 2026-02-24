@@ -11,7 +11,8 @@ import {
     Computer as ComputerIcon,
 } from '@mui/icons-material';
 import { useThemeMode } from '../contexts/theme-context';
-import { COLORS, SPACING, TYPOGRAPHY, TRANSITIONS } from '../constants/design';
+import { COLORS, SPACING, TYPOGRAPHY, TRANSITIONS, LAYOUT } from '../constants/design';
+import { Brand } from '../components/brand/logo-brand.component';
 
 export function AppHeader() {
     const { mode, toggleTheme } = useThemeMode();
@@ -26,19 +27,8 @@ export function AppHeader() {
                 color: 'text.primary',
             }}
         >
-            <Toolbar sx={{ height: LAYOUT.header.height }}>
-                <ComputerIcon sx={{ mr: SPACING.md / 8, color: COLORS.primary.main }} />
-                <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{
-                        flexGrow: 1,
-                        fontWeight: TYPOGRAPHY.fontWeight.bold,
-                        fontSize: TYPOGRAPHY.fontSize.lg,
-                    }}
-                >
-                    OpenLinuxManager
-                </Typography>
+            <Toolbar sx={{ height: LAYOUT.header.height, px: 3 }}>
+                <Brand variant="header" />
 
                 <Tooltip title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}>
                     <IconButton
@@ -60,5 +50,3 @@ export function AppHeader() {
         </AppBar>
     );
 }
-
-import { LAYOUT } from '../constants/design';
