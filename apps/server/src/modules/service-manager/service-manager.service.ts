@@ -68,10 +68,10 @@ export class ServiceManagerService {
 
     private mapActiveStatus(active: string): SystemService['status'] {
         switch (active) {
-            case 'active': return 'active';
-            case 'inactive': return 'inactive';
-            case 'failed': return 'failed';
-            default: return 'unknown';
+            case 'active': return 'Đang chạy' as any;
+            case 'inactive': return 'Đã dừng' as any;
+            case 'failed': return 'Lỗi' as any;
+            default: return 'Không xác định' as any;
         }
     }
 }

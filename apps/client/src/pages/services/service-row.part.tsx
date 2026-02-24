@@ -22,11 +22,13 @@ interface ServiceRowProps {
 export function ServiceRow({ service, onAction }: ServiceRowProps) {
     const getStatusColor = () => {
         switch (service.status) {
-            case 'active': return COLORS.status.running;
-            case 'failed': return COLORS.status.stopped;
+            case 'Đang chạy': return COLORS.status.running;
+            case 'Lỗi': return COLORS.status.stopped;
             default: return 'text.secondary';
         }
     };
+
+    const isActive = service.status === 'Đang chạy';
 
     return (
         <TableRowComponent>
@@ -40,9 +42,9 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
             </TableCellComponent>
             <TableCellComponent>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {service.status === 'active' ? (
+                    {service.status === 'Đang chạy' ? (
                         <CheckCircleIcon sx={{ color: COLORS.status.running, fontSize: 18 }} />
-                    ) : service.status === 'failed' ? (
+                    ) : service.status === 'Lỗi' ? (
                         <ErrorIcon sx={{ color: COLORS.status.stopped, fontSize: 18 }} />
                     ) : (
                         <PowerIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
@@ -50,7 +52,6 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
                     <Typography
                         variant="body2"
                         sx={{
-                            textTransform: 'capitalize',
                             fontWeight: TYPOGRAPHY.fontWeight.medium,
                             color: getStatusColor()
                         }}
@@ -60,7 +61,7 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
                 </Box>
             </TableCellComponent>
             <TableCellComponent>
-                <Tooltip title={service.enabled ? 'Enabled' : 'Disabled'}>
+                <Tooltip title={service.enabled ? 'Đã bật tự chạy' : 'Đã tắt tự chạy'}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         {service.enabled ? (
                             <EnabledIcon sx={{ color: COLORS.primary.main, fontSize: 18 }} />
@@ -72,8 +73,8 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
             </TableCellComponent>
             <TableCellComponent align="right">
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                    {service.status !== 'active' ? (
-                        <Tooltip title="Start Service">
+                    {!isActive ? (
+                        <Tooltip title="Chạy dịch vụ">
                             <IconButton
                                 size="small"
                                 color="success"
@@ -84,7 +85,7 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title="Stop Service">
+                        <Tooltip title="Dừng dịch vụ">
                             <IconButton
                                 size="small"
                                 color="error"
@@ -95,7 +96,7 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
                             </IconButton>
                         </Tooltip>
                     )}
-                    <Tooltip title="Restart Service">
+                    <Tooltip title="Khởi động lại">
                         <IconButton
                             size="small"
                             color="primary"
@@ -106,7 +107,7 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
                         </IconButton>
                     </Tooltip>
                     {!service.enabled ? (
-                        <Tooltip title="Enable Service">
+                        <Tooltip title="Bật tự chạy">
                             <IconButton
                                 size="small"
                                 color="info"
@@ -117,7 +118,7 @@ export function ServiceRow({ service, onAction }: ServiceRowProps) {
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title="Disable Service">
+                        <Tooltip title="Tắt tự chạy">
                             <IconButton
                                 size="small"
                                 color="warning"

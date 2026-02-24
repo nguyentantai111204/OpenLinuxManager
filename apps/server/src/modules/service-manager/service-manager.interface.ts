@@ -1,12 +1,11 @@
 export interface SystemService {
     name: string;
     description: string;
-    status: 'active' | 'inactive' | 'failed' | 'unknown';
+    status: 'Đang chạy' | 'Đã dừng' | 'Lỗi' | 'Không xác định' | 'active' | 'inactive' | 'failed' | 'unknown';
     running: boolean;
     enabled: boolean;
 }
 
-/** Shape of a single entry from `systemctl list-units --output=json` */
 export interface SystemctlUnit {
     unit: string;
     description: string;
@@ -15,7 +14,6 @@ export interface SystemctlUnit {
     load?: string;
 }
 
-/** Shape of a single entry from `systemctl list-unit-files --output=json` */
 export interface SystemctlUnitFile {
     unit_file: string;
     state: string;

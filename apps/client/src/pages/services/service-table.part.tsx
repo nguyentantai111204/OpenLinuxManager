@@ -8,7 +8,8 @@ import {
     TableBodyComponent,
     TableEmptyRow
 } from '../../components';
-import { ServiceRow, SystemService } from './service-row.part';
+import { ServiceRow } from './service-row.part';
+import { SystemService } from '../../apis/services/services.api';
 
 interface ServiceTableProps {
     services: SystemService[];
@@ -21,10 +22,10 @@ export function ServiceTable({ services = [], onAction }: ServiceTableProps) {
             <TableComponent stickyHeader>
                 <TableHeadComponent>
                     <TableRowComponent>
-                        <TableCellComponent>SERVICE NAME & DESCRIPTION</TableCellComponent>
-                        <TableCellComponent>STATUS</TableCellComponent>
-                        <TableCellComponent>AUTO</TableCellComponent>
-                        <TableCellComponent align="right">ACTIONS</TableCellComponent>
+                        <TableCellComponent>TÊN DỊCH VỤ & MÔ TẢ</TableCellComponent>
+                        <TableCellComponent>TRẠNG THÁI</TableCellComponent>
+                        <TableCellComponent>TỰ CHẠY</TableCellComponent>
+                        <TableCellComponent align="right">THAO TÁC</TableCellComponent>
                     </TableRowComponent>
                 </TableHeadComponent>
                 <TableBodyComponent>

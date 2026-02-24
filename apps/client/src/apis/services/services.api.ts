@@ -5,7 +5,7 @@ export type ServiceAction = 'start' | 'stop' | 'restart' | 'enable' | 'disable';
 export interface SystemService {
     name: string;
     description: string;
-    status: 'active' | 'inactive' | 'failed' | 'unknown';
+    status: 'Đang chạy' | 'Đã dừng' | 'Lỗi' | 'Không xác định' | 'active' | 'inactive' | 'failed' | 'unknown';
     running: boolean;
     enabled: boolean;
 }
