@@ -30,12 +30,9 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     sudo \
     bash \
-    shadow-utils \
+    passwd \
     procps \
-    && rm -rf /var/lib/apt/lists/* || true
-# Note: shadow-utils is 'shadow' in debian-based, and we need it for useradd/userdel
-# In debian, it's usually pre-installed or part of passwd/base-passwd, but ensuring it's there.
-RUN apt-get update && apt-get install -y passwd || true
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy built bundles from builder
 COPY --from=builder /app/dist/apps ./dist/apps
