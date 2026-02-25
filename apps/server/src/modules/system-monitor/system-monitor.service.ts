@@ -22,7 +22,13 @@ export class SystemMonitorService {
 
     async getSystemStats(): Promise<SystemStats> {
         try {
-            const scriptPath = path.join(process.cwd(), 'apps/server/src/scripts/monitor_system.py');
+            let scriptPath = path.join(__dirname, 'scripts/monitor_system.py');
+
+            if (process.env.NODE_ENV !== 'production' || !path.isAbsolute(scriptPath)) {
+                const devPath = path.join(process.cwd(), 'apps/server/src/scripts/monitor_system.py');
+                scriptPath = devPath;
+            }
+
             return await this.pythonRunner.runScript<SystemStats>(scriptPath);
         } catch (error) {
             this.logger.error('Error getting system stats', error);
