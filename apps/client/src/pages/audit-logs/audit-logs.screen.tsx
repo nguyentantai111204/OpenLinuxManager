@@ -1,9 +1,16 @@
-import { useState } from 'react';
-import { Box, Chip, Alert, TablePagination, alpha } from '@mui/material';
+import React, { useState, useMemo } from 'react';
+import { Box, Chip, Alert, alpha, Typography } from '@mui/material';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
-import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, CardComponent, PageLoading, TableEmptyRow, StackColComponent } from '../../components';
+import {
+    CardComponent,
+    PageLoading,
+    StackColComponent,
+    DataTableComponent
+} from '../../components';
 import { SPACING, COLORS, TYPOGRAPHY } from '../../constants/design';
 import { useAuditLogs } from '../../hooks/use-audit-logs';
+import { AuditLog } from '../../apis/audit-log/audit-log.interface';
+import { ColumnConfig } from '../../components/table/table.component';
 
 export function AuditLogs() {
     const [page, setPage] = useState(0);
@@ -29,6 +36,90 @@ export function AuditLogs() {
         return 'default';
     };
 
+    const columns = useMemo<ColumnConfig<AuditLog>[]>(() => [
+        {
+            id: 'createdAt',
+            label: 'Thời gian',
+            width: 180,
+            render: (row) => (
+                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary' }}>
+                    {formatDate(row.createdAt)}
+                </Typography>
+            )
+        },
+        {
+            id: 'action',
+            label: 'Hành động',
+            width: 120,
+            render: (row) => (
+                <Chip
+                    label={row.action}
+                    color={getActionColor(row.action)}
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                        fontWeight: TYPOGRAPHY.fontWeight.bold,
+                        fontSize: '10px',
+                        height: 20
+                    }}
+                />
+            )
+        },
+        {
+            id: 'target',
+            label: 'Đối tượng',
+            render: (row) => (
+                <Typography variant="body2" sx={{ fontWeight: TYPOGRAPHY.fontWeight.medium, fontSize: TYPOGRAPHY.fontSize.sm }}>
+                    {row.target}
+                </Typography>
+            )
+        },
+        {
+            id: 'details',
+            label: 'Chi tiết',
+            render: (row) => (
+                <Typography sx={{
+                    color: 'text.secondary',
+                    fontSize: TYPOGRAPHY.fontSize.xs,
+                    maxWidth: 300,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                }}>
+                    {row.details || '-'}
+                </Typography>
+            )
+        },
+        {
+            id: 'performedBy',
+            label: 'Người thực hiện',
+            width: 150,
+            render: (row) => (
+                <Chip
+                    label={row.performedBy}
+                    size="small"
+                    sx={(theme) => ({
+                        height: 20,
+                        fontSize: '0.75rem',
+                        backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                        color: theme.palette.text.primary,
+                    })}
+                />
+            )
+        },
+    ], []);
+
+    const paginationConfig = {
+        page,
+        rowsPerPage,
+        total,
+        onPageChange: (p: number) => setPage(p),
+        onRowsPerPageChange: (r: number) => {
+            setRowsPerPage(r);
+            setPage(0);
+        }
+    };
+
     return (
         <Box sx={{ p: SPACING.lg / 8, height: '100%', overflow: 'hidden' }}>
             <StackColComponent spacing={SPACING.lg / 8} sx={{ height: '100%' }}>
@@ -42,96 +133,19 @@ export function AuditLogs() {
                 )}
 
                 <CardComponent sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                    <TableContainerComponent sx={{ flex: 1, overflow: 'auto' }}>
-                        <TableComponent stickyHeader>
-                            <TableHeadComponent>
-                                <TableRowComponent>
-                                    <TableCellComponent>Thời gian</TableCellComponent>
-                                    <TableCellComponent>Hành động</TableCellComponent>
-                                    <TableCellComponent>Đối tượng</TableCellComponent>
-                                    <TableCellComponent>Chi tiết</TableCellComponent>
-                                    <TableCellComponent>Người thực hiện</TableCellComponent>
-                                </TableRowComponent>
-                            </TableHeadComponent>
-                            <TableBodyComponent>
-                                {isLoading && logs.length === 0 ? (
-                                    <TableRowComponent>
-                                        <TableCellComponent colSpan={5} align="center" sx={{ py: 8 }}>
-                                            <PageLoading message="Đang tải nhật ký..." minHeight="10vh" size={32} />
-                                        </TableCellComponent>
-                                    </TableRowComponent>
-                                ) : (
-                                    <>
-                                        {logs.map((log) => (
-                                            <TableRowComponent key={log.id}>
-                                                <TableCellComponent sx={{ whiteSpace: 'nowrap', width: 180, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary' }}>
-                                                    {formatDate(log.createdAt)}
-                                                </TableCellComponent>
-                                                <TableCellComponent>
-                                                    <Chip
-                                                        label={log.action}
-                                                        color={getActionColor(log.action)}
-                                                        size="small"
-                                                        variant="outlined"
-                                                        sx={{
-                                                            fontWeight: TYPOGRAPHY.fontWeight.bold,
-                                                            fontSize: '10px',
-                                                            height: 20
-                                                        }}
-                                                    />
-                                                </TableCellComponent>
-                                                <TableCellComponent sx={{ fontWeight: TYPOGRAPHY.fontWeight.medium, fontSize: TYPOGRAPHY.fontSize.sm }}>
-                                                    {log.target}
-                                                </TableCellComponent>
-                                                <TableCellComponent sx={{
-                                                    color: 'text.secondary',
-                                                    fontSize: TYPOGRAPHY.fontSize.xs,
-                                                    maxWidth: 300,
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    whiteSpace: 'nowrap'
-                                                }}>
-                                                    {log.details || '-'}
-                                                </TableCellComponent>
-                                                <TableCellComponent>
-                                                    <Chip
-                                                        label={log.performedBy}
-                                                        size="small"
-                                                        sx={(theme) => ({
-                                                            height: 20,
-                                                            fontSize: '0.75rem',
-                                                            backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                                                            color: theme.palette.text.primary,
-                                                        })}
-                                                    />
-                                                </TableCellComponent>
-                                            </TableRowComponent>
-                                        ))}
-                                        {logs.length === 0 && !isLoading && (
-                                            <TableEmptyRow colSpan={5} message="Không có nhật ký nào" />
-                                        )}
-                                    </>
-                                )}
-                            </TableBodyComponent>
-                        </TableComponent>
-                    </TableContainerComponent>
-                    <Box sx={{ borderTop: `1px solid ${COLORS.border.light}` }}>
-                        <TablePagination
-                            rowsPerPageOptions={[10, 25, 50]}
-                            component="div"
-                            count={total}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={(_e, p) => setPage(p)}
-                            onRowsPerPageChange={(e) => {
-                                setRowsPerPage(parseInt(e.target.value, 10));
-                                setPage(0);
-                            }}
-                        />
-                    </Box>
+                    <DataTableComponent
+                        idField="id"
+                        columns={columns}
+                        data={logs}
+                        isLoading={isLoading}
+                        pagination={paginationConfig}
+                        emptyMessage="Không có nhật ký nào"
+                        maxHeight="100%"
+                    />
                 </CardComponent>
             </StackColComponent>
         </Box>
     );
 }
+
 

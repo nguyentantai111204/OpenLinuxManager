@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Typography } from '@mui/material';
-import { ButtonComponent, TextFieldComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, ConfirmationDialogComponent, PageLoading, TableEmptyRow, AppSnackbar } from '../../components';
+import React, { useState, useMemo } from 'react';
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
+import {
+    ButtonComponent,
+    TextFieldComponent,
+    ConfirmationDialogComponent,
+    PageLoading,
+    AppSnackbar,
+    DataTableComponent
+} from '../../components';
 import { Add as AddIcon, Delete as DeleteIcon, Person as PersonIcon } from '@mui/icons-material';
 import { SPACING, TYPOGRAPHY, ICON_SIZES, BORDER_RADIUS } from '../../constants/design';
 import { StackRowComponent, StackColComponent } from '../../components/stack';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { useUsers } from '../../hooks/use-users';
 import { useSnackbar } from '../../hooks/use-snackbar';
+import { SystemUser } from '../../apis/users/users.api';
+import { ColumnConfig, ActionConfig } from '../../components/table/table.component';
 
 export function UserManagement() {
     const { users, isLoading, createUser, deleteUser } = useUsers();
@@ -38,6 +47,65 @@ export function UserManagement() {
         }
     };
 
+    const columns = useMemo<ColumnConfig<SystemUser>[]>(() => [
+        {
+            id: 'username',
+            label: 'Tên người dùng',
+            sortable: true,
+            render: (row) => (
+                <StackRowComponent spacing={SPACING.sm / 8} alignItems="center">
+                    <PersonIcon sx={{ color: 'primary.main', fontSize: ICON_SIZES.sm }} />
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            fontWeight: TYPOGRAPHY.fontWeight.medium,
+                            fontSize: TYPOGRAPHY.fontSize.sm,
+                        }}
+                    >
+                        {row.username}
+                    </Typography>
+                </StackRowComponent>
+            )
+        },
+        { id: 'uid', label: 'UID', sortable: true },
+        { id: 'gid', label: 'GID', sortable: true },
+        {
+            id: 'home',
+            label: 'Thư mục Home',
+            render: (row) => (
+                <Typography variant="caption" color="text.secondary" sx={{ fontSize: TYPOGRAPHY.fontSize.xs }}>
+                    {row.home}
+                </Typography>
+            )
+        },
+        {
+            id: 'shell',
+            label: 'Shell',
+            render: (row) => (
+                <Typography
+                    variant="caption"
+                    sx={{
+                        fontFamily: TYPOGRAPHY.fontFamily.mono,
+                        fontSize: TYPOGRAPHY.fontSize.xs,
+                        opacity: 0.8
+                    }}
+                >
+                    {row.shell}
+                </Typography>
+            )
+        },
+    ], []);
+
+    const actions = useMemo<ActionConfig<SystemUser>[]>(() => [
+        {
+            id: 'delete',
+            icon: <DeleteIcon fontSize="small" />,
+            tooltip: 'Xóa người dùng',
+            color: 'error',
+            onClick: (row) => setSelectedUser(row.username),
+        }
+    ], []);
+
     if (isLoading && users.length === 0) {
         return (
             <Box sx={{ p: SPACING.lg / 8 }}>
@@ -62,63 +130,13 @@ export function UserManagement() {
                 }
             />
 
-            <TableContainerComponent sx={{ mt: SPACING.md / 8 }}>
-                <TableComponent>
-                    <TableHeadComponent>
-                        <TableRowComponent>
-                            <TableCellComponent>TÊN NGƯỜI DÙNG</TableCellComponent>
-                            <TableCellComponent>UID</TableCellComponent>
-                            <TableCellComponent>GID</TableCellComponent>
-                            <TableCellComponent>THƯ MỤC HOME</TableCellComponent>
-                            <TableCellComponent>SHELL</TableCellComponent>
-                            <TableCellComponent align="right">HÀNH ĐỘNG</TableCellComponent>
-                        </TableRowComponent>
-                    </TableHeadComponent>
-                    <TableBodyComponent>
-                        {users.map((user) => (
-                            <TableRowComponent key={user.username}>
-                                <TableCellComponent>
-                                    <StackRowComponent spacing={SPACING.sm / 8} alignItems="center">
-                                        <PersonIcon sx={{ color: 'primary.main', fontSize: ICON_SIZES.sm }} />
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                fontWeight: TYPOGRAPHY.fontWeight.medium,
-                                                fontSize: TYPOGRAPHY.fontSize.sm,
-                                            }}
-                                        >
-                                            {user.username}
-                                        </Typography>
-                                    </StackRowComponent>
-                                </TableCellComponent>
-                                <TableCellComponent>{user.uid}</TableCellComponent>
-                                <TableCellComponent>{user.gid}</TableCellComponent>
-                                <TableCellComponent sx={{ color: 'text.secondary', fontSize: TYPOGRAPHY.fontSize.xs }}>
-                                    {user.home}
-                                </TableCellComponent>
-                                <TableCellComponent sx={{ fontFamily: TYPOGRAPHY.fontFamily.mono, fontSize: TYPOGRAPHY.fontSize.xs }}>
-                                    {user.shell}
-                                </TableCellComponent>
-                                <TableCellComponent align="right">
-                                    <IconButton
-                                        onClick={() => setSelectedUser(user.username)}
-                                        color="error"
-                                        size="small"
-                                        sx={{
-                                            '&:hover': { backgroundColor: 'error.lighter' }
-                                        }}
-                                    >
-                                        <DeleteIcon fontSize="small" />
-                                    </IconButton>
-                                </TableCellComponent>
-                            </TableRowComponent>
-                        ))}
-                        {users.length === 0 && (
-                            <TableEmptyRow colSpan={6} message="Không tìm thấy người dùng nào" />
-                        )}
-                    </TableBodyComponent>
-                </TableComponent>
-            </TableContainerComponent>
+            <DataTableComponent
+                idField="username"
+                columns={columns}
+                data={users}
+                actions={actions}
+                emptyMessage="Không tìm thấy người dùng nào"
+            />
 
             <Dialog
                 open={openAddDialog}
@@ -177,3 +195,4 @@ export function UserManagement() {
         </Box>
     );
 }
+

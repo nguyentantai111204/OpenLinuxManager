@@ -1,11 +1,81 @@
+import React, { useMemo } from 'react';
 import { Box, Typography, LinearProgress, alpha } from '@mui/material';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
-import { CardComponent, TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, PageLoading, TableEmptyRow, StackColComponent, StackRowComponent, StackRowJusBetweenComponent } from '../../components';
+import {
+    CardComponent,
+    PageLoading,
+    StackColComponent,
+    StackRowComponent,
+    StackRowJusBetweenComponent,
+    DataTableComponent
+} from '../../components';
 import { SPACING, COLORS, BORDER_RADIUS, TYPOGRAPHY } from '../../constants/design';
 import { useSocketContext } from '../../contexts/socket-context';
+import { StoragePartition } from '../../types/socket.types';
+import { ColumnConfig } from '../../components/table/table.component';
 
 export function Storage() {
     const { isConnected, storage } = useSocketContext();
+
+    const columns = useMemo<ColumnConfig<StoragePartition>[]>(() => [
+        {
+            id: 'name',
+            label: 'Hệ thống tệp',
+            sortable: true,
+            render: (row) => (
+                <Typography variant="body2" sx={{ fontWeight: TYPOGRAPHY.fontWeight.medium }}>
+                    {row.name}
+                </Typography>
+            )
+        },
+        { id: 'size', label: 'Kích thước', sortable: true },
+        { id: 'used', label: 'Đã dùng', sortable: true },
+        { id: 'avail', label: 'Còn trống', sortable: true },
+        {
+            id: 'usePercent',
+            label: '% Sử dụng',
+            sortable: true,
+            width: 180,
+            render: (row) => (
+                <StackRowComponent spacing={1} alignItems="center">
+                    <LinearProgress
+                        variant="determinate"
+                        value={row.usePercent}
+                        sx={{
+                            flexGrow: 1,
+                            height: 8,
+                            borderRadius: BORDER_RADIUS.full,
+                            backgroundColor: alpha(COLORS.primary.main, 0.05),
+                            '& .MuiLinearProgress-bar': {
+                                backgroundColor: row.usePercent > 90 ? COLORS.error.main :
+                                    row.usePercent > 70 ? COLORS.warning.main :
+                                        COLORS.success.main
+                            }
+                        }}
+                    />
+                    <Typography variant="caption" sx={{ minWidth: 35, fontWeight: TYPOGRAPHY.fontWeight.bold }}>
+                        {row.usePercent}%
+                    </Typography>
+                </StackRowComponent>
+            )
+        },
+        {
+            id: 'mountPoint',
+            label: 'Điểm gắn kết',
+            render: (row) => (
+                <Typography
+                    variant="caption"
+                    sx={{
+                        fontFamily: TYPOGRAPHY.fontFamily.mono,
+                        fontSize: TYPOGRAPHY.fontSize.xs,
+                        color: 'text.secondary'
+                    }}
+                >
+                    {row.mountPoint}
+                </Typography>
+            )
+        },
+    ], []);
 
     if (!storage) {
         return (
@@ -67,60 +137,12 @@ export function Storage() {
                     </StackColComponent>
                 </CardComponent>
 
-                <TableContainerComponent>
-                    <TableComponent stickyHeader>
-                        <TableHeadComponent>
-                            <TableRowComponent>
-                                <TableCellComponent>Hệ thống tệp</TableCellComponent>
-                                <TableCellComponent>Kích thước</TableCellComponent>
-                                <TableCellComponent>Đã dùng</TableCellComponent>
-                                <TableCellComponent>Còn trống</TableCellComponent>
-                                <TableCellComponent>% Sử dụng</TableCellComponent>
-                                <TableCellComponent>Điểm gắn kết</TableCellComponent>
-                            </TableRowComponent>
-                        </TableHeadComponent>
-                        <TableBodyComponent>
-                            {storageData.map((drive) => (
-                                <TableRowComponent key={drive.mountPoint}>
-                                    <TableCellComponent sx={{ fontWeight: TYPOGRAPHY.fontWeight.medium }}>
-                                        {drive.name}
-                                    </TableCellComponent>
-                                    <TableCellComponent>{drive.size}</TableCellComponent>
-                                    <TableCellComponent>{drive.used}</TableCellComponent>
-                                    <TableCellComponent>{drive.avail}</TableCellComponent>
-                                    <TableCellComponent sx={{ minWidth: 160 }}>
-                                        <StackRowComponent spacing={1} alignItems="center">
-                                            <LinearProgress
-                                                variant="determinate"
-                                                value={drive.usePercent}
-                                                sx={{
-                                                    flexGrow: 1,
-                                                    height: 8,
-                                                    borderRadius: BORDER_RADIUS.full,
-                                                    backgroundColor: alpha(COLORS.primary.main, 0.05),
-                                                    '& .MuiLinearProgress-bar': {
-                                                        backgroundColor: drive.usePercent > 90 ? COLORS.error.main :
-                                                            drive.usePercent > 70 ? COLORS.warning.main :
-                                                                COLORS.success.main
-                                                    }
-                                                }}
-                                            />
-                                            <Typography variant="caption" sx={{ minWidth: 35, fontWeight: TYPOGRAPHY.fontWeight.bold }}>
-                                                {drive.usePercent}%
-                                            </Typography>
-                                        </StackRowComponent>
-                                    </TableCellComponent>
-                                    <TableCellComponent sx={{ fontFamily: TYPOGRAPHY.fontFamily.mono, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary' }}>
-                                        {drive.mountPoint}
-                                    </TableCellComponent>
-                                </TableRowComponent>
-                            ))}
-                            {storageData.length === 0 && (
-                                <TableEmptyRow colSpan={6} message="Không tìm thấy phân vùng nào" />
-                            )}
-                        </TableBodyComponent>
-                    </TableComponent>
-                </TableContainerComponent>
+                <DataTableComponent
+                    idField="mountPoint"
+                    columns={columns}
+                    data={storageData}
+                    emptyMessage="Không tìm thấy phân vùng nào"
+                />
             </StackColComponent>
         </Box>
     );
