@@ -9,10 +9,6 @@ interface PageLoadingProps {
     minHeight?: string;
 }
 
-/**
- * Full-page loading indicator with optional message.
- * Replaces the repeated CircularProgress + Typography pattern.
- */
 export function PageLoading({
     message = 'Đang tải...',
     size = 40,
