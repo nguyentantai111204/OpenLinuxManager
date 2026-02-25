@@ -142,6 +142,15 @@ export function Storage() {
                     columns={columns}
                     data={storageData}
                     emptyMessage="Không tìm thấy phân vùng nào"
+                    pagination={{
+                        page: 0,
+                        rowsPerPage: 10,
+                        total: storageData.length,
+                        onPageChange: () => { },
+                        onRowsPerPageChange: () => { },
+                        autoPagination: true
+                    }}
+                    maxHeight="500px"
                 />
             </StackColComponent>
         </Box>

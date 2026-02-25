@@ -136,6 +136,15 @@ export function UserManagement() {
                 data={users}
                 actions={actions}
                 emptyMessage="Không tìm thấy người dùng nào"
+                pagination={{
+                    page: 0,
+                    rowsPerPage: 10,
+                    total: users.length,
+                    onPageChange: () => { },
+                    onRowsPerPageChange: () => { },
+                    autoPagination: true
+                }}
+                maxHeight="calc(100vh - 200px)"
             />
 
             <Dialog

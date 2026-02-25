@@ -175,6 +175,15 @@ export function Services() {
                 data={filteredServices}
                 actions={actions as ActionConfig<SystemService>[]}
                 emptyMessage="Không tìm thấy dịch vụ nào"
+                pagination={{
+                    page: 0,
+                    rowsPerPage: 10,
+                    total: filteredServices.length,
+                    onPageChange: () => { },
+                    onRowsPerPageChange: () => { },
+                    autoPagination: true
+                }}
+                maxHeight="calc(100vh - 200px)"
             />
 
             <StackRowJusBetweenComponent sx={{ mt: SPACING.md / 8 }}>

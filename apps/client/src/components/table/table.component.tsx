@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
     Table as MuiTable,
     TableBody as MuiTableBody,
@@ -29,7 +29,7 @@ export const TableContainerComponent = styled(MuiTableContainer)(({ theme }) => 
     boxShadow: SHADOWS.sm,
     border: theme.palette.mode === 'dark' ? `1px solid ${COLORS.border.main}` : 'none',
     backgroundColor: theme.palette.background.paper,
-    overflow: 'hidden',
+    overflowX: 'auto', // Allow horizontal scroll
 }));
 
 export const TableComponent = styled(MuiTable)(({ theme }) => ({
@@ -105,6 +105,7 @@ interface PaginationConfig {
     onPageChange: (page: number) => void;
     onRowsPerPageChange: (rowsPerPage: number) => void;
     rowsPerPageOptions?: number[];
+    autoPagination?: boolean;
 }
 
 interface DataTableProps<T> {
@@ -148,6 +149,17 @@ export function DataTableComponent<T extends Record<string, any>>({
     const [orderBy, setOrderBy] = useState<keyof T | string | undefined>(initialOrderBy);
     const [order, setOrder] = useState<'asc' | 'desc'>(initialOrder);
 
+    // Internal state for auto-pagination
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(pagination?.rowsPerPage || 10);
+
+    // Reset page when data size changes (e.g. filtering)
+    useEffect(() => {
+        if (pagination?.autoPagination) {
+            setPage(0);
+        }
+    }, [data.length, pagination?.autoPagination]);
+
     const handleSort = (property: keyof T | string) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -173,6 +185,13 @@ export function DataTableComponent<T extends Record<string, any>>({
         });
     }, [data, orderBy, order, columns]);
 
+    const paginatedData = useMemo(() => {
+        if (!pagination?.autoPagination) return sortedData;
+
+        const start = page * rowsPerPage;
+        return sortedData.slice(start, start + rowsPerPage);
+    }, [sortedData, pagination?.autoPagination, page, rowsPerPage]);
+
     const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!onSelectionChange) return;
         if (event.target.checked) {
@@ -196,148 +215,194 @@ export function DataTableComponent<T extends Record<string, any>>({
         onSelectionChange(newSelected);
     };
 
+    const currentPage = pagination?.autoPagination ? page : pagination?.page || 0;
+    const currentRowsPerPage = pagination?.autoPagination ? rowsPerPage : pagination?.rowsPerPage || 10;
+    const totalCount = pagination?.autoPagination ? data.length : pagination?.total || data.length;
+
+    const handlePageChange = (_: any, newPage: number) => {
+        if (pagination?.autoPagination) {
+            setPage(newPage);
+        } else {
+            pagination?.onPageChange(newPage);
+        }
+    };
+
+    const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const newRows = parseInt(event.target.value, 10);
+        if (pagination?.autoPagination) {
+            setRowsPerPage(newRows);
+            setPage(0);
+        } else {
+            pagination?.onRowsPerPageChange(newRows);
+        }
+    };
+
     return (
-        <TableContainerComponent sx={{ maxHeight }}>
-            <TableComponent stickyHeader={stickyHeader}>
-                <TableHeadComponent>
-                    <TableRowComponent>
-                        {selectable && (
-                            <TableCellComponent padding="checkbox">
-                                <Checkbox
-                                    indeterminate={selectedIds.length > 0 && selectedIds.length < data.length}
-                                    checked={data.length > 0 && selectedIds.length === data.length}
-                                    onChange={handleSelectAll}
-                                    size="small"
-                                />
-                            </TableCellComponent>
-                        )}
-                        {columns.map((column) => (
-                            <TableCellComponent
-                                key={String(column.id)}
-                                align={column.align || 'left'}
-                                style={{ width: column.width }}
-                            >
-                                {column.sortable !== false ? (
-                                    <TableSortLabel
-                                        active={orderBy === column.id}
-                                        direction={orderBy === column.id ? order : 'asc'}
-                                        onClick={() => handleSort(column.id)}
-                                    >
-                                        {column.label}
-                                    </TableSortLabel>
-                                ) : (
-                                    column.label
-                                )}
-                            </TableCellComponent>
-                        ))}
-                        {actions && actions.length > 0 && (
-                            <TableCellComponent align="right">Thao tác</TableCellComponent>
-                        )}
-                    </TableRowComponent>
-                </TableHeadComponent>
-                <TableBodyComponent>
-                    {isLoading ? (
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: maxHeight || 'auto',
+                width: '100%',
+                boxShadow: SHADOWS.sm,
+                border: (theme) => theme.palette.mode === 'dark' ? `1px solid ${COLORS.border.main}` : 'none',
+                backgroundColor: 'background.paper',
+                overflow: 'hidden'
+            }}
+        >
+            <TableContainerComponent
+                sx={{
+                    flex: 1,
+                    boxShadow: 'none',
+                    border: 'none',
+                    borderRadius: 0,
+                    overflowX: 'auto'
+                }}
+            >
+                <TableComponent
+                    stickyHeader={stickyHeader}
+                    sx={{ minWidth: 800 }}
+                >
+                    <TableHeadComponent>
                         <TableRowComponent>
-                            <TableCellComponent colSpan={columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)} align="center" sx={{ py: 8 }}>
-                                <PageLoading message="Đang tải dữ liệu..." minHeight="10vh" size={32} />
-                            </TableCellComponent>
-                        </TableRowComponent>
-                    ) : (
-                        <>
-                            {sortedData.map((row) => {
-                                const id = row[idField];
-                                const isSelected = selectedIds.indexOf(id) !== -1;
-
-                                return (
-                                    <TableRowComponent
-                                        key={String(id)}
-                                        hover
-                                        onClick={() => onRowClick?.(row)}
-                                        selected={isSelected}
-                                        sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
-                                    >
-                                        {selectable && (
-                                            <TableCellComponent padding="checkbox">
-                                                <Checkbox
-                                                    checked={isSelected}
-                                                    onChange={() => handleSelectOne(id)}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    size="small"
-                                                />
-                                            </TableCellComponent>
-                                        )}
-                                        {columns.map((column) => (
-                                            <TableCellComponent
-                                                key={`${String(id)}-${String(column.id)}`}
-                                                align={column.align || 'left'}
-                                            >
-                                                {column.render ? column.render(row) : row[column.id]}
-                                            </TableCellComponent>
-                                        ))}
-                                        {actions && actions.length > 0 && (
-                                            <TableCellComponent align="right" onClick={(e) => e.stopPropagation()}>
-                                                <StackRowComponent spacing={1} justifyContent="flex-end">
-                                                    {actions.map((action) => {
-                                                        const isVisible = action.visible ? action.visible(row) : true;
-                                                        if (!isVisible) return null;
-
-                                                        const isDisabled = action.disabled ? action.disabled(row) : false;
-                                                        const tooltip = typeof action.tooltip === 'function' ? action.tooltip(row) : action.tooltip || (typeof action.label === 'function' ? action.label(row) : action.label) || '';
-                                                        const icon = typeof action.icon === 'function' ? action.icon(row) : action.icon;
-                                                        const color = typeof action.color === 'function' ? action.color(row) : action.color || 'default';
-
-                                                        return (
-                                                            <Tooltip key={action.id} title={tooltip}>
-                                                                <Box component="span">
-                                                                    <IconButton
-                                                                        size="small"
-                                                                        color={color as any}
-                                                                        onClick={() => action.onClick(row)}
-                                                                        disabled={isDisabled}
-                                                                        sx={{
-                                                                            '&:hover': {
-                                                                                backgroundColor: color !== 'default' && color !== 'inherit' && (COLORS as any)[color]
-                                                                                    ? alpha((COLORS as any)[color].main || (COLORS as any)[color], 0.1)
-                                                                                    : undefined
-                                                                            }
-                                                                        }}
-                                                                    >
-                                                                        {icon}
-                                                                    </IconButton>
-                                                                </Box>
-                                                            </Tooltip>
-                                                        );
-                                                    })}
-                                                </StackRowComponent>
-                                            </TableCellComponent>
-                                        )}
-                                    </TableRowComponent>
-                                );
-                            })}
-                            {sortedData.length === 0 && (
-                                <TableEmptyRow
-                                    colSpan={columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)}
-                                    message={emptyMessage}
-                                />
+                            {selectable && (
+                                <TableCellComponent padding="checkbox">
+                                    <Checkbox
+                                        indeterminate={selectedIds.length > 0 && selectedIds.length < data.length}
+                                        checked={data.length > 0 && selectedIds.length === data.length}
+                                        onChange={handleSelectAll}
+                                        size="small"
+                                    />
+                                </TableCellComponent>
                             )}
-                        </>
-                    )}
-                </TableBodyComponent>
-            </TableComponent>
+                            {columns.map((column) => (
+                                <TableCellComponent
+                                    key={String(column.id)}
+                                    align={column.align || 'left'}
+                                    style={{ width: column.width }}
+                                >
+                                    {column.sortable !== false ? (
+                                        <TableSortLabel
+                                            active={orderBy === column.id}
+                                            direction={orderBy === column.id ? order : 'asc'}
+                                            onClick={() => handleSort(column.id)}
+                                        >
+                                            {column.label}
+                                        </TableSortLabel>
+                                    ) : (
+                                        column.label
+                                    )}
+                                </TableCellComponent>
+                            ))}
+                            {actions && actions.length > 0 && (
+                                <TableCellComponent align="right">Thao tác</TableCellComponent>
+                            )}
+                        </TableRowComponent>
+                    </TableHeadComponent>
+                    <TableBodyComponent>
+                        {isLoading ? (
+                            <TableRowComponent>
+                                <TableCellComponent colSpan={columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)} align="center" sx={{ py: 8 }}>
+                                    <PageLoading message="Đang tải dữ liệu..." minHeight="10vh" size={32} />
+                                </TableCellComponent>
+                            </TableRowComponent>
+                        ) : (
+                            <>
+                                {paginatedData.map((row) => {
+                                    const id = row[idField];
+                                    const isSelected = selectedIds.indexOf(id) !== -1;
+
+                                    return (
+                                        <TableRowComponent
+                                            key={String(id)}
+                                            hover
+                                            onClick={() => onRowClick?.(row)}
+                                            selected={isSelected}
+                                            sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                                        >
+                                            {selectable && (
+                                                <TableCellComponent padding="checkbox">
+                                                    <Checkbox
+                                                        checked={isSelected}
+                                                        onChange={() => handleSelectOne(id)}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        size="small"
+                                                    />
+                                                </TableCellComponent>
+                                            )}
+                                            {columns.map((column) => (
+                                                <TableCellComponent
+                                                    key={`${String(id)}-${String(column.id)}`}
+                                                    align={column.align || 'left'}
+                                                >
+                                                    {column.render ? column.render(row) : row[column.id]}
+                                                </TableCellComponent>
+                                            ))}
+                                            {actions && actions.length > 0 && (
+                                                <TableCellComponent align="right" onClick={(e) => e.stopPropagation()}>
+                                                    <StackRowComponent spacing={1} justifyContent="flex-end">
+                                                        {actions.map((action) => {
+                                                            const isVisible = action.visible ? action.visible(row) : true;
+                                                            if (!isVisible) return null;
+
+                                                            const isDisabled = action.disabled ? action.disabled(row) : false;
+                                                            const tooltip = typeof action.tooltip === 'function' ? action.tooltip(row) : action.tooltip || (typeof action.label === 'function' ? action.label(row) : action.label) || '';
+                                                            const icon = typeof action.icon === 'function' ? action.icon(row) : action.icon;
+                                                            const color = typeof action.color === 'function' ? action.color(row) : action.color || 'default';
+
+                                                            return (
+                                                                <Tooltip key={action.id} title={tooltip}>
+                                                                    <Box component="span">
+                                                                        <IconButton
+                                                                            size="small"
+                                                                            color={color as any}
+                                                                            onClick={() => action.onClick(row)}
+                                                                            disabled={isDisabled}
+                                                                            sx={{
+                                                                                '&:hover': {
+                                                                                    backgroundColor: color !== 'default' && color !== 'inherit' && (COLORS as any)[color]
+                                                                                        ? alpha((COLORS as any)[color].main || (COLORS as any)[color], 0.1)
+                                                                                        : undefined
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            {icon}
+                                                                        </IconButton>
+                                                                    </Box>
+                                                                </Tooltip>
+                                                            );
+                                                        })}
+                                                    </StackRowComponent>
+                                                </TableCellComponent>
+                                            )}
+                                        </TableRowComponent>
+                                    );
+                                })}
+                                {paginatedData.length === 0 && (
+                                    <TableEmptyRow
+                                        colSpan={columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)}
+                                        message={emptyMessage}
+                                    />
+                                )}
+                            </>
+                        )}
+                    </TableBodyComponent>
+                </TableComponent>
+            </TableContainerComponent>
             {pagination && (
-                <Box sx={{ borderTop: `1px solid ${COLORS.border.light}` }}>
+                <Box sx={{ borderTop: `1px solid ${COLORS.border.light}`, backgroundColor: 'background.paper' }}>
                     <TablePagination
                         component="div"
-                        count={pagination.total}
-                        page={pagination.page}
-                        onPageChange={(_, page) => pagination.onPageChange(page)}
-                        rowsPerPage={pagination.rowsPerPage}
-                        onRowsPerPageChange={(e) => pagination.onRowsPerPageChange(parseInt(e.target.value, 10))}
+                        count={totalCount}
+                        page={currentPage}
+                        onPageChange={handlePageChange}
+                        rowsPerPage={currentRowsPerPage}
+                        onRowsPerPageChange={handleRowsPerPageChange}
                         rowsPerPageOptions={pagination.rowsPerPageOptions || [10, 25, 50]}
                         labelRowsPerPage="Hàng mỗi trang:"
                     />
                 </Box>
             )}
-        </TableContainerComponent>
+        </Box>
     );
 }

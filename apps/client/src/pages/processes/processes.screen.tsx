@@ -209,6 +209,15 @@ export function Processes() {
                 initialOrderBy="cpu"
                 initialOrder="desc"
                 emptyMessage="Không tìm thấy tiến trình nào"
+                pagination={{
+                    page: 0,
+                    rowsPerPage: 10,
+                    total: filteredProcesses.length,
+                    onPageChange: () => { },
+                    onRowsPerPageChange: () => { },
+                    autoPagination: true
+                }}
+                maxHeight="calc(100vh)"
             />
 
             <StackRowJusBetweenComponent sx={{ mt: SPACING.md / 8 }}>
