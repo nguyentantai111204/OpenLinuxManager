@@ -34,6 +34,7 @@ RUN apt-get update && apt-get install -y \
     sudo \
     bash \
     passwd \
+    python3 \
     procps \
     && rm -rf /var/lib/apt/lists/*
 
