@@ -1,22 +1,30 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import axios from 'axios';
 import { Block as BlockIcon, Pause as PauseIcon, PlayArrow as PlayArrowIcon } from '@mui/icons-material';
 import { ButtonComponent, SearchComponent, AppSnackbar, PageLoading } from '../../components';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
-import { ProcessTable, Process } from './process-table.part';
-import { useSocketContext } from '../../contexts/socket-context';
+import { ProcessTable } from './process-table.part';
 import { SPACING, TYPOGRAPHY } from '../../constants/design';
 import { StackRowComponent, StackRowJusBetweenComponent } from '../../components/stack';
-import { mapProcessStatus } from '../../utils/process.utils';
-import { useSnackbar } from '../../hooks/use-snackbar';
+import { useProcesses } from '../../hooks/use-processes';
 
 export function Processes() {
-    const { isConnected, processes } = useSocketContext();
-    const { snackbarProps, showSnackbar } = useSnackbar();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedPids, setSelectedPids] = useState<number[]>([]);
+    const {
+        isConnected,
+        processes,
+        filteredProcesses,
+        searchQuery,
+        setSearchQuery,
+        selectedPids,
+        setSelectedPids,
+        selectedProcesses,
+        handleKill,
+        handleSuspend,
+        handleResume,
+        snackbarProps
+    } = useProcesses();
+
     const [confirmDialog, setConfirmDialog] = useState<{
         open: boolean;
         pid?: number;
@@ -25,32 +33,6 @@ export function Processes() {
     }>({
         open: false,
     });
-
-    const clientProcesses: Process[] = useMemo(() => {
-        return processes.map((p) => ({
-            pid: p.pid,
-            name: p.name,
-            user: p.user,
-            status: mapProcessStatus(p.status),
-            cpu: p.cpu,
-            mem: parseFloat(p.memory.toFixed(1)),
-        }));
-    }, [processes]);
-
-    const filteredProcesses = useMemo(() => {
-        if (!searchQuery.trim()) return clientProcesses;
-        const query = searchQuery.toLowerCase();
-        return clientProcesses.filter(
-            (p) =>
-                p.pid.toString().includes(query) ||
-                p.name.toLowerCase().includes(query) ||
-                p.user.toLowerCase().includes(query),
-        );
-    }, [clientProcesses, searchQuery]);
-
-    const selectedProcesses = useMemo(() => {
-        return clientProcesses.filter(p => selectedPids.includes(p.pid));
-    }, [clientProcesses, selectedPids]);
 
     const canSuspend = selectedPids.length > 0 && selectedProcesses.some(p => p.status === 'running' || p.status === 'sleeping');
     const canResume = selectedPids.length > 0 && selectedProcesses.some(p => p.status === 'stopped');
@@ -68,62 +50,15 @@ export function Processes() {
         const pidsToKill = confirmDialog.pid
             ? [confirmDialog.pid]
             : (confirmDialog.pids || selectedPids);
-        if (pidsToKill.length === 0) return;
 
-        const isForce = confirmDialog.type === 'force';
-        const urlSuffix = isForce ? '/force' : '';
-        const actionLabel = isForce ? 'Buộc dừng' : 'Kết thúc';
-
-        setConfirmDialog({ open: false });
-
-        try {
-            await Promise.all(pidsToKill.map((p) => axios.delete(`/api/system/processes/${p}${urlSuffix}`)));
-            showSnackbar(`Đã ${actionLabel.toLowerCase()} ${pidsToKill.length} tiến trình thành công`, 'success');
-            setSelectedPids([]);
-        } catch {
-            showSnackbar(`Không thể ${actionLabel.toLowerCase()} một hoặc nhiều tiến trình`, 'error');
+        const success = await handleKill(pidsToKill, confirmDialog.type === 'force');
+        if (success) {
+            setConfirmDialog({ open: false });
         }
     };
 
-    const handleSuspend = async (singlePid?: number) => {
-        const pidsToSuspend = singlePid
-            ? [singlePid]
-            : selectedProcesses
-                .filter(p => p.status === 'running' || p.status === 'sleeping')
-                .map(p => p.pid);
-
-        if (pidsToSuspend.length === 0) return;
-
-        try {
-            await Promise.all(
-                pidsToSuspend.map((pid) => axios.patch(`/api/system/processes/${pid}/suspend`)),
-            );
-            showSnackbar(`Đã tạm dừng ${pidsToSuspend.length} tiến trình thành công`, 'success');
-            if (!singlePid) setSelectedPids([]);
-        } catch {
-            showSnackbar('Không thể tạm dừng một hoặc nhiều tiến trình', 'error');
-        }
-    };
-
-    const handleResume = async (singlePid?: number) => {
-        const pidsToResume = singlePid
-            ? [singlePid]
-            : selectedProcesses
-                .filter(p => p.status === 'stopped')
-                .map(p => p.pid);
-
-        if (pidsToResume.length === 0) return;
-
-        try {
-            await Promise.all(
-                pidsToResume.map((pid) => axios.patch(`/api/system/processes/${pid}/resume`)),
-            );
-            showSnackbar(`Đã tiếp tục ${pidsToResume.length} tiến trình thành công`, 'success');
-            if (!singlePid) setSelectedPids([]);
-        } catch {
-            showSnackbar('Không thể tiếp tục một hoặc nhiều tiến trình', 'error');
-        }
-    };
+    const onSuspend = (pid?: number) => handleSuspend(pid ? [pid] : selectedPids);
+    const onResume = (pid?: number) => handleResume(pid ? [pid] : selectedPids);
 
     if (!isConnected && processes.length === 0) {
         return (
@@ -166,7 +101,7 @@ export function Processes() {
                             startIcon={<PauseIcon />}
                             size="small"
                             disabled={!canSuspend}
-                            onClick={() => handleSuspend()}
+                            onClick={() => onSuspend()}
                         >
                             Tạm dừng {selectedPids.length > 0 ? `(${selectedPids.length})` : ''}
                         </ButtonComponent>
@@ -176,7 +111,7 @@ export function Processes() {
                             size="small"
                             color="success"
                             disabled={!canResume}
-                            onClick={() => handleResume()}
+                            onClick={() => onResume()}
                         >
                             Tiếp tục {selectedPids.length > 0 ? `(${selectedPids.length})` : ''}
                         </ButtonComponent>
@@ -197,8 +132,8 @@ export function Processes() {
                 processes={filteredProcesses}
                 onTerminate={handleTerminateClick}
                 onForceKill={handleForceKillClick}
-                onSuspend={handleSuspend}
-                onResume={handleResume}
+                onSuspend={onSuspend}
+                onResume={onResume}
                 selectedPids={selectedPids}
                 onSelectionChange={setSelectedPids}
             />
@@ -237,3 +172,4 @@ export function Processes() {
         </Box>
     );
 }
+

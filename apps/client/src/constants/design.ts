@@ -1,18 +1,12 @@
 
-// ============================================================================
-// COLORS
-// ============================================================================
 
 export const COLORS = {
-    // Primary colors
     primary: {
         main: '#e8734e',
         light: '#ff9f6e',
         dark: '#b54a2e',
         contrastText: '#ffffff',
     },
-
-    // Sidebar colors
     sidebar: {
         background: '#1e1b2e',
         backgroundLight: '#2d2945',
@@ -22,8 +16,6 @@ export const COLORS = {
         text: '#ffffff',
         textSecondary: 'rgba(255, 255, 255, 0.6)',
     },
-
-    // Status colors
     status: {
         running: '#4caf50',
         runningLight: '#81c784',
@@ -35,7 +27,6 @@ export const COLORS = {
         zombieLight: '#ffb74d',
     },
 
-    // User badge colors
     user: {
         root: {
             background: '#fff3e0',
@@ -51,7 +42,6 @@ export const COLORS = {
         },
     },
 
-    // Semantic colors
     success: {
         main: '#4caf50',
         light: '#81c784',
@@ -73,7 +63,6 @@ export const COLORS = {
         dark: '#1976d2',
     },
 
-    // Chart colors
     chart: {
         cpu: '#2196f3',
         cpuArea: 'rgba(33, 150, 243, 0.1)',
@@ -84,14 +73,12 @@ export const COLORS = {
         grid: 'rgba(0, 0, 0, 0.1)',
     },
 
-    // Background colors
     background: {
         default: '#f5f5f5',
         paper: '#ffffff',
         elevated: '#fafafa',
     },
 
-    // Text colors
     text: {
         primary: 'rgba(0, 0, 0, 0.87)',
         secondary: 'rgba(0, 0, 0, 0.6)',
@@ -99,20 +86,17 @@ export const COLORS = {
         hint: 'rgba(0, 0, 0, 0.38)',
     },
 
-    // Border colors
     border: {
         main: 'rgba(0, 0, 0, 0.12)',
         light: 'rgba(0, 0, 0, 0.08)',
         dark: 'rgba(0, 0, 0, 0.23)',
     },
 
-    // Terminal
     terminal: {
         background: '#0a1929',
     },
 };
 
-// Dark mode colors
 export const COLORS_DARK = {
     sidebar: {
         background: '#1a0f24',
@@ -147,10 +131,6 @@ export const COLORS_DARK = {
     },
 };
 
-// ============================================================================
-// SPACING
-// ============================================================================
-
 export const SPACING = {
     xs: 4,
     sm: 8,
@@ -160,10 +140,6 @@ export const SPACING = {
     xxl: 48,
     xxxl: 64,
 };
-
-// ============================================================================
-// TYPOGRAPHY
-// ============================================================================
 
 export const TYPOGRAPHY = {
     fontFamily: {
@@ -200,10 +176,6 @@ export const TYPOGRAPHY = {
     },
 };
 
-// ============================================================================
-// BORDER RADIUS
-// ============================================================================
-
 export const BORDER_RADIUS = {
     none: 0,
     sm: 4,
@@ -215,10 +187,6 @@ export const BORDER_RADIUS = {
     full: 9999,
 };
 
-// ============================================================================
-// SHADOWS
-// ============================================================================
-
 export const SHADOWS = {
     none: 'none',
     sm: '0px 2px 4px rgba(0, 0, 0, 0.05)',
@@ -228,10 +196,6 @@ export const SHADOWS = {
     '2xl': '0px 16px 32px rgba(0, 0, 0, 0.14)',
     '3xl': '0px 24px 48px rgba(0, 0, 0, 0.18)',
 };
-
-// ============================================================================
-// TRANSITIONS
-// ============================================================================
 
 export const TRANSITIONS = {
     duration: {
@@ -249,10 +213,6 @@ export const TRANSITIONS = {
         sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
     },
 };
-
-// ============================================================================
-// LAYOUT
-// ============================================================================
 
 export const LAYOUT = {
     sidebar: {
@@ -283,20 +243,12 @@ export const LAYOUT = {
     },
 };
 
-// ============================================================================
-// Z-INDEX
-// ============================================================================
-
 export const Z_INDEX = {
     drawer: 1200,
     modal: 1300,
     snackbar: 1400,
     tooltip: 1500,
 };
-
-// ============================================================================
-// ICON SIZES
-// ============================================================================
 
 export const ICON_SIZES = {
     xs: 16,

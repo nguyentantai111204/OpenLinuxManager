@@ -2,9 +2,6 @@ import { Button as MuiButton, ButtonProps as MuiButtonProps, styled } from '@mui
 import { COLORS, BORDER_RADIUS, TYPOGRAPHY, TRANSITIONS } from '../../constants/design';
 
 export type ButtonProps = MuiButtonProps & {
-    /**
-     * Optional custom styling
-     */
     rounded?: boolean;
 };
 

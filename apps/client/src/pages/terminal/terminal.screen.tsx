@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, Paper, useTheme } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { io, Socket } from 'socket.io-client';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { PageLoading } from '../../components';
-import { SPACING, BORDER_RADIUS, COLORS } from '../../constants/design';
-import { StackColComponent } from '../../components/stack';
+import { SPACING, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '../../constants/design';
+import { StackColAlignCenterJusCenterComponent, StackColComponent, StackRowComponent } from '../../components/stack';
+import { TERMINAL_CONFIG, TERMINAL_WINDOW_COLORS } from '../../constants/terminal';
 import 'xterm/css/xterm.css';
 
 export function TerminalScreen() {
@@ -20,35 +21,7 @@ export function TerminalScreen() {
     useEffect(() => {
         if (!terminalRef.current) return;
 
-        // Initialize xterm.js
-        const term = new Terminal({
-            cursorBlink: true,
-            fontSize: 14,
-            fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-            theme: {
-                background: '#0d1117',
-                foreground: '#c9d1d9',
-                cursor: '#58a6ff',
-                cursorAccent: '#0d1117',
-                black: '#21262d',
-                red: '#ff7b72',
-                green: '#3fb950',
-                yellow: '#d29922',
-                blue: '#58a6ff',
-                magenta: '#bc8cff',
-                cyan: '#39c5cf',
-                white: '#b1bac4',
-                brightBlack: '#484f58',
-                brightRed: '#ffa198',
-                brightGreen: '#56d364',
-                brightYellow: '#e3b341',
-                brightBlue: '#79c0ff',
-                brightMagenta: '#d2a8ff',
-                brightCyan: '#56d4dd',
-                brightWhite: '#ffffff',
-            },
-            allowProposedApi: true,
-        });
+        const term = new Terminal(TERMINAL_CONFIG);
 
         const fitAddon = new FitAddon();
         term.loadAddon(fitAddon);
@@ -59,7 +32,6 @@ export function TerminalScreen() {
         xtermRef.current = term;
         fitAddonRef.current = fitAddon;
 
-        // Initialize Socket.io
         const socket = io('/terminal', {
             transports: ['websocket'],
         });
@@ -69,7 +41,6 @@ export function TerminalScreen() {
         socket.on('connect', () => {
             setIsConnected(true);
             setIsLoading(false);
-            // Term should fit on connect to ensure backend knows the size
             fitAddon.fit();
             socket.emit('terminal:resize', {
                 cols: term.cols,
@@ -108,7 +79,6 @@ export function TerminalScreen() {
 
         window.addEventListener('resize', handleResize);
 
-        // Cleanup
         return () => {
             window.removeEventListener('resize', handleResize);
             socket.disconnect();
@@ -129,67 +99,61 @@ export function TerminalScreen() {
                     elevation={0}
                     sx={{
                         flex: 1,
-                        backgroundColor: '#0d1117',
-                        borderRadius: '12px',
+                        backgroundColor: TERMINAL_WINDOW_COLORS.bodyBg,
                         display: 'flex',
                         flexDirection: 'column',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        border: `1px solid ${TERMINAL_WINDOW_COLORS.border}`,
                         overflow: 'hidden',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                        boxShadow: SHADOWS.lg,
                     }}
                 >
-                    {/* Terminal Window Header */}
-                    <Box
+                    <StackRowComponent
                         sx={{
                             height: '36px',
-                            backgroundColor: '#161b22',
-                            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                            display: 'flex',
-                            alignItems: 'center',
+                            backgroundColor: TERMINAL_WINDOW_COLORS.headerBg,
+                            borderBottom: `1px solid ${TERMINAL_WINDOW_COLORS.headerBorder}`,
                             px: 2,
                             gap: 1.5,
                         }}
                     >
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ff5f56' }} />
-                            <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ffbd2e' }} />
-                            <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#27c93f' }} />
-                        </Box>
+                        <StackRowComponent spacing={1}>
+                            <Box sx={{ width: 12, height: 12, borderRadius: BORDER_RADIUS.full, backgroundColor: TERMINAL_WINDOW_COLORS.dots.red }} />
+                            <Box sx={{ width: 12, height: 12, borderRadius: BORDER_RADIUS.full, backgroundColor: TERMINAL_WINDOW_COLORS.dots.yellow }} />
+                            <Box sx={{ width: 12, height: 12, borderRadius: BORDER_RADIUS.full, backgroundColor: TERMINAL_WINDOW_COLORS.dots.green }} />
+                        </StackRowComponent>
+
                         <Box
                             sx={{
                                 color: 'rgba(255, 255, 255, 0.5)',
-                                fontSize: '11px',
-                                fontWeight: 600,
+                                fontSize: TYPOGRAPHY.fontSize.xs,
+                                fontWeight: TYPOGRAPHY.fontWeight.semibold,
                                 textTransform: 'uppercase',
                                 letterSpacing: '1px',
                                 flex: 1,
                                 textAlign: 'center',
-                                mr: 6, // Offset for the window buttons
+                                mr: 6
                             }}
                         >
                             bash — terminal
                         </Box>
-                    </Box>
+                    </StackRowComponent>
 
                     <Box sx={{ flex: 1, position: 'relative', p: 1 }}>
                         {isLoading && (
-                            <Box
+                            <StackColAlignCenterJusCenterComponent
                                 sx={{
                                     position: 'absolute',
                                     inset: 0,
                                     zIndex: 1,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    backgroundColor: '#0d1117',
+                                    backgroundColor: TERMINAL_WINDOW_COLORS.bodyBg,
                                 }}
                             >
                                 <PageLoading message="Đang kết nối terminal..." />
-                            </Box>
+                            </StackColAlignCenterJusCenterComponent>
                         )}
-                        <div
+                        <Box
                             ref={terminalRef}
-                            style={{
+                            sx={{
                                 height: '100%',
                                 width: '100%',
                             }}
@@ -200,3 +164,4 @@ export function TerminalScreen() {
         </Box>
     );
 }
+

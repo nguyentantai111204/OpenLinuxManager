@@ -1,17 +1,9 @@
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Switch, FormControlLabel, Divider, MenuItem } from '@mui/material';
 import { useThemeMode } from '../../contexts/theme-context';
-import {
-    Box,
-    Typography,
-    Switch,
-    FormControlLabel,
-    Divider,
-    MenuItem,
-} from '@mui/material';
-import { CardComponent, ButtonComponent, TextFieldComponent, AppSnackbar } from '../../components';
+import { CardComponent, ButtonComponent, TextFieldComponent, AppSnackbar, StackColComponent, StackRowComponent } from '../../components';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
-import { SPACING, TYPOGRAPHY } from '../../constants/design';
-import { StackColComponent } from '../../components/stack';
-import { useState, useEffect } from 'react';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../../constants/design';
 import { useSnackbar } from '../../hooks/use-snackbar';
 
 export function Settings() {
@@ -25,13 +17,17 @@ export function Settings() {
     useEffect(() => {
         const saved = localStorage.getItem('system_settings');
         if (saved) {
-            setSettings(JSON.parse(saved));
+            try {
+                setSettings(JSON.parse(saved));
+            } catch (e) {
+                console.error("Failed to parse settings", e);
+            }
         }
     }, []);
 
     const handleSave = () => {
         localStorage.setItem('system_settings', JSON.stringify(settings));
-        showSnackbar('Cài đặt đã được lưu', 'success');
+        showSnackbar('Cài đặt đã được lưu thành công', 'success');
     };
 
     const handleReset = () => {
@@ -43,22 +39,24 @@ export function Settings() {
 
     return (
         <Box sx={{ p: SPACING.lg / 8 }}>
-            <StackColComponent spacing={SPACING.lg / 8}>
-                <PageHeaderComponent
-                    title="Cài đặt"
-                    subtitle="Cấu hình tùy chọn hệ thống"
-                />
+            <PageHeaderComponent
+                title="Cài đặt cấu hình"
+                subtitle="Tùy chỉnh các tham số và giao diện người dùng"
+            />
 
-                <CardComponent sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
+            <StackColComponent spacing={SPACING.lg / 8} sx={{ mt: SPACING.md / 8, maxWidth: 800 }}>
+                <CardComponent>
                     <Box sx={{ p: SPACING.lg / 8 }}>
-                        <Typography variant="h6" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, mb: SPACING.md / 8 }}>Giao diện</Typography>
+                        <Typography variant="h6" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, mb: SPACING.md / 8 }}>
+                            Giao diện
+                        </Typography>
                         <StackColComponent spacing={3}>
                             <FormControlLabel
                                 control={<Switch checked={mode === 'dark'} onChange={toggleTheme} color="primary" />}
                                 label={
                                     <Box>
                                         <Typography variant="subtitle1" sx={{ fontWeight: TYPOGRAPHY.fontWeight.semibold }}>Chế độ tối</Typography>
-                                        <Typography variant="body2" color="text.secondary">Sử dụng giao diện tối</Typography>
+                                        <Typography variant="body2" color="text.secondary">Sử dụng gam màu tối cho toàn bộ ứng dụng</Typography>
                                     </Box>
                                 }
                             />
@@ -66,56 +64,74 @@ export function Settings() {
                             <Divider />
 
                             <Box>
-                                <Typography variant="h6" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, mb: SPACING.md / 8 }}>Hệ thống</Typography>
-                                <StackColComponent spacing={2.5}>
+                                <Typography variant="h6" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, mb: SPACING.md / 8 }}>
+                                    Hệ thống
+                                </Typography>
+                                <StackColComponent spacing={SPACING.lg / 8}>
                                     <TextFieldComponent
                                         fullWidth
                                         select
-                                        label="Tần suất cập nhật"
+                                        label="Tần suất cập nhật dữ liệu"
                                         value={settings.refreshInterval}
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSettings({ ...settings, refreshInterval: e.target.value })}
-                                        helperText="Tần suất cập nhật thống kê hệ thống"
+                                        helperText="Thời gian giữa các lần làm mới dữ liệu hệ thống"
                                     >
-                                        <MenuItem value="1000">1 giây</MenuItem>
-                                        <MenuItem value="3000">3 giây</MenuItem>
-                                        <MenuItem value="5000">5 giây</MenuItem>
-                                        <MenuItem value="10000">10 giây</MenuItem>
+                                        <MenuItem value="1000">Nhanh (1 giây)</MenuItem>
+                                        <MenuItem value="3000">Trung bình (3 giây)</MenuItem>
+                                        <MenuItem value="5000">Chậm (5 giây)</MenuItem>
+                                        <MenuItem value="10000">Rất chậm (10 giây)</MenuItem>
                                     </TextFieldComponent>
 
                                     <TextFieldComponent
                                         fullWidth
-                                        label="Kích thước lịch sử nhật ký"
+                                        label="Số lượng nhật ký lưu giữ"
                                         type="number"
                                         value={settings.logHistorySize}
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSettings({ ...settings, logHistorySize: e.target.value })}
-                                        helperText="Số dòng nhật ký tối đa cần giữ"
+                                        helperText="Số lượng bản ghi tối đa được lưu trữ trong lịch sử"
                                     />
                                 </StackColComponent>
                             </Box>
 
                             <Divider />
 
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                                <ButtonComponent variant="outlined" color="inherit" onClick={handleReset}>Mặc định</ButtonComponent>
-                                <ButtonComponent variant="contained" onClick={handleSave}>Lưu thay đổi</ButtonComponent>
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: SPACING.md / 8 }}>
+                                <ButtonComponent variant="outlined" color="inherit" onClick={handleReset}>
+                                    Đặt lại mặc định
+                                </ButtonComponent>
+                                <ButtonComponent variant="contained" onClick={handleSave}>
+                                    Lưu cài đặt
+                                </ButtonComponent>
                             </Box>
                         </StackColComponent>
                     </Box>
                 </CardComponent>
 
-                <AppSnackbar {...snackbarProps} />
-
-                {/* About Box */}
-                <CardComponent sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
+                {/* About Section */}
+                <CardComponent>
                     <Box sx={{ p: SPACING.lg / 8 }}>
-                        <Typography variant="h6" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, mb: SPACING.md / 8 }}>Giới thiệu</Typography>
-                        <StackColComponent spacing={SPACING.xs / 8}>
-                            <Typography variant="body2" color="text.secondary">OpenLinuxManager Client v1.0.0</Typography>
-                            <Typography variant="body2" color="text.secondary">© 2026 OpenLinuxManager Team</Typography>
+                        <Typography variant="h6" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold, mb: SPACING.sm / 8 }}>
+                            Thông tin phiên bản
+                        </Typography>
+                        <StackColComponent spacing={0.5}>
+                            <StackRowComponent spacing={1}>
+                                <Typography variant="body2" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold }}>Phiên bản:</Typography>
+                                <Typography variant="body2" color="text.secondary">1.0.0 (Production)</Typography>
+                            </StackRowComponent>
+                            <StackRowComponent spacing={1}>
+                                <Typography variant="body2" sx={{ fontWeight: TYPOGRAPHY.fontWeight.bold }}>Phát triển bởi:</Typography>
+                                <Typography variant="body2" color="text.secondary">OpenLinuxManager Team</Typography>
+                            </StackRowComponent>
+                            <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                                © 2026 Toàn bộ quyền được bảo lưu.
+                            </Typography>
                         </StackColComponent>
                     </Box>
                 </CardComponent>
             </StackColComponent>
+
+            <AppSnackbar {...snackbarProps} />
         </Box>
     );
 }
+

@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Box, Chip, Alert, TablePagination, alpha } from '@mui/material';
-import { PageHeaderComponent } from '../../components';
-import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, CardComponent, PageLoading, TableEmptyRow } from '../../components';
-import { SPACING, COLORS } from '../../constants/design';
-import { StackColComponent } from '../../components/stack';
+import { PageHeaderComponent } from '../../components/page-header/page-header.component';
+import { TableContainerComponent, TableComponent, TableHeadComponent, TableRowComponent, TableCellComponent, TableBodyComponent, CardComponent, PageLoading, TableEmptyRow, StackColComponent } from '../../components';
+import { SPACING, COLORS, TYPOGRAPHY } from '../../constants/design';
 import { useAuditLogs } from '../../hooks/use-audit-logs';
 
 export function AuditLogs() {
@@ -65,7 +64,7 @@ export function AuditLogs() {
                                     <>
                                         {logs.map((log) => (
                                             <TableRowComponent key={log.id}>
-                                                <TableCellComponent sx={{ whiteSpace: 'nowrap', width: 180 }}>
+                                                <TableCellComponent sx={{ whiteSpace: 'nowrap', width: 180, fontSize: TYPOGRAPHY.fontSize.xs, color: 'text.secondary' }}>
                                                     {formatDate(log.createdAt)}
                                                 </TableCellComponent>
                                                 <TableCellComponent>
@@ -74,13 +73,24 @@ export function AuditLogs() {
                                                         color={getActionColor(log.action)}
                                                         size="small"
                                                         variant="outlined"
-                                                        sx={{ fontWeight: 'bold' }}
+                                                        sx={{
+                                                            fontWeight: TYPOGRAPHY.fontWeight.bold,
+                                                            fontSize: '10px',
+                                                            height: 20
+                                                        }}
                                                     />
                                                 </TableCellComponent>
-                                                <TableCellComponent sx={{ fontWeight: 'medium' }}>
+                                                <TableCellComponent sx={{ fontWeight: TYPOGRAPHY.fontWeight.medium, fontSize: TYPOGRAPHY.fontSize.sm }}>
                                                     {log.target}
                                                 </TableCellComponent>
-                                                <TableCellComponent sx={{ color: 'text.secondary' }}>
+                                                <TableCellComponent sx={{
+                                                    color: 'text.secondary',
+                                                    fontSize: TYPOGRAPHY.fontSize.xs,
+                                                    maxWidth: 300,
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap'
+                                                }}>
                                                     {log.details || '-'}
                                                 </TableCellComponent>
                                                 <TableCellComponent>
@@ -107,7 +117,7 @@ export function AuditLogs() {
                     </TableContainerComponent>
                     <Box sx={{ borderTop: `1px solid ${COLORS.border.light}` }}>
                         <TablePagination
-                            rowsPerPageOptions={[5, 10, 25, 50]}
+                            rowsPerPageOptions={[10, 25, 50]}
                             component="div"
                             count={total}
                             rowsPerPage={rowsPerPage}
@@ -124,3 +134,4 @@ export function AuditLogs() {
         </Box>
     );
 }
+
