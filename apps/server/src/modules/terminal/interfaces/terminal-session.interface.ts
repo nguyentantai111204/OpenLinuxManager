@@ -4,4 +4,5 @@ export interface TerminalSession {
     cols: number;
     rows: number;
     createdAt: Date;
+    lastActivityAt: number;
 }

@@ -1,11 +1,42 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import * as pty from 'node-pty';
 import { TerminalSession } from './interfaces/terminal-session.interface';
 
 @Injectable()
-export class TerminalService {
+export class TerminalService implements OnModuleInit {
     private readonly logger = new Logger(TerminalService.name);
     private sessions: Map<string, TerminalSession> = new Map();
+    private readonly SESSION_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes
+    private readonly CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
+    onModuleInit() {
+        this.startCleanupInterval();
+    }
+
+    private startCleanupInterval() {
+        setInterval(() => {
+            this.cleanupOrphanedSessions();
+        }, this.CLEANUP_INTERVAL_MS);
+        this.logger.log('Terminal session cleanup interval started');
+    }
+
+    private cleanupOrphanedSessions() {
+        const now = Date.now();
+        let cleanedCount = 0;
+
+        for (const [socketId, session] of this.sessions.entries()) {
+            const inactiveTime = now - session.lastActivityAt;
+            if (inactiveTime > this.SESSION_TIMEOUT_MS) {
+                this.logger.log(`Cleaning up orphaned/inactive terminal session: ${socketId} (Inactive for ${Math.round(inactiveTime / 1000 / 60)} mins)`);
+                this.killSession(socketId);
+                cleanedCount++;
+            }
+        }
+
+        if (cleanedCount > 0) {
+            this.logger.log(`Cleaned up ${cleanedCount} inactive sessions. Total sessions remaining: ${this.sessions.size}`);
+        }
+    }
 
     /**
      * Create a new PTY session for a socket
@@ -29,6 +60,7 @@ export class TerminalService {
             cols,
             rows,
             createdAt: new Date(),
+            lastActivityAt: Date.now(),
         };
 
         this.sessions.set(socketId, session);
@@ -47,6 +79,7 @@ export class TerminalService {
             return false;
         }
 
+        session.lastActivityAt = Date.now();
         session.ptyProcess.write(data);
         return true;
     }
@@ -62,6 +95,7 @@ export class TerminalService {
         }
 
         try {
+            session.lastActivityAt = Date.now();
             session.ptyProcess.resize(cols, rows);
             session.cols = cols;
             session.rows = rows;
@@ -101,3 +135,4 @@ export class TerminalService {
         return this.sessions.get(socketId);
     }
 }
+
