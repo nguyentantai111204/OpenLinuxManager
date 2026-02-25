@@ -1,74 +1,122 @@
-# OpenLinuxManager
+<p align="center">
+  <img src="https://raw.githubusercontent.com/nguyentantai111204/OpenLinuxManager/main/apps/client/src/assets/logo.png" alt="OpenLinuxManager Logo" width="120">
+</p>
 
-A web-based Linux system management dashboard.
+<h1 align="center">OpenLinuxManager</h1>
 
-## 🚀 Quick Start (Recommended)
+<p align="center">
+  <strong>A high-performance, web-based Linux system management dashboard.</strong>
+</p>
 
-The easiest way to get started is using our automation script:
-
-```bash
-git clone <repository-url>
-cd OpenLinuxManager
-./quick-start.sh
-```
-
-This will automatically configure your environment and start the system using Docker.
-
-OpenLinuxManager là một ứng dụng giám sát và quản lý hệ thống Linux từ xa với giao diện hiện đại, trực quan.
-
-## 🚀 Cách chạy nhanh nhất (Khuyên dùng)
-
-Cách dễ nhất để chạy dự án này mà không cần cài đặt nhiều môi trường (Node.js, PostgreSQL, v.v.) là sử dụng **Docker Compose**.
-
-### Yêu cầu
-- Đã cài đặt [Docker](https://docs.docker.com/get-docker/) và [Docker Compose](https://docs.docker.com/compose/install/).
-
-### Các bước thực hiện
-
-1.  **Sao chép cấu hình môi trường**:
-    ```bash
-    cp .env.example .env
-    ```
-2.  **Khởi động bằng Docker Compose**:
-    ```bash
-    docker compose up --build -d
-    ```
-3.  **Truy cập ứng dụng**:
-    Mở trình duyệt và truy cập `http://localhost:3000`.
+<p align="center">
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/Nx-143055?style=for-the-badge&logo=nx&logoColor=white" alt="Nx">
+  <br>
+  <img src="https://img.shields.io/github/license/nguyentantai111204/OpenLinuxManager" alt="License">
+  <img src="https://img.shields.io/github/stars/nguyentantai111204/OpenLinuxManager" alt="Stars">
+  <img src="https://img.shields.io/github/issues/nguyentantai111204/OpenLinuxManager" alt="Issues">
+</p>
 
 ---
 
-## 🛠 Phát triển (Chạy local)
+[Tiếng Việt bên dưới](#tiếng-việt) | [English](#english)
 
-Nếu bạn muốn thay đổi code và chạy ở chế độ phát triển (development):
+<div id="english">
 
-### Yêu cầu
-- Node.js (v20+)
-- PostgreSQL đang chạy
+## 🌟 Overview
 
-### Các bước thực hiện
+OpenLinuxManager is a modern, responsive, and secure web interface designed for managing Linux servers. It provides real-time monitoring, terminal access, and essential system management tools directly from your browser.
 
-1.  **Cài đặt phụ thuộc**:
+## ✨ Key Features
+
+- 📊 **Real-time Monitoring**: Visualize CPU, RAM, Storage, and Uptime with smooth charts and live updates.
+- 🐚 **Web Terminal**: Fully functional xterm-compatible terminal with PTY support.
+- ⚙️ **Process Management**: Monitor, kill, terminate, or suspend system processes.
+- 👥 **User Management**: Easily list, create, and manage system users.
+- 🛠 **Service Control**: Manage systemd services (start, stop, etc.).
+- 📜 **Audit Logs**: Track important system changes and actions.
+- 🐳 **Docker-Ready**: Deploy in seconds using Docker Compose.
+
+## 🛠 Tech Stack
+
+- **Monorepo**: [Nx](https://nx.dev)
+- **Frontend**: React, Material UI, SWR, Socket.io-client
+- **Backend**: NestJS, Socket.io, Node-pty, PostgreSQL
+- **Monitoring**: Native Linux commands & Python scripts
+
+## 🚀 Quick Start (Docker)
+
+1.  **Clone the project**:
+    ```bash
+    git clone https://github.com/nguyentantai111204/OpenLinuxManager.git
+    cd OpenLinuxManager
+    ```
+
+2.  **Run with Quick Start script**:
+    ```bash
+    ./quick-start.sh
+    ```
+    *This will set up your `.env` and start everything via Docker.*
+
+3.  **Access the Dashboard**:
+    Open [http://localhost:3000](http://localhost:3000)
+
+## 🏗 Development Setup
+
+1.  **Install dependencies**:
     ```bash
     npm install
     ```
-2.  **Cấu hình .env**: Chỉnh sửa file `.env` với thông tin database của bạn.
-3.  **Chạy server (NestJS)**:
+2.  **Environment Setup**:
     ```bash
-    npx nx serve server
+    cp .env.example .env
     ```
-4.  **Chạy client (React + Vite)**:
+3.  **Start Services**:
     ```bash
+    # Start Backend
+    npx nx serve server
+    
+    # Start Frontend
     npx nx serve client
     ```
-    Truy cập giao diện tại `http://localhost:4200`.
 
 ---
 
-## 🏗 Cấu trúc dự án
+<div id="tiếng-việt">
 
-Dự án sử dụng [Nx Monorepo](https://nx.dev):
-- `apps/client`: React Frontend sử dụng MUI và SWR.
-- `apps/server`: NestJS Backend kết nối trực tiếp với hệ thống Linux qua shell/python.
-- `Dockerfile`: Multi-stage build để tối ưu hóa việc triển khai.
+## 🌟 Giới thiệu
 
+OpenLinuxManager là một giao diện web hiện đại, nhạy bén và an toàn được thiết kế để quản lý máy chủ Linux. Nó cung cấp khả năng giám sát thời gian thực, truy cập terminal và các công cụ quản lý hệ thống thiết yếu ngay từ trình duyệt của bạn.
+
+## ✨ Tính năng chính
+
+- 📊 **Giám sát thời gian thực**: Trực quan hóa CPU, RAM, Lưu trữ và Uptime với biểu đồ mượt mà.
+- 🐚 **Web Terminal**: Terminal tương thích xterm đầy đủ chức năng với hỗ trợ PTY.
+- ⚙️ **Quản lý tiến trình**: Giám sát, dừng (kill), hoặc tạm dừng các tiến trình hệ thống.
+- 👥 **Quản lý người dùng**: Danh sách, tạo và quản lý người dùng hệ thống dễ dàng.
+- 🛠 **Quản lý dịch vụ**: Điều khiển các dịch vụ systemd (start, stop, v.v.).
+- 📜 **Nhật ký hệ thống**: Theo dõi các thay đổi và hành động quan trọng trên hệ thống.
+- 🐳 **Sẵn sàng cho Docker**: Triển khai trong vài giây bằng Docker Compose.
+
+## 🚀 Bắt đầu nhanh (Docker)
+
+Chỉ cần chạy lệnh sau:
+```bash
+./quick-start.sh
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+<p align="center">Made with ❤️ for Linux enthusiasts</p>
