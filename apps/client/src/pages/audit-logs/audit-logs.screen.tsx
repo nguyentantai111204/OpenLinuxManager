@@ -1,20 +1,21 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Box, Chip, Alert, alpha, Typography } from '@mui/material';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import {
     CardComponent,
-    PageLoading,
     StackColComponent,
     DataTableComponent
 } from '../../components';
 import { SPACING, COLORS, TYPOGRAPHY } from '../../constants/design';
 import { useAuditLogs } from '../../hooks/use-audit-logs';
+import { useSettings } from '../../contexts/settings.context';
 import { AuditLog } from '../../apis/audit-log/audit-log.interface';
 import { ColumnConfig } from '../../components/table/table.component';
 
 export function AuditLogs() {
+    const { settings } = useSettings();
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(parseInt(settings.logHistorySize) || 10);
 
     const { logs, total, isLoading, error } = useAuditLogs(page + 1, rowsPerPage);
 

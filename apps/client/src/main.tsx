@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom/client';
 import App from './app/app';
 import { ThemeProvider } from './contexts/theme-context';
 import { SocketProvider } from './contexts/socket-context';
+import { SettingsProvider } from './contexts/settings.context';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -12,11 +13,13 @@ const root = ReactDOM.createRoot(
 root.render(
   // <StrictMode>
   <ThemeProvider>
-    <SocketProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </SocketProvider>
+    <SettingsProvider>
+      <SocketProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SocketProvider>
+    </SettingsProvider>
   </ThemeProvider>
   // </StrictMode>,
 );

@@ -1,39 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Switch, FormControlLabel, Divider, MenuItem } from '@mui/material';
 import { useThemeMode } from '../../contexts/theme-context';
+import { useSettings } from '../../contexts/settings.context';
 import { CardComponent, ButtonComponent, TextFieldComponent, AppSnackbar, StackColComponent, StackRowComponent } from '../../components';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
-import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../../constants/design';
+import { SPACING, TYPOGRAPHY } from '../../constants/design';
 import { useSnackbar } from '../../hooks/use-snackbar';
 
 export function Settings() {
     const { mode, toggleTheme } = useThemeMode();
+    const { settings, updateSettings, resetSettings } = useSettings();
     const { snackbarProps, showSnackbar } = useSnackbar();
-    const [settings, setSettings] = useState({
-        refreshInterval: '5000',
-        logHistorySize: '1000'
-    });
 
-    useEffect(() => {
-        const saved = localStorage.getItem('system_settings');
-        if (saved) {
-            try {
-                setSettings(JSON.parse(saved));
-            } catch (e) {
-                console.error("Failed to parse settings", e);
-            }
-        }
-    }, []);
+    const [localSettings, setLocalSettings] = useState(settings);
 
     const handleSave = () => {
-        localStorage.setItem('system_settings', JSON.stringify(settings));
+        updateSettings(localSettings);
         showSnackbar('Cài đặt đã được lưu thành công', 'success');
     };
 
     const handleReset = () => {
-        const defaults = { refreshInterval: '5000', logHistorySize: '1000' };
-        setSettings(defaults);
-        localStorage.setItem('system_settings', JSON.stringify(defaults));
+        resetSettings();
+        setLocalSettings((useSettings as any).DEFAULT_SETTINGS || { refreshInterval: '5000', logHistorySize: '1000' });
         showSnackbar('Cài đặt đã được đặt lại mặc định', 'success');
     };
 
@@ -72,8 +60,8 @@ export function Settings() {
                                         fullWidth
                                         select
                                         label="Tần suất cập nhật dữ liệu"
-                                        value={settings.refreshInterval}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSettings({ ...settings, refreshInterval: e.target.value })}
+                                        value={localSettings.refreshInterval}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLocalSettings({ ...localSettings, refreshInterval: e.target.value })}
                                         helperText="Thời gian giữa các lần làm mới dữ liệu hệ thống"
                                     >
                                         <MenuItem value="1000">Nhanh (1 giây)</MenuItem>
@@ -86,9 +74,9 @@ export function Settings() {
                                         fullWidth
                                         label="Số lượng nhật ký lưu giữ"
                                         type="number"
-                                        value={settings.logHistorySize}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSettings({ ...settings, logHistorySize: e.target.value })}
-                                        helperText="Số lượng bản ghi tối đa được lưu trữ trong lịch sử"
+                                        value={localSettings.logHistorySize}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLocalSettings({ ...localSettings, logHistorySize: e.target.value })}
+                                        helperText="Số lượng bản ghi tối đa được hiển thị trên mỗi trang nhật ký"
                                     />
                                 </StackColComponent>
                             </Box>

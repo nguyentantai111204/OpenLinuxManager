@@ -21,9 +21,11 @@ import { PageHeaderComponent } from '../../components/page-header/page-header.co
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { SPACING, TYPOGRAPHY } from '../../constants/design';
 import { useProcesses, Process } from '../../hooks/use-processes';
+import { useSettings } from '../../contexts/settings.context';
 import { ColumnConfig, ActionConfig } from '../../components/table/table.component';
 
 export function Processes() {
+    const { settings } = useSettings();
     const {
         isConnected,
         processes,
@@ -231,7 +233,7 @@ export function Processes() {
                     variant="body2"
                     sx={{ color: 'text.secondary', fontWeight: TYPOGRAPHY.fontWeight.medium }}
                 >
-                    Tự động cập nhật sau mỗi 5 giây
+                    Tự động cập nhật sau mỗi {parseInt(settings.refreshInterval) / 1000} giây
                 </Typography>
             </StackRowJusBetweenComponent>
 
