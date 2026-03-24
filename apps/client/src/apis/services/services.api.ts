@@ -11,11 +11,8 @@ export interface SystemService {
 }
 
 export const ServicesApi = {
-    getAll: (): Promise<SystemService[]> =>
-        axiosClient.get('/api/services').then((r) => {
-            const payload = r.data as SystemService[] | { data: SystemService[] };
-            return Array.isArray(payload) ? payload : payload.data;
-        }),
+    getAll: (params?: { page?: number; limit?: number; search?: string }): Promise<SystemService[] | { data: SystemService[]; meta: any }> =>
+        axiosClient.get('/api/services', { params }).then((r) => r.data),
 
     performAction: (name: string, action: ServiceAction): Promise<void> =>
         axiosClient.post(`/api/services/${name}/action`, { action }).then(() => undefined),

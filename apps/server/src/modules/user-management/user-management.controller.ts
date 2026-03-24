@@ -10,42 +10,8 @@ export class UserManagementController {
     constructor(private readonly userManagementService: UserManagementService) { }
 
     @Get()
-    async getUsers(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<SystemUser> | SystemUser[]> {
-        const allUsers = await this.userManagementService.getUsers();
-
-        if (!paginationDto.page || !paginationDto.limit) {
-            return allUsers;
-        }
-
-        const page = Number(paginationDto.page) || 1;
-        const limit = Number(paginationDto.limit) || 10;
-        const search = paginationDto.search?.toLowerCase();
-
-        let filteredUsers = allUsers;
-
-        if (search) {
-            filteredUsers = allUsers.filter(u =>
-                u.username.toLowerCase().includes(search) ||
-                u.shell.toLowerCase().includes(search)
-            );
-        }
-
-        const total = filteredUsers.length;
-        const totalPages = Math.ceil(total / limit);
-        const startIndex = (page - 1) * limit;
-        const endIndex = Math.min(startIndex + limit, total);
-
-        const data = filteredUsers.slice(startIndex, endIndex);
-
-        return {
-            data,
-            meta: {
-                page,
-                limit,
-                total,
-                totalPages
-            }
-        };
+    async getUsers(@Query() paginationDto: PaginationDto) {
+        return this.userManagementService.getUsers(paginationDto);
     }
 
     @Post()

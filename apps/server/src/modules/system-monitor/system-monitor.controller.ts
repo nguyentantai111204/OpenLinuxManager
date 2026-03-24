@@ -1,6 +1,8 @@
 import { Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { Audit } from '@open-linux-manager/api';
 import { SystemMonitorService } from './system-monitor.service';
+import { PaginationDto } from '../../common/dto/pagination.dto';
+import { Query } from '@nestjs/common';
 
 @Controller('system')
 export class SystemMonitorController {
@@ -12,8 +14,8 @@ export class SystemMonitorController {
     }
 
     @Get('processes')
-    getSystemProcesses() {
-        return this.systemMonitorService.getSystemProcesses();
+    getSystemProcesses(@Query() paginationDto: PaginationDto) {
+        return this.systemMonitorService.getSystemProcesses(paginationDto);
     }
 
     @Get('storage')

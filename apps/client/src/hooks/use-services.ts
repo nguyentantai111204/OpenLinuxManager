@@ -1,14 +1,10 @@
 import useSWR from 'swr';
 import { ServicesApi, ServiceAction, SystemService } from '../apis/services/services.api';
 
-/**
- * Fetch and cache the system service list using SWR.
- * Refreshes automatically every 10 seconds.
- */
-export function useServices() {
-    const { data, error, isLoading, mutate } = useSWR<SystemService[]>(
-        '/api/services',
-        () => ServicesApi.getAll(),
+export function useServices(params?: { page?: number; limit?: number; search?: string }) {
+    const { data, error, isLoading, mutate } = useSWR(
+        ['/api/services', params?.page, params?.limit, params?.search],
+        () => ServicesApi.getAll(params),
         {
             revalidateOnFocus: false,
             refreshInterval: 10_000,
@@ -20,8 +16,13 @@ export function useServices() {
         await mutate();
     };
 
+    const isPaginated = !Array.isArray(data) && data?.data;
+    const services = isPaginated ? data.data : (Array.isArray(data) ? data : []);
+    const meta = isPaginated ? data.meta : null;
+
     return {
-        services: data ?? [],
+        services,
+        meta,
         isLoading,
         error,
         performAction,

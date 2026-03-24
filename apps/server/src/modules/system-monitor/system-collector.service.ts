@@ -93,7 +93,8 @@ export class SystemCollectorService implements OnModuleDestroy {
     public async fetchProcesses() {
         try {
             const data = await this.monitorService.getSystemProcesses();
-            this.processes$.next(data);
+            const processes = Array.isArray(data) ? data : data.data;
+            this.processes$.next(processes);
         } catch (error) {
             this.logger.error('Failed to fetch processes', error);
         }

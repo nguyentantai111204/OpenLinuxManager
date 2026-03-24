@@ -2,6 +2,8 @@ import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common
 import { CommandRunnerService } from '../../system/services/command-runner.service';
 import { AuditLogService } from '../audit-log/audit-log.service';
 import { SystemService, SystemctlUnit, SystemctlUnitFile } from './service-manager.interface';
+import { PaginationDto } from '../../common/dto/pagination.dto';
+import { PaginatedResponse } from '../../common/interfaces/paginated-response.interface';
 
 export { SystemService };
 
@@ -14,7 +16,7 @@ export class ServiceManagerService {
         private readonly auditLogService: AuditLogService
     ) { }
 
-    async getServices(): Promise<SystemService[]> {
+    async getServices(paginationDto?: PaginationDto): Promise<PaginatedResponse<SystemService> | SystemService[]> {
         try {
             const [unitsJson, unitFilesJson] = await Promise.all([
                 this.commandRunner.run('systemctl', [
@@ -32,13 +34,47 @@ export class ServiceManagerService {
                 unitFiles.map((f) => [f.unit_file, f.state]),
             );
 
-            return units.map((u) => ({
+            const allServices: SystemService[] = units.map((u) => ({
                 name: u.unit.replace('.service', ''),
                 description: u.description || u.unit,
                 status: this.mapActiveStatus(u.active),
                 running: u.sub === 'running',
                 enabled: enablementMap.get(u.unit) === 'enabled',
             }));
+
+            if (!paginationDto || (!paginationDto.page && !paginationDto.limit)) {
+                return allServices;
+            }
+
+            const page = Number(paginationDto.page) || 1;
+            const limit = Number(paginationDto.limit) || 10;
+            const search = paginationDto.search?.toLowerCase();
+
+            let filteredServices = allServices;
+
+            if (search) {
+                filteredServices = allServices.filter(s =>
+                    s.name.toLowerCase().includes(search) ||
+                    s.description.toLowerCase().includes(search)
+                );
+            }
+
+            const total = filteredServices.length;
+            const totalPages = Math.ceil(total / limit);
+            const startIndex = (page - 1) * limit;
+            const endIndex = Math.min(startIndex + limit, total);
+
+            const data = filteredServices.slice(startIndex, endIndex);
+
+            return {
+                data,
+                meta: {
+                    page,
+                    limit,
+                    total,
+                    totalPages
+                }
+            };
         } catch (error) {
             this.logger.error('Failed to list services', error);
             return [];

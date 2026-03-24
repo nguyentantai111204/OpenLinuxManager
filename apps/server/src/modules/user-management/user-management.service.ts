@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import { CommandRunnerService } from '../../system/services/command-runner.service';
 import { AuditLogService } from '../audit-log/audit-log.service';
 import { SystemUser } from './user-management.interface';
+import { PaginationDto } from '../../common/dto/pagination.dto';
+import { PaginatedResponse } from '../../common/interfaces/paginated-response.interface';
 
 export { SystemUser };
 
@@ -15,13 +17,10 @@ export class UserManagementService {
         private readonly auditLogService: AuditLogService,
     ) { }
 
-    /**
-     * Get list of physical users (UID >= 1000)
-     */
-    async getUsers(): Promise<SystemUser[]> {
+    async getUsers(paginationDto?: PaginationDto): Promise<PaginatedResponse<SystemUser> | SystemUser[]> {
         try {
             const content = fs.readFileSync('/etc/passwd', 'utf-8');
-            const users: SystemUser[] = [];
+            const allUsers: SystemUser[] = [];
 
             for (const line of content.split('\n')) {
                 const parts = line.split(':');
@@ -34,11 +33,43 @@ export class UserManagementService {
                 const shell = parts[6];
 
                 if (uid >= 1000 && username !== 'nobody') {
-                    users.push({ username, uid, gid, home, shell });
+                    allUsers.push({ username, uid, gid, home, shell });
                 }
             }
 
-            return users;
+            if (!paginationDto || (!paginationDto.page && !paginationDto.limit)) {
+                return allUsers;
+            }
+
+            const page = Number(paginationDto.page) || 1;
+            const limit = Number(paginationDto.limit) || 10;
+            const search = paginationDto.search?.toLowerCase();
+
+            let filteredUsers = allUsers;
+
+            if (search) {
+                filteredUsers = allUsers.filter(u =>
+                    u.username.toLowerCase().includes(search) ||
+                    u.shell.toLowerCase().includes(search)
+                );
+            }
+
+            const total = filteredUsers.length;
+            const totalPages = Math.ceil(total / limit);
+            const startIndex = (page - 1) * limit;
+            const endIndex = Math.min(startIndex + limit, total);
+
+            const data = filteredUsers.slice(startIndex, endIndex);
+
+            return {
+                data,
+                meta: {
+                    page,
+                    limit,
+                    total,
+                    totalPages
+                }
+            };
         } catch (error) {
             this.logger.error('Error getting users', error);
             throw new InternalServerErrorException('Failed to retrieve users');

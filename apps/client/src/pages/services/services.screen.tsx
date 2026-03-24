@@ -25,9 +25,15 @@ import { ServiceAction, SystemService } from '../../apis/services/services.api';
 import { ColumnConfig, ActionConfig } from '../../components/table/table.component';
 
 export function Services() {
-    const { services, isLoading, performAction } = useServices();
-    const { snackbarProps, showSnackbar } = useSnackbar();
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
+
+    const { services, meta, isLoading, performAction } = useServices({
+        page: page + 1,
+        limit: rowsPerPage,
+        search: searchQuery
+    });
 
     const handleAction = async (name: string, action: ServiceAction) => {
         try {
@@ -38,15 +44,7 @@ export function Services() {
         }
     };
 
-    const filteredServices = useMemo(() => {
-        if (!searchQuery.trim()) return services;
-        const query = searchQuery.toLowerCase();
-        return services.filter(
-            (s) =>
-                s.name.toLowerCase().includes(query) ||
-                s.description.toLowerCase().includes(query),
-        );
-    }, [services, searchQuery]);
+    const { snackbarProps, showSnackbar } = useSnackbar();
 
     const columns = useMemo<ColumnConfig<SystemService>[]>(() => [
         {
@@ -172,16 +170,19 @@ export function Services() {
             <DataTableComponent
                 idField="name"
                 columns={columns}
-                data={filteredServices}
+                data={services}
                 actions={actions as ActionConfig<SystemService>[]}
                 emptyMessage="Không tìm thấy dịch vụ nào"
                 pagination={{
-                    page: 0,
-                    rowsPerPage: 10,
-                    total: filteredServices.length,
-                    onPageChange: () => { },
-                    onRowsPerPageChange: () => { },
-                    autoPagination: true
+                    page: page,
+                    rowsPerPage: rowsPerPage,
+                    total: meta?.total || services.length,
+                    onPageChange: (newPage) => setPage(newPage),
+                    onRowsPerPageChange: (newRowsPerPage) => {
+                        setRowsPerPage(newRowsPerPage);
+                        setPage(0);
+                    },
+                    autoPagination: false
                 }}
                 maxHeight="calc(100vh - 200px)"
             />
@@ -192,7 +193,7 @@ export function Services() {
                     color="text.secondary"
                     sx={{ fontWeight: TYPOGRAPHY.fontWeight.medium }}
                 >
-                    Tổng số: {services.length} dịch vụ
+                    Tổng số: {meta?.total || services.length} dịch vụ
                 </Typography>
                 <Typography
                     variant="body2"

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuditLog } from './entities/audit-log.entity';
+import { PaginationDto } from '../../common/dto/pagination.dto';
+import { PaginatedResponse } from '../../common/interfaces/paginated-response.interface';
 
 @Injectable()
 export class AuditLogService {
@@ -20,7 +22,10 @@ export class AuditLogService {
         return this.auditLogRepository.save(log);
     }
 
-    async findAll(page = 1, limit = 10) {
+    async findAll(paginationDto: PaginationDto): Promise<PaginatedResponse<AuditLog>> {
+        const page = Number(paginationDto.page) || 1;
+        const limit = Number(paginationDto.limit) || 10;
+
         const [data, total] = await this.auditLogRepository.findAndCount({
             order: {
                 createdAt: 'DESC',

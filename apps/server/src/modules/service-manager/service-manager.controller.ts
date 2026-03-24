@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Param, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, BadRequestException, Query } from '@nestjs/common';
 import { ServiceManagerService } from './service-manager.service';
 import { Audit } from '@open-linux-manager/api';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Controller('services')
 export class ServiceManagerController {
     constructor(private readonly serviceManager: ServiceManagerService) { }
 
     @Get()
-    getServices() {
-        return this.serviceManager.getServices();
+    getServices(@Query() paginationDto: PaginationDto) {
+        return this.serviceManager.getServices(paginationDto);
     }
 
     @Post(':name/action')

@@ -6,6 +6,8 @@ import { CommandRunnerService } from '../../system/services/command-runner.servi
 import { PythonRunnerService } from '../../system/services/python-runner.service';
 import { AuditLogService } from '../audit-log/audit-log.service';
 import { SystemCollectorService } from './system-collector.service';
+import { PaginationDto } from '../../common/dto/pagination.dto';
+import { PaginatedResponse } from '../../common/interfaces/paginated-response.interface';
 
 @Injectable()
 export class SystemMonitorService {
@@ -50,11 +52,45 @@ export class SystemMonitorService {
     /**
      * Get running processes
      */
-    async getSystemProcesses(): Promise<SystemProcess[]> {
+    async getSystemProcesses(paginationDto?: PaginationDto): Promise<PaginatedResponse<SystemProcess> | SystemProcess[]> {
         try {
             const stdout = await this.commandRunner.run('ps', ['aux', '--sort=-%cpu']);
-            const processes = LinuxParser.parsePsOutput(stdout);
-            return processes.slice(0, 200);
+            const allProcesses = LinuxParser.parsePsOutput(stdout);
+
+            if (!paginationDto || (!paginationDto.page && !paginationDto.limit)) {
+                return allProcesses.slice(0, 200);
+            }
+
+            const page = Number(paginationDto.page) || 1;
+            const limit = Number(paginationDto.limit) || 10;
+            const search = paginationDto.search?.toLowerCase();
+
+            let filteredProcesses = allProcesses;
+
+            if (search) {
+                filteredProcesses = allProcesses.filter(p =>
+                    p.user.toLowerCase().includes(search) ||
+                    p.name.toLowerCase().includes(search) ||
+                    p.pid.toString().includes(search)
+                );
+            }
+
+            const total = filteredProcesses.length;
+            const totalPages = Math.ceil(total / limit);
+            const startIndex = (page - 1) * limit;
+            const endIndex = Math.min(startIndex + limit, total);
+
+            const data = filteredProcesses.slice(startIndex, endIndex);
+
+            return {
+                data,
+                meta: {
+                    page,
+                    limit,
+                    total,
+                    totalPages
+                }
+            };
         } catch (error) {
             this.logger.error('Error getting processes', error);
             throw new InternalServerErrorException('Failed to retrieve processes');
